@@ -1,0 +1,142 @@
+<template>
+    <div class="app-container">
+        <div v-if="infoUser">
+            <el-row :gutter="20">
+                <el-col :span="6" :xs="24">
+                    <user-card :user="infoUser" @update-avatar="handleUpdateAvatar"/>
+                </el-col>
+                <el-col :span="18" :xs="24">
+                    <el-card>
+                        <el-tabs v-model="activeTab" @tab-click="handleTabs">
+                            <el-tab-pane label="Thông tin" name="account">
+                                <account
+                                    :user="infoUser"
+                                    :data-medal="dataMedal"
+                                />
+                            </el-tab-pane>
+                            <el-tab-pane label="Khoá học" name="course">
+                                <course :list="listCourse"/>
+                            </el-tab-pane>
+                            <!-- <el-tab-pane label="Activity" name="activity">
+                                <activity />
+                            </el-tab-pane>
+                            <el-tab-pane label="Timeline" name="timeline">
+                                <timeline />
+                            </el-tab-pane> -->
+                        </el-tabs>
+                    </el-card>
+                </el-col>
+            </el-row>
+        </div>
+    </div>
+</template>
+
+<script>
+import { mapGetters } from "vuex";
+import UserCard from "./components/UserCard";
+import Activity from "./components/Activity";
+import Timeline from "./components/Timeline";
+import Account from "./components/Account";
+import Course from "./components/Course";
+import RepositoryFactory from '@/utils/RepositoryFactory';
+import Helpers from '@/helper';
+const UserRepository = RepositoryFactory.get('user');
+export default {
+    name: "Profile",
+    components: { UserCard, Activity, Timeline, Account, Course },
+    data() {
+        return {
+            infoUser: {},
+            dataMedal: {},
+            percent: 0,
+            activeTab: "account",
+            formdata:{
+                file:false,
+                dataUpdate:'',
+                id:''
+            },
+            listCourse:[],
+            listEquipment:[],
+        };
+    },
+    computed: {
+        ...mapGetters(["user", "gold", "experience", "data_medal"]),
+    },
+    created() {
+        this.getUser();
+        this.emitter.off("is-update-user");
+    },
+    mounted() {
+        this.emitter.on("is-update-user", dataMedal => {
+            this.handleUpdateUser(dataMedal);
+        });
+    },
+    methods: {
+        getUser() {
+            this.infoUser = this.user;
+            this.infoUser['gold'] = this.gold;
+            this.infoUser['experience'] = this.experience;
+            this.infoUser['percentage'] =  Helpers.percentExp(this.user);
+            this.dataMedal = this.data_medal;
+        },
+        // cập nhập thông tin user
+        async handleUpdateUser(dataMedal){
+            try {
+                this.formdata.data = {
+                    'first_name': this.user.first_name,
+                    'last_name': this.user.last_name,
+                    'achievements': dataMedal,
+                };//=> sẽ bổ sung thông tin update
+                this.formdata.id = this.user.id // user id
+                let formData = new FormData();
+                formData.append('data', JSON.stringify(this.formdata.data));
+                formData.append('id',  this.formdata.id);
+                if (this.formdata.file) {
+                    formData.append('file', this.formdata.file);
+                }
+                const { data } = await UserRepository.update(formData); 
+                if(data.success){
+                    let results = data.data;
+                    this.$store.dispatch("user/update", results);
+                    this.$message({
+                        type: 'success',
+                        message: data.message,
+                    })
+                }else{
+                    this.$message({
+                        type: 'error',
+                        message: data.message,
+                    })
+                }
+                //var info = await store.dispatch("user/getInfo");
+            } catch (error) {
+                console.log('Cập nhập thông tin user lỗi', error)
+            }
+        },
+        handleUpdateAvatar(file){
+            this.formdata.file = file
+        },
+        // handleTabs
+        async handleTabs(tab, event) {
+            let tabName = event.target.id;
+            tabName = tabName.replace("tab-", "");
+            if (tabName != 'account') {
+                let query = {
+                    type: tabName
+                }
+                const { data } = await UserRepository.getData( query ); 
+                if(data.success){
+                    if (data.data) {
+                        let results = data.data
+                        if (tabName == 'course') {
+                            this.listCourse = results.map(item => item)
+                        }else{
+                            this.listEquipment = results.map(item => item)
+                        }
+                    }
+                }
+            } 
+        },
+    },
+};
+</script>
