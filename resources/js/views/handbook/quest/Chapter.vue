@@ -74,6 +74,7 @@
 @import '@style/variables.scss';
 .wrap-carousel {
     position: relative;
+    margin: 0;
     ::v-deep(.el-carousel__arrow) {
         background-color: transparent;
         .el-icon {
