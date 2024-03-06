@@ -90,7 +90,7 @@
                 margin: 0;
             }
         }
-        .el-carousel__arrow {
+        ::v-deep(.el-carousel__arrow) {
             background-color: transparent;
             .el-icon {
                 color: $colorBlack;
