@@ -58,11 +58,11 @@
     height: 100% !important;
     background: rgba(0,0,0,0.9);
     z-index: 9991;
-    ::v-deep canvas{
+    :deep(canvas){
         width: 100% !important;
         height: 100% !important;
     }
-    ::v-deep .canvasBox {
+    :deep(.canvasBox) {
         height: 100% !important;
     }
     .slogan {

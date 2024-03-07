@@ -351,13 +351,11 @@ export default {
     }
 }
 
-.article-textarea ::deep {
-    textarea {
-        padding-right: 40px;
-        resize: none;
-        border: none;
-        border-radius: 0px;
-        border-bottom: 1px solid #bfcbd9;
-    }
+.article-textarea :deep(textarea){
+    padding-right: 40px;
+    resize: none;
+    border: none;
+    border-radius: 0px;
+    border-bottom: 1px solid #bfcbd9;
 }
 </style>

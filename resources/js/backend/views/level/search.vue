@@ -53,7 +53,7 @@
 
 </script>
 <style lang="scss" scoped>
-    :deep .el-input__wrapper {
+    :deep(.el-input__wrapper) {
         width: calc(100% - 12px);
     }
 </style>

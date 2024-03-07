@@ -37,7 +37,7 @@
         <!-- Mô tả -->
         <el-table-column min-width="80px" label="Mô tả">
             <template v-slot="item">
-                <span>{{ item.row.description }}</span>
+                <el-text line-clamp="2">{{ item.row.description }}</el-text>
             </template>
         </el-table-column>
         <!-- link -->
@@ -49,7 +49,7 @@
         <!-- Cách thức -->
         <el-table-column min-width="120px" label="Cách thức">
             <template v-slot="item">
-                <span>{{ item.row.method }}</span>
+                <el-text line-clamp="2">{{ item.row.method }}</el-text>
             </template>
         </el-table-column>
         <!-- Phần thưởng trang bị -->

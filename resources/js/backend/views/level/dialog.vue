@@ -229,16 +229,16 @@
 
 </script>
 <style lang="scss" scoped>
-    ::deep .el-select {
+    :deep(.el-select) {
         width: 100%;
     }
-    ::v-deep .el-input__inner{
+    :deep(.el-input__inner){
         text-align: left !important;
     }
     .el-input-number {
         width: 100%;
     }
-    ::v-deep .el-form-item--default .el-form-item__label{
+    :deep(.el-form-item--default .el-form-item__label){
         font-weight: bold;
     }
 </style>

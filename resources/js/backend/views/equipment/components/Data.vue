@@ -37,19 +37,19 @@
         <!-- Mô tả des -->
         <el-table-column min-width="80px" label="Mô tả des">
             <template v-slot="item">
-                <span>{{ item.row.description_designer }}</span>
+                <el-text line-clamp="2">{{ item.row.description_designer }}</el-text>
             </template>
         </el-table-column>
         <!-- Mô tả in game -->
         <el-table-column min-width="80px" label="Mô tả in-game">
             <template v-slot="item">
-                <span>{{ item.row.description_in_game }}</span>
+                <el-text line-clamp="2">{{ item.row.description_in_game }}</el-text>
             </template>
         </el-table-column>
         <!-- cách thức -->
         <el-table-column min-width="80px" label="Cách thức">
             <template v-slot="item">
-                <span>{{ item.row.method }}</span>
+                <el-text line-clamp="2">{{ item.row.method }}</el-text>
             </template>
         </el-table-column>        
         <!-- URL Hình ảnh -->

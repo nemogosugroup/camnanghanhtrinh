@@ -237,7 +237,7 @@
     border: 1px solid #EBEEF5;
     text-align: center;
 }
-.avatar :deep .el-card__body {
+.avatar :deep(.el-card__body) {
     padding: 0;
     display: flex;
     position: relative;
@@ -285,7 +285,7 @@
     text-transform: uppercase;
 }
 .training {
-    ::v-deep .el-descriptions__label {
+    :deep(.el-descriptions__label) {
         width: 200px;
     }
 }

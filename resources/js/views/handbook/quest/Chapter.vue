@@ -74,14 +74,14 @@
 @import '@style/variables.scss';
 .wrap-carousel {
     position: relative;
-    ::v-deep(.el-carousel__arrow) {
+    :deep(.el-carousel__arrow) {
         background-color: transparent;
         .el-icon {
             color: $colorBlack;
             font-size: $size20;
         }
     }
-    ::v-deep(.el-carousel__container){
+    :deep(.el-carousel__container){
         height: 70px !important;
         .el-carousel__item {
             h4 {

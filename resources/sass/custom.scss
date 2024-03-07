@@ -52,7 +52,7 @@
             background-color: #fff;
         }
     }
-    ::v-deep(.el-menu) {
+    :deep(.el-menu) {
         border-right: 0 !important;
     }
     .el-aside {
@@ -60,7 +60,7 @@
         padding: 0;
         border-right: 1px solid $borderGray; 
         background-color: $bgWhite; 
-        ::v-deep(.title-h3) {
+        :deep(.title-h3) {
             text-align: center;
             text-transform: uppercase;
             margin: 0;

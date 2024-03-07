@@ -91,7 +91,7 @@ export default {
 <style lang="scss" scoped>
 .el-sub-menu{
   &.is-active{
-    ::v-deep .el-sub-menu__title {
+    :deep(.el-sub-menu__title) {
       color:#409EFF;
     }
   }
