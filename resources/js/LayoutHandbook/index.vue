@@ -18,7 +18,7 @@
 
 <script>
 import { Navbar, Sidebar, TagsView } from "@/layout/components";
-import LayoutBook from "./components/Appbook";
+import LayoutBook from "./components/AppBook";
 import ResizeMixin from "@/layout/mixin/ResizeHandler";
 import { mapState, mapGetters } from "vuex";
 
