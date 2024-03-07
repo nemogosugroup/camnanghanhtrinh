@@ -75,7 +75,7 @@
 import { validUsername } from "@/utils/validate";
 // import SocialSign from './components/SocialSignin'
 import bgLogin from "@/assets/images/bg/authentication-bg.jpg";
-import imagesLogo from "@public/images/logo/GOSU_full.png";
+import imagesLogo from "@/assets/images/logo/GOSU_full.png";
 import { getAccessToken } from "@/utils/auth";
 export default {
     name: "Login",
