@@ -24,3 +24,5 @@ package-lock.json
 .editorconfig
 /resources/sass/*.css
 /resources/sass/*.css.map
+/public/build
+/public/mix-manifest.json
