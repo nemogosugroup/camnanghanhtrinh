@@ -12,6 +12,7 @@ module.exports = {
             "@": path.join(__dirname, "/resources/js"),
             "@style": path.join(__dirname, "/resources/sass"),
             "@image": path.join(__dirname, "/resources/images"),
+            "@public": path.resolve(__dirname, 'public')
         },
         fallback: {
             "path": require.resolve("path-browserify")
