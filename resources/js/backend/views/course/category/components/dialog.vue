@@ -167,7 +167,7 @@
 
 </script>
 <style lang="scss" scoped>
-    :deep .el-select {
+    :deep(.el-select) {
         width: 100%;
     }
 </style>

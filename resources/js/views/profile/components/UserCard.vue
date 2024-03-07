@@ -182,7 +182,7 @@ export default {
         padding: 15px 0;
     }
 }
-.avatar :deep .el-card__body {
+.avatar :deep(.el-card__body) {
     padding: 0;
     display: flex;
     position: relative;

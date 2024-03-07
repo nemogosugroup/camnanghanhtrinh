@@ -271,10 +271,10 @@
 
 </script>
 <style lang="scss" scoped>
-    :deep .el-select {
+    :deep(.el-select) {
         width: 100%;
     }
-    :deep .el-image {
+    :deep(.el-image) {
         width: 100%;
         padding-top: 20px;
         > img {

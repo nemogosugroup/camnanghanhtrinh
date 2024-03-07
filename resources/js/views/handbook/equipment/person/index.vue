@@ -245,11 +245,11 @@ export default {
     }
 }
 
-::v-deep .el-form-item__label {
+:deep(.el-form-item__label) {
     font-weight: bold;
 }
 
-::v-deep .el-select-dropdown__option-item {
+:deep(.el-select-dropdown__option-item) {
     font-size: 14px !important;
 }
 

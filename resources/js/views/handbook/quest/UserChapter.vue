@@ -195,31 +195,31 @@ export default {
                 width: calc(20% - 5px);
                 margin: 0 2.5px;
                 &.el-bg-success {
-                    ::v-deep .el-progress-bar__inner {
+                    :deep(.el-progress-bar__inner) {
                         background-image: linear-gradient(to right, #548235, #548235, #548235) !important;
                     }
                 }
                 &.el-bg-default {
-                    ::v-deep .el-progress-bar__inner {
+                    :deep(.el-progress-bar__inner) {
                         //background-image: linear-gradient(to right, #548235, #C5E0B4, #fff) !important;
                         background-color: transparent !important;
                     }
-                    ::v-deep .el-progress-bar__outer{
+                    :deep(.el-progress-bar__outer){
                         background-image: linear-gradient(to right, #548235, #C5E0B4, #fff) !important;
                     }
                 }
                 &.el-bg-none {
-                    ::v-deep .el-progress-bar__inner {
+                    :deep(.el-progress-bar__inner) {
                         background-image: linear-gradient(to right, #fff, #fff, #fff) !important;
                     }
                 }
-                ::v-deep .el-progress-bar__outer{
+                :deep(.el-progress-bar__outer){
                     border-radius: 0;
                 }
-                ::v-deep .el-progress-bar__inner{
+                :deep(.el-progress-bar__inner){
                     border-radius: 0;
                 }
-                ::v-deep .el-progress-bar {
+                :deep(.el-progress-bar) {
                     box-shadow: 0px 0px 7px 0px rgba(0,0,0,.8);
                 }
             }

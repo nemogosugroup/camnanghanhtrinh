@@ -233,7 +233,7 @@
                     }                    
                 }
                 .link {
-                    ::v-deep(.link-quest) {
+                    :deep(.link-quest) {
                         padding:$size10;
                         display: inline-flex;
                         border-radius: $size5;

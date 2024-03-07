@@ -8,6 +8,8 @@
 - php artisan migrate
 - php artisan db:seed --class=Database\Seeders\UsersTableSeeder
 - npm run watch
+- npm run dev
+- npm run prod
 - php artisan serve
 
 ## License
