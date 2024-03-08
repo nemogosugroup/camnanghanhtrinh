@@ -3,10 +3,12 @@
 namespace App\Providers;
 
 use App\Repositories\Course\CourseRepository;
+use App\Repositories\Equipment\TypeEquipmentRepository;
 use App\Repositories\Interfaces\Backend\CourseRepositoryInterface;
 use App\Repositories\Equipment\EquipmentRepository;
 use App\Repositories\Equipment\UserEquipmentRepository;
 use App\Repositories\Interfaces\Backend\EquipmentRepositoryInterface;
+use App\Repositories\Interfaces\Backend\TypeEquipmentRepositoryInterface;
 use App\Repositories\Interfaces\Backend\UserEquipmentRepositoryInterface;
 use App\Repositories\Interfaces\Backend\UserMedalRepositoryInterface;
 use App\Repositories\Medal\UserMedalRepository;
@@ -37,6 +39,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(EquipmentRepositoryInterface::class, EquipmentRepository::class);
         $this->app->bind(CourseRepositoryInterface::class, CourseRepository::class);
         $this->app->bind(UserEquipmentRepositoryInterface::class, UserEquipmentRepository::class);
+        $this->app->bind(TypeEquipmentRepositoryInterface::class, TypeEquipmentRepository::class);
         $this->app->bind(QuestRepositoryInterface::class, QuestRepository::class);
         $this->app->bind(UserMedalRepositoryInterface::class, UserMedalRepository::class);
     }
