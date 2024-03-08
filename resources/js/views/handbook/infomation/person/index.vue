@@ -68,7 +68,7 @@
                 <div class="flex-center">
                     <span class="level"><strong>Level {{ infomation.level }}</strong></span>
                     <div class="progress"> 
-                        <label for="">{{ infomation.experience }} EXP</label>
+                        <label for="">{{ commasThousands(infomation.experience) }} EXP</label>
                         <el-progress :text-inside="false" :show-text="false" :stroke-width="10" :percentage="infomation.percentage" status="success"></el-progress>
                     </div>
                 </div>
@@ -302,6 +302,9 @@
             // lấy phần trăm của điểm kinh nghiệm hiện tại và level
             percent(data){
                 return Helpers.percentExp(data)
+            },
+            commasThousands(number) {
+                return number?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
             }
         }
     }

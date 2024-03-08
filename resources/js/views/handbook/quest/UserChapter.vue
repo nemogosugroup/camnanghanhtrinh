@@ -25,7 +25,7 @@
             <div class="flex-center flex-align-center wp-gold mb20">
                 <span class="gold exp">
                     <strong><i class="ri-printer-line"></i></strong> 
-                    <span>{{ experience }}</span>
+                    <span>{{ commasThousands(experience) }}</span>
                 </span>
             </div>
             <div class="flex-center flex-align-center">
