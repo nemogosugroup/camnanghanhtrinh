@@ -4,6 +4,7 @@
             <el-row :gutter="20">
                 <el-col :span="6" :xs="24">
                     <user-card :user="infoUser" @update-avatar="handleUpdateAvatar"/>
+                    <button @click="facebookShare">Chia sẻ trên Facebook</button>
                 </el-col>
                 <el-col :span="18" :xs="24">
                     <el-card>
@@ -70,6 +71,13 @@ export default {
         this.emitter.on("is-update-user", dataMedal => {
             this.handleUpdateUser(dataMedal);
         });
+        (function(d, s, id){
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) {return;}
+            js = d.createElement(s); js.id = id;
+            js.src = "https://connect.facebook.net/vi_VN/sdk.js#xfbml=1&version=v10.0&appId=1120630529380971&autoLogAppEvents=1";
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));
     },
     methods: {
         getUser() {
@@ -137,6 +145,23 @@ export default {
                 }
             } 
         },
+        facebookShare() {
+            let params = {
+                method: 'share_open_graph',
+                action_type: 'og.shares',
+                action_properties: JSON.stringify({
+                    object: {
+                        'og:url': 'https://camnanghanhtrinh.gosucorp.vn/',
+                        'og:title': 'Tên của bạn',
+                        'og:description': 'Mô tả của bạn',
+                        'og:image': this.user.avatar
+                    }
+                })
+            };
+            FB.ui(params, function(response) {
+                console.log(response);
+            });
+        }
     },
 };
 </script>
