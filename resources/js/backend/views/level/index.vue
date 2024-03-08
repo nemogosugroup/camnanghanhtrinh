@@ -175,7 +175,7 @@ export default {
         title: data,
       }),
         this.fetch();
-    },
+    }
   },
 };
 </script>

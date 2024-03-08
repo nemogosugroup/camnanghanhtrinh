@@ -78,7 +78,7 @@ export default {
             this.emitter.emit("change-inventory-position", this.defaultPos);
         },
         commasThousands(number) {
-            return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+            return number?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         }
     }
 }

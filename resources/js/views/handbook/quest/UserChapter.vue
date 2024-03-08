@@ -19,7 +19,7 @@
             <div class="flex-center flex-align-center wp-gold mb20">
                 <span class="gold">
                     <strong><i class="ri-money-dollar-circle-fill"></i></strong> 
-                    <span>{{ gold }}</span>
+                    <span>{{ commasThousands(gold) }}</span>
                 </span>
             </div>
             <div class="flex-center flex-align-center wp-gold mb20">
@@ -177,6 +177,9 @@ export default {
                     status: this.statusQuest.received
                 }
             }, 1000);
+        },
+        commasThousands(number) {
+            return number?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         }
     }
 };

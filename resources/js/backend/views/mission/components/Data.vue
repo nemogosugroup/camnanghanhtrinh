@@ -61,13 +61,13 @@
         <!-- Vàng -->
         <el-table-column min-width="80px" label="Vàng">
             <template v-slot="item">
-                <span>{{ item.row.gold }}</span>
+                <span>{{ commasThousands(item.row.gold) }}</span>
             </template>
         </el-table-column>
         <!-- điểm kinh nghiệm -->
         <el-table-column min-width="80px" label="Điểm kinh nghiệm">
             <template v-slot="item">
-                <span>{{ item.row.experience }}</span>
+                <span>{{ commasThousands(item.row.experience) }}</span>
             </template>
         </el-table-column>
         <!-- level -->
@@ -125,6 +125,9 @@
                 //     });
                 //     this.$emit('listIds', this.listIds);
                 // }
+            },
+            commasThousands(number) {
+                return number?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
             }
         }
     }

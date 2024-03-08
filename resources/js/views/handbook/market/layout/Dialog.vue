@@ -23,7 +23,7 @@
             </el-text>
             <div class="price">
                 <strong><i class="ri-money-dollar-circle-fill"></i></strong>
-                <span>{{ item.gold }}</span>
+                <span>{{ commasThousands(item.gold) }}</span>
             </div>
         </div>
         <el-divider border-style="double" />
@@ -145,6 +145,9 @@
                     console.log('error', error)
                 }
                 
+            },
+            commasThousands(number) {
+                return number?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
             }
         }
     }
