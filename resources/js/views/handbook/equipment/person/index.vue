@@ -117,6 +117,7 @@ export default {
                 award: '',
                 profile_id: null,
                 commit11: null,
+                commit22: null,
             },
             rules: {},
             imagePerson: imagePerson,
