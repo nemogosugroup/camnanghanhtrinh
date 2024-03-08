@@ -18,7 +18,7 @@
                 <div class="flex-center flex-align-end wp-gold">
                     <span class="gold">
                         <strong><i class="ri-money-dollar-circle-fill"></i></strong> 
-                        <span>{{ gold }}</span>
+                        <span>{{ commasThousands(gold) }}</span>
                     </span>
                 </div>
             </el-col>
@@ -68,6 +68,9 @@
         },
 
         methods: {
+            commasThousands(number) {
+                return number?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            }
         }
     }
 </script>

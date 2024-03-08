@@ -90,8 +90,7 @@
         },
         data () {            
             return {
-                isLoading: true,
-                list: [],           
+                list: [],
                 isLoading: true,
                 dialogVisible: false,
                 isLoadingService: false,

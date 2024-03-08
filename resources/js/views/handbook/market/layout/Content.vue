@@ -12,7 +12,7 @@
                                 <div class="bottom">
                                     <el-button text class="button">
                                         <strong><i class="ri-money-dollar-circle-fill"></i></strong>
-                                        <span>{{ item.gold }}</span>
+                                        <span>{{ commasThousands(item.gold) }}</span>
                                     </el-button>
                                 </div>
                             </div>
@@ -29,7 +29,7 @@
                                 <div class="bottom pdt10 flex-center">
                                     <el-button text class="button">
                                         <strong><i class="ri-money-dollar-circle-fill"></i></strong>
-                                        <span>{{ item.gold }}</span>
+                                        <span>{{ commasThousands(item.gold) }}</span>
                                     </el-button>
                                     <el-button :type="`${handleTextBuy(item.id) ? 'success' : ''}`" class="button">
                                         {{ handleTextBuy(item.id) ? textOwn : textBuy }}
@@ -112,6 +112,9 @@
                 //this.courses.push(item.id);
                 //this.$store.commit('user/SET_COURSES', this.courses);
                 this.$emit('show', data);
+            },
+            commasThousands(number) {
+                return number?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
             }
         }
     }
@@ -172,6 +175,7 @@
             .desc{
                 width: 100%;
                 text-align: left;
+                height: 34px;
             }
         }
     }
