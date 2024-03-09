@@ -58,6 +58,7 @@ export default {
             },
             listCourse:[],
             listEquipment:[],
+            urlAvatar: "https://camnanghanhtrinh.gosucorp.vn/images/logo/GOSU_icon.png"
         };
     },
     computed: {
@@ -152,9 +153,9 @@ export default {
                 action_properties: JSON.stringify({
                     object: {
                         'og:url': 'https://camnanghanhtrinh.gosucorp.vn/',
-                        'og:title': 'Tên của bạn',
-                        'og:description': 'Mô tả của bạn',
-                        'og:image': this.user.avatar
+                        'og:title': 'Gosu',
+                        'og:description': 'chia sẽ hình ảnh',
+                        'og:image': this.urlAvatar
                     }
                 })
             };

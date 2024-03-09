@@ -40,9 +40,9 @@
                     </div>
                 </el-col>
             </el-row>
-            <el-row v-else>
+            <!-- <el-row v-else>
                 <h2>{{ postFound }}</h2>
-            </el-row>
+            </el-row> -->
         </el-main>
     </el-scrollbar>
 </template>
