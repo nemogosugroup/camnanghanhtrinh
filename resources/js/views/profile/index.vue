@@ -79,9 +79,8 @@ export default {
             js.src = "https://connect.facebook.net/vi_VN/sdk.js#xfbml=1&version=v10.0&appId=1120630529380971&autoLogAppEvents=1";
             fjs.parentNode.insertBefore(js, fjs);
         }(document, 'script', 'facebook-jssdk'));
-        this.addMeta('og:url', 'https://camnanghanhtrinh.gosucorp.vn/');
         if (!this.checkMetaExist('og:url')) {
-            this.addMeta('og:url', 'https://camnanghanhtrinh.gosucorp.vn/');
+            this.addMeta('og:url', window.location.href);
         }
         if (!this.checkMetaExist('og:type')) {
             this.addMeta('og:type', 'website');
@@ -163,16 +162,9 @@ export default {
             } 
         },
         facebookShare() {
-            var url = document.querySelector('meta[property="og:url"]').getAttribute('content');
-            var title = document.querySelector('meta[property="og:title"]').getAttribute('content');
-            var description = document.querySelector('meta[property="og:description"]').getAttribute('content');
-            var image = document.querySelector('meta[property="og:image"]').getAttribute('content');
-
-            // Tạo URL chia sẻ trên Facebook với thông tin từ các thẻ meta
-            var facebookShareUrl = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(url) + '&quote=' + encodeURIComponent(title) + ' - ' + encodeURIComponent(description) + '&picture=' + encodeURIComponent(image);
-
+            var facebookShareUrl = 'https://www.facebook.com/sharer/sharer.php';
             // Mở cửa sổ chia sẻ trên Facebook
-            window.open(facebookShareUrl, '_blank');
+            window.open(facebookShareUrl, '_blank', 'width=600,height=400');
         },
         
         checkMetaExist: (property) => {
@@ -184,7 +176,6 @@ export default {
             const metaElement = document.createElement('meta');
             metaElement.setAttribute('property', property);
             metaElement.setAttribute('content', content);
-            console.log('metaElement', metaElement)
             document.head.appendChild(metaElement);
         }
     },
