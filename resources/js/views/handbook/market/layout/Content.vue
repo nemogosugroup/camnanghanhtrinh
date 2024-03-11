@@ -18,7 +18,7 @@
                             </div>
                         </el-card>
                         <el-card @click="handleShowDialog(item)" v-else class="item-equipment">
-                            <div class="flex">
+                            <!-- <div class="flex">
                                 <el-image style="width: 70px; height: 50px" :src="item.url_image" fit="cover" />
                                 <el-text tag="b" class="ms10">{{ item.title }}</el-text>
                             </div>
@@ -31,6 +31,21 @@
                                         <strong><i class="ri-money-dollar-circle-fill"></i></strong>
                                         <span>{{ commasThousands(item.gold) }}</span>
                                     </el-button>
+                                    <el-button :type="`${handleTextBuy(item.id) ? 'success' : ''}`" class="button">
+                                        {{ handleTextBuy(item.id) ? textOwn : textBuy }}
+                                    </el-button>
+                                </div>
+                            </div> -->
+                            <div class="feature-img">
+                                <el-image style="width: 100%; height: 200px" :src="item.url_image" fit="cover"/>                                
+                                <span> <i class="ri-money-dollar-circle-fill"></i> {{ commasThousands(item.gold) }}</span>
+                            </div>
+                            <div class="content">
+                                <el-text tag="b" class="ms10">{{ item.title }}</el-text>
+                                <el-text line-clamp="2" class="mb-1 desc">
+                                    {{ item.description_in_game }}
+                                </el-text>
+                                <div class="pdt10 flex-center">
                                     <el-button :type="`${handleTextBuy(item.id) ? 'success' : ''}`" class="button">
                                         {{ handleTextBuy(item.id) ? textOwn : textBuy }}
                                     </el-button>
@@ -164,18 +179,111 @@
             
         }
         &:hover{
-            top:-5px
+            top:-5px;
+            &.item-equipment {
+                top:0px;
+                .content {
+                    transform: translateX(0%);
+                    -moz-transform: translateX(0%);
+                    -webkit-transform: translateX(0%);
+                    transition: all .3s ease-in-out;
+                    -moz-transition: all .3s ease-in-out;
+                    -webkit-transition: all .3s ease-in-out;
+                }
+                .feature-img {
+                    img {
+                        transform: scale(1.2);
+                        -moz-transform: scale(1.2);
+                        -webkit-transform: scale(1.2);
+                        transition: all .3s ease-in-out;
+                        -moz-transition: all .3s ease-in-out;
+                        -webkit-transition: all .3s ease-in-out;
+                    }
+                }
+                
+            }
         }
         &.item-equipment {
-            .ms10 {
-                &.el-text{
-                    align-self: self-start;
-                }
+            .el-text{
+                width: 100%;
+                color: $bgWhite;  
             }
             .desc{
                 width: 100%;
-                text-align: left;
-                height: 34px;
+                color: $bgWhite;
+            }
+            .el-card__body {
+                padding:0
+            }
+            .feature-img {
+                position: relative;
+                display: flex;
+                &::before {
+                    content: '';
+                    position: absolute;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: $lightBlack;
+                    top: 0;
+                }
+                img {
+                    transform: scale(1);
+                    -moz-transform: scale(1);
+                    -webkit-transform: scale(1);
+                    transition: all .3s ease-in-out;
+                    -moz-transition: all .3s ease-in-out;
+                    -webkit-transition: all .3s ease-in-out;
+                }
+                span{
+                    position: absolute;
+                    padding: 3px;
+                    background: $yellow;
+                    top: $size10;
+                    right: 0;
+                    position: absolute;
+                    font-size: $size12;
+                    color: #fff;
+                    display: flex;
+                    align-items: center;
+                    height: 24px;
+                    z-index: 1;
+                    i {
+                        font-size: 18px;
+                        margin-right: 5px;
+                    }
+                    &::after {
+                        content: '';
+                        position: absolute;
+                        border-top: 12px solid transparent;
+                        border-bottom: 12px solid transparent;
+                        border-right: 12px solid #FEC171;
+                        border-left: 12px solid transparent;
+                        left: -24px;
+                        top: 0;
+                    }                    
+                }
+            }
+            .content {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, .7);
+                z-index: 2;
+                display: flex;
+                flex-direction: column;
+                flex-wrap: nowrap;
+                justify-content: center;
+                align-items: center;
+                color: #fff;
+                transform: translateX(-100%);
+                -moz-transform: translateX(-100%);
+                -webkit-transform: translateX(-100%);
+                transition: all .3s ease-in-out;
+                -moz-transition: all .3s ease-in-out;
+                -webkit-transition: all .3s ease-in-out;
             }
         }
     }
