@@ -79,6 +79,22 @@ export default {
             js.src = "https://connect.facebook.net/vi_VN/sdk.js#xfbml=1&version=v10.0&appId=1120630529380971&autoLogAppEvents=1";
             fjs.parentNode.insertBefore(js, fjs);
         }(document, 'script', 'facebook-jssdk'));
+        this.addMeta('og:url', 'https://camnanghanhtrinh.gosucorp.vn/');
+        if (!this.checkMetaExist('og:url')) {
+            this.addMeta('og:url', 'https://camnanghanhtrinh.gosucorp.vn/');
+        }
+        if (!this.checkMetaExist('og:type')) {
+            this.addMeta('og:type', 'website');
+        }
+        if (!this.checkMetaExist('og:title')) {
+            this.addMeta('og:title', 'Tiêu đề của bài viết');
+        }
+        if (!this.checkMetaExist('og:description')) {
+            this.addMeta('og:description', 'Mô tả ngắn về bài viết');
+        }
+        if (!this.checkMetaExist('og:image')) {
+            this.addMeta('og:image', this.urlAvatar);
+        }
     },
     methods: {
         getUser() {
@@ -147,21 +163,29 @@ export default {
             } 
         },
         facebookShare() {
-            let params = {
-                method: 'share_open_graph',
-                action_type: 'og.shares',
-                action_properties: JSON.stringify({
-                    object: {
-                        'og:url': 'https://camnanghanhtrinh.gosucorp.vn/',
-                        'og:title': 'Gosu',
-                        'og:description': 'chia sẽ hình ảnh',
-                        'og:image': this.urlAvatar
-                    }
-                })
-            };
-            FB.ui(params, function(response) {
-                console.log(response);
-            });
+            var url = document.querySelector('meta[property="og:url"]').getAttribute('content');
+            var title = document.querySelector('meta[property="og:title"]').getAttribute('content');
+            var description = document.querySelector('meta[property="og:description"]').getAttribute('content');
+            var image = document.querySelector('meta[property="og:image"]').getAttribute('content');
+
+            // Tạo URL chia sẻ trên Facebook với thông tin từ các thẻ meta
+            var facebookShareUrl = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(url) + '&quote=' + encodeURIComponent(title) + ' - ' + encodeURIComponent(description) + '&picture=' + encodeURIComponent(image);
+
+            // Mở cửa sổ chia sẻ trên Facebook
+            window.open(facebookShareUrl, '_blank');
+        },
+        
+        checkMetaExist: (property) => {
+            const metaElements = document.querySelectorAll(`meta[property="${property}"]`);
+            return metaElements.length > 0;
+        },
+
+        addMeta: (property, content) => {
+            const metaElement = document.createElement('meta');
+            metaElement.setAttribute('property', property);
+            metaElement.setAttribute('content', content);
+            console.log('metaElement', metaElement)
+            document.head.appendChild(metaElement);
         }
     },
 };
