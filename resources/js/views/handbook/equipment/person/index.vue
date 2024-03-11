@@ -43,7 +43,7 @@
                 <div class="flex-center" style="margin: 40px 0;">
                     <span class="level"><strong>Level {{ infomation.level }}</strong></span>
                     <div class="progress">
-                        <label for="">{{ infomation.experience }} EXP</label>
+                        <label for="">{{ commasThousands(infomation.experience) }} EXP</label>
                         <el-progress :text-inside="false" :show-text="false" :stroke-width="10"
                                      :percentage="infomation.percentage" status="success"></el-progress>
                     </div>
@@ -193,6 +193,9 @@ export default {
         // lấy phần trăm của điểm kinh nghiệm hiện tại và level
         percent(data){
             return Helpers.percentExp(data)
+        },
+        commasThousands(number) {
+            return number?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         }
     }
 }
@@ -380,8 +383,27 @@ export default {
                         }
 
                         p {
-                            margin: 10px 0 5px;
+                            font-weight: lighter;
                             line-height: 16px;
+                            margin: 10px 0 5px;
+                            height: 55px;
+                            overflow-y: auto;
+
+                            &::-webkit-scrollbar {
+                                width: 5px;
+                            }
+
+                            &::-webkit-scrollbar-track {
+                                background: #f1f1f1;
+                            }
+
+                            &::-webkit-scrollbar-thumb {
+                                background: #c5c2c2;
+                            }
+
+                            &::-webkit-scrollbar-thumb:hover {
+                                background: #eee;
+                            }
                         }
                     }
 

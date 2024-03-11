@@ -267,8 +267,26 @@ export default {
                         }
 
                         p {
-                            margin: 10px 0 5px;
                             line-height: 16px;
+                            margin: 10px 0 5px;
+                            height: 55px;
+                            overflow-y: auto;
+
+                            &::-webkit-scrollbar {
+                                width: 5px;
+                            }
+
+                            &::-webkit-scrollbar-track {
+                                background: #f1f1f1;
+                            }
+
+                            &::-webkit-scrollbar-thumb {
+                                background: #c5c2c2;
+                            }
+
+                            &::-webkit-scrollbar-thumb:hover {
+                                background: #eee;
+                            }
                         }
                     }
 

@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Backend\Api;
 
 use App\Http\Controllers\Controller;
+use App\Repositories\Interfaces\Backend\TypeEquipmentRepositoryInterface;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use App\Repositories\Interfaces\Backend\EquipmentRepositoryInterface;
 use App\Helpers\Message;
 use App\Helpers\Helpers;
 use App\Models\TypeEquipment;
@@ -14,7 +14,7 @@ use App\Models\CategoryEquipment;
 class TypeEquipmentController extends Controller
 {
     /**
-     * @var EquipmentRepositoryInterface
+     * @var TypeEquipmentRepositoryInterface
      */
     protected $cateRepo;
     protected $msg;
@@ -22,7 +22,7 @@ class TypeEquipmentController extends Controller
     protected $constant;
 
     public function __construct(
-        EquipmentRepositoryInterface $cateRepo,
+        TypeEquipmentRepositoryInterface $cateRepo,
         Message $message,
         Helpers $helper,
         TypeEquipment $model,
@@ -38,9 +38,9 @@ class TypeEquipmentController extends Controller
     
     public function index(Request $request)
     {
-        try {            
+        try {
             $params = $request->all();
-            $lists = $this->cateRepo->getAllPost($params);
+            $lists = $this->cateRepo->list($params);
             $listCategories = $this->cateRepo->getCategories();
             $listPositions = EQUIPMENT_POSITION;
             $results = array(
@@ -99,7 +99,7 @@ class TypeEquipmentController extends Controller
         try {
             $params = $request->all();
             $data = $this->cateRepo->update($id, $params);
-            $result = $this->cateRepo->getPostById($data->id);
+            $result = $this->cateRepo->getTypeById($data->id);
             $results = array(
                 'success' => true,
                 'data' => $result,

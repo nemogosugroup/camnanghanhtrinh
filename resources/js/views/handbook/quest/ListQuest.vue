@@ -11,7 +11,7 @@
                     <div class="flex">
                         <div class="content">
                             <p>Mô tả: <el-text>{{ item.description }}</el-text></p>
-                            <p>Phần thưởng: <el-text>{{ item.gold }}</el-text><strong><i class="ri-money-dollar-circle-fill"></i></strong></p>
+                            <p>Phần thưởng: <el-text>{{ commasThousands(item.gold) }}</el-text><strong><i class="ri-money-dollar-circle-fill"></i></strong></p>
                         </div>      
                         <div class="link collapsible" v-if="item.user_missions">
                             <el-button 
@@ -46,7 +46,7 @@
                                 <div class="flex">
                                     <div class="content">
                                         <p>Mô tả: <el-text>{{ quest.description }}</el-text></p>
-                                        <p>Phần thưởng: <el-text>{{ quest.gold }}</el-text><strong><i class="ri-money-dollar-circle-fill"></i></strong></p>
+                                        <p>Phần thưởng: <el-text>{{ commasThousands(quest.gold) }}</el-text><strong><i class="ri-money-dollar-circle-fill"></i></strong></p>
                                     </div>
                                     <div class="link"  v-if="quest.user_missions">                                       
                                         <el-button 
@@ -188,6 +188,9 @@
                 this.formData.id = this.id;
                 this.formData.type = 'update';
                 this.$emit('updateQuest', this.formData);
+            },
+            commasThousands(number) {
+                return number?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
             }
         }
     }

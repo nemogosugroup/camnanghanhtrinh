@@ -20,7 +20,7 @@ class TypeEquipment extends Model
         'position_value'
     ];
 
-    public function posts()
+    public function equipments()
     {
         return $this->hasMany('App\Models\Equipment');
     }
@@ -33,6 +33,6 @@ class TypeEquipment extends Model
 
     public function getPositionValueAttribute()
     {
-        return EQUIPMENT_POSITION[$this->position]['name'] ?? $this->position;
+        return EQUIPMENT_POSITION[$this->position - 1]['name'] ?? $this->position;
     }
 }
