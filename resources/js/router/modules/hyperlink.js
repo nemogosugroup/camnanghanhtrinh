@@ -68,6 +68,15 @@ const hyperlinkRoute = {
                 },
             ],
         },
+        {
+            path: "/vote.gosucorp.vn",
+            children: [
+                {
+                    path: "https://vote.gosucorp.vn/",
+                    meta: { title: "Vote", icon: "ri-links-fill" },
+                },
+            ],
+        },
     ],
 }
 export default hyperlinkRoute;
