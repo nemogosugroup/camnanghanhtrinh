@@ -165,8 +165,7 @@ class AuthController extends Controller
             $results['message'] = $this->msg->updateError();
             if (!$data) {
                 return response()->json($results);
-            } 
-            $data['fullname'] = $data->fullName();
+            }
             $results['data'] = $data;
             $results['success'] = true;
             $results['message'] = $this->msg->updateSuccess();
