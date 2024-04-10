@@ -11,7 +11,7 @@ import CreateProject from "@/views/project/create";
 import EditProject from "@/views/project/edit";
 import Layout from "@/layout";
 import Medal from '@/backend/views/medal'
-
+import { getAccessToken } from "@/utils/auth";
 import CategoryMedal from '@/backend/views/medal/category'
 /**
  * constantRoutes
@@ -24,6 +24,7 @@ import CategoryMedal from '@/backend/views/medal/category'
  */
 import handbookRoute from "./modules/hankbook";
 import hyperlinkRoute from "./modules/hyperlink";
+import store from "../store";
 export const constantRoutes = [
     handbookRoute,
     hyperlinkRoute,  
@@ -31,6 +32,23 @@ export const constantRoutes = [
         path: "/login",
         component: Login,
         hidden: true,
+        beforeEnter(to, from, next) {
+            // Kiểm tra xem người dùng đã đăng nhập hay chưa
+            // Lấy các query parameters từ URL
+            const queryParams = to.query;
+            if(getAccessToken()){
+                if(queryParams.redirect_uri){
+                    window.location.href = queryParams.redirect_uri+'?token='+getAccessToken()+'&state='+queryParams.state;
+                }else{
+                    next({ path: '/' });
+                }
+                
+            }
+            else{
+                next();
+            }
+            
+        },
     },
     {
         path: "/404",
@@ -95,6 +113,34 @@ export const constantRoutes = [
             },
         ],
     },
+    {
+        path: "/logout",
+        name: "Logout",
+        async beforeEnter(to, from, next) {
+            // Kiểm tra xem người dùng đã đăng nhập hay chưa
+            // Lấy các query parameters từ URL
+            const queryParams = to.query;
+            console.log('Query parameters:', queryParams);
+            console.log("check getAccessToken",getAccessToken());
+            if(getAccessToken()){
+                try {
+                    // Thực hiện hàm đăng xuất
+                    // await logout();
+                    await store.dispatch("user/logout");
+                    // Chuyển hướng người dùng đến trang đăng nhập
+                    next({ path: '/login', query: queryParams });
+                } catch (error) {
+                    console.error('Error logging out:', error);
+                    // Nếu có lỗi, vẫn chuyển hướng người dùng đến trang đăng nhập
+                    next({ path: '/login', query: queryParams });
+                }
+            }else{
+                next({ path: '/login', query: queryParams });
+            }
+            
+        },
+        hidden: true // Ẩn router này khỏi thanh menu nếu cần
+    }
 ];
 export const asyncRoutes = [
     { path: "/:pathMatch(.*)*", redirect: "/404", hidden: true },

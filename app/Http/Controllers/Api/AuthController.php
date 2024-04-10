@@ -17,12 +17,11 @@ use App\Helpers\Helpers;
 use Carbon\Carbon;
 use App\Models\Acl;
 use App\Models\Role;
-use App\Models\Medal;
-use App\Models\CategoryMedal;
 use App\Repositories\User\UserRepository;
 use PhpParser\Node\Stmt\TryCatch;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
+
 class AuthController extends Controller
 {
     protected $gosuApi;
@@ -151,19 +150,15 @@ class AuthController extends Controller
         try { 
             $file       = $request->file('file');
             $dataUpdate = json_decode($request->input('data'), true);
-            
-            if($file) {
+            if($file){
                 $dataUpdate['avatar'] = $this->helpers->upLoadFiles($file);
             }
             $params = array(
                 'id' => $id,
                 'field' => $dataUpdate,
-            );
-            if (!empty($dataUpdate['field']['achievements']) && isset($dataUpdate['field']['achievements'])) {
-                $params['field']['achievements'] = empty($params['field']['achievements']) ? null : $params['field']['achievements'];
-            }
-            $data = $this->userRepo->updateUsers($params);
-            $results = [];
+            );            
+            $data = $this->userRepo->updateUsers($params); 
+            $results = [];  
             $results['status'] = Response::HTTP_OK;
             $results['data'] = false;
             $results['success'] = false;
@@ -212,7 +207,7 @@ class AuthController extends Controller
 
     public function info(){
         try {
-            $results = $this->userRepo->infoUser();
+            $results = $this->userRepo->infoUser();            
             return response()->json($results);
         } catch (\Throwable $th) {
             $results = array(
@@ -228,7 +223,7 @@ class AuthController extends Controller
     //lấy tất cả nhân sự đang làm việc
     public function employee(){
         try {
-            $results = $this->userRepo->listEmployee(); 
+            $results = $this->userRepo->listEmployee();            
             return response()->json($results);
         } catch (\Throwable $th) {
             $results = array(
@@ -244,12 +239,11 @@ class AuthController extends Controller
     // tìm kiếm thông tin nhân sự
     public function store(Request $request){
         try {
-            $params = $request->all();
             $profile_id = $request->profile_id ? $request->profile_id : null;
             $params = array(
                 'profile_id'  => $profile_id
             );
-            $results = $this->userRepo->store($params);
+            $results = $this->userRepo->store($params);         
             return response()->json($results);
         } catch (\Throwable $th) {
             $results = array(
