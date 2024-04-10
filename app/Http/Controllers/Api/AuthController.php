@@ -153,6 +153,7 @@ class AuthController extends Controller
             if($file){
                 $dataUpdate['avatar'] = $this->helpers->upLoadFiles($file);
             }
+            $dataUpdate['achievements'] = empty($dataUpdate['achievements']) ? null : $dataUpdate['achievements'];
             $params = array(
                 'id' => $id,
                 'field' => $dataUpdate,
