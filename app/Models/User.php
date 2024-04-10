@@ -109,6 +109,9 @@ class User extends Authenticatable
         if ($this->attributes['achievements']) {
             $result = [];
             $achievements = json_decode($this->attributes['achievements'], true);
+            if (empty($achievements)) {
+                return null;
+            }
             $result['medal'] = Medal::find($achievements['medal']);
             $result['category'] = CategoryMedal::find($achievements['medal_category']);
         }
