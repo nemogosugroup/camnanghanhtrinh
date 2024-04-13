@@ -82,8 +82,8 @@ export default {
     data() {
         return {
             loginForm: {
-                email: "admin@gosu.vn",
-                password: "123456",
+                email: "",
+                password: "",
             },
             loginRules: {
                 email: [
