@@ -17,6 +17,20 @@ export default {
             params: { token }
         })
     },
+    getTrainingInfo(query) {
+        return request({
+            url: `${resource}` + "/training-info",
+            method: 'get',
+            params: query
+        })
+    },
+    getTrainingDetailInfo(query) {
+        return request({
+            url: `${resource}` + "/training-detail-info",
+            method: 'get',
+            params: query
+        })
+    },
     getRoles(token) {
         return request({
             url: `${resource}` + "/roles",

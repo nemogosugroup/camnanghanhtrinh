@@ -1,18 +1,19 @@
 <?php
 namespace App\Helpers;
-use Illuminate\Support\Facades\Log;
-use App\Helpers\GosuApi;
-use App\Helpers\Message;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Cache;
+
 class GosuEmployee
 {
     
     protected $msg;
     protected $api;
+    protected String $apiKeyTraining;
     public function __construct(Message $message, GosuApi $api)
     {
         $this->msg = $message;
         $this->api = $api;
+        $this->apiKeyTraining = "30b58c32c3af4a9d49f116c27f863e76";
     }
     /**
      *  lấy thông tin của user từ erp
@@ -52,33 +53,71 @@ class GosuEmployee
     /**
      * lấy thông tin đào tạo của user
      */
-    public function training($profile_id){ 
+    public function training($profile_id, array $requests = []): array
+    {
         try {
             Cache::flush();
-            $datatraining = Cache::get('training'); 
+            $dataTraining = Cache::get('training');
             $params = array(
-                'id' => $profile_id
+                'ProfileId' => $profile_id,
+                'Page' => $requests['page'] ?? 1,
+                'PageSize' => $requests['limit'] ?? 10,
+                'secrectKey' => $this->apiKeyTraining,
             );
             $result = array();
             $result['success'] = false;
             $result['message'] = $this->msg->getError();
             $result['data']    = false;
-            if($datatraining){
+            if($dataTraining){
                 $result['success'] = true;
                 $result['message'] = $this->msg->getSuccess();
-                $result['data']    = unserialize($datatraining);
+                $result['data']    = unserialize($dataTraining);
             }else{
-                $data = $this->api->GosuGetData('v1/hrm/employee/training-by-id', $params);
+                $data = $this->api->GosuGetData('v1/training/library/course-list-of-user-api', $params);
                 if ($data->Code == 1) {
-                    $datatraining = $this->dataTraining($data->Data);
+                    $dataTraining = $this->toArrayTrainingList($data->Data);
                     $result['success'] = true;
                     $result['message'] = $this->msg->getSuccess();
-                    $result['data']    = $datatraining;
+                    $result['data']    = $dataTraining;
                     // thêm dữ liệu đào tạo của nhân sự vào cache tồn tại trong vòng một tháng
                     //Cache::put('training', $this->dataTraining($data->Data) , now()->addDays(10));
-                    Cache::put('training', $this->dataTraining($data->Data) , now()->addMonth());
+                    Cache::put('training', $this->toArrayTrainingList($data->Data) , now()->addMonth());
                 }
             }
+            return $result;
+        } catch (\Exception $e) {
+            $result = array(
+                'success'    => false,
+                'error_code' => $e->getCode(),
+                'message'    => $e->getMessage()
+            );
+        }
+        return $result;
+    }
+    /**
+     * lấy thông tin đào tạo chi tiết của user
+     */
+    public function trainingDetail($profile_id, array $requests = []): array
+    {
+        try {
+            $params = array(
+                'ProfileId' => $profile_id,
+                'id' => $requests['training_id'],
+                'secrectKey' => $this->apiKeyTraining,
+            );
+            $result = array();
+            $result['success'] = false;
+            $result['message'] = $this->msg->getError();
+            $result['data']    = false;
+
+            $data = $this->api->GosuGetData('v1/training/library/course-detail', $params);
+            if ($data->Code == 1) {
+                $dataTraining = $this->toArrayTrainingDetail($data->Data);
+                $result['success'] = true;
+                $result['message'] = $this->msg->getSuccess();
+                $result['data']    = $dataTraining;
+            }
+
             return $result;
         } catch (\Exception $e) {
             $result = array(
@@ -175,6 +214,34 @@ class GosuEmployee
             $results[] = $this->toArrayTraining($value);
         }
         return $results;
+    }
+
+    private function toArrayTrainingList($data): array
+    {
+        foreach ($data->List as $idx => $item) {
+            $data->List[$idx] = collect($item)->toArray();
+        }
+        if (!empty($data->List)) {
+            $items = collect($data->List);
+            $paginator = new LengthAwarePaginator($items, $data->RowCount, $data->PageCount);
+            $paginator->setPath(request()->root() . '/api/user/training-info');
+
+            return $paginator->toArray();
+        }
+
+        return [];
+    }
+
+    private function toArrayTrainingDetail($data): array
+    {
+        $result = [];
+        foreach ($data as $key => $item) {
+            $result[$key] = $item;
+        }
+        // add videoType = check UrlVideo
+        $result['videoType'] = str_contains($result['UrlVideo'], 'vimeo.com') ? 'vimeo' : 'stream';
+
+        return $result;
     }
 
     private function toArrayTraining($data){

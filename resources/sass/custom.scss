@@ -391,5 +391,9 @@
     .open-book article > ul,
     .open-book article > ol {
         padding-left: 4em;
-    }    
+    }
+
+    article.article.showing_dialog {
+        z-index: 2 !important;
+    }
 }
