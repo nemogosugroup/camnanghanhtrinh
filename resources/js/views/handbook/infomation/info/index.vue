@@ -56,56 +56,50 @@
                     <el-tab-pane label="Thông tin đào tạo" name="tabTrain">
                         <el-table
                             v-if="dataTraining"
-                            v-bind:data="dataTraining"
+                            v-bind:data="dataTraining.data"
                             border
                             fit
                             highlight-current-row
                             style="width: 100%"
                             class="training"
                         >
-                            <el-table-column type="expand">
-                                <template v-slot="item">
-                                    <el-descriptions :column="1" border>
-                                        <el-descriptions-item v-for="value in listKeyTraining"
-                                        :key="value.key"
-                                        labelStyle="color:#000; font-weight:700; min-width:120px"
-                                        contentStyle="color:#000;font-weight:700;"
-                                        >
-                                            <template v-slot:label>
-                                                <i :class="value.icon" style="margin-right: 5px;"></i>
-                                                {{ value.title }}
-                                            </template>
-                                            {{ item.row[value.key] }}
-                                        </el-descriptions-item>
-                                    </el-descriptions>
-                                </template>
-                            </el-table-column>
-                            <el-table-column min-width="80px" label="Thời gian">
-                                <template v-slot="item">
-                                    <span>{{ item.row.starttime+' - '+ item.row.endtime}}</span>
-                                </template>
-                            </el-table-column>
                             <el-table-column min-width="80px" label="Khoá học">
                                 <template v-slot="item">
-                                    <span>{{ item.row.training_name }}</span>
+                                    <el-link @click="showTrainingDetail(item.row.Id)">{{ item.row.Subject}}</el-link>
                                 </template>
                             </el-table-column>
                         </el-table>
+                        <pagination
+                            v-if="dataTraining"
+                            v-show="dataTraining.total > 10"
+                            v-bind:total="dataTraining.total"
+                            v-model:page="queryTrainingList.page"
+                            v-model:limit="queryTrainingList.limit"
+                            :auto-scroll="false"
+                            layout="prev, pager, next"
+                            @pagination="fetchTraining"
+                            class="training_pagination"
+                        />
                         <el-text v-else class="mx-1" size="large">{{ msg }}</el-text>
                     </el-tab-pane>
                 </el-tabs>                                                
             </el-col>
         </el-row>
     </el-col>
+
+    <DialogTraining :show-dialog="showTrainingDialog"/>
 </template>
 <script>
     import { mapGetters } from "vuex";
     import RepositoryFactory from '@/utils/RepositoryFactory';    
     const UserRepository = RepositoryFactory.get('user');
-    import defaultInfo from '@/views/handbook/infomation/data/index.js';    
+    import defaultInfo from '@/views/handbook/infomation/data/index.js';
+    import Pagination from "@/components/Pagination/index.vue";
+    import DialogTraining from "@/views/handbook/infomation/info/components/Dialog.vue";
+
     export default {
         name: 'Infomation',
-        components: { },
+        components: {Pagination, DialogTraining},
         props: {
             defaultAvatar: {
                 required: true,
@@ -124,6 +118,11 @@
                 listKeyInfo: listKeyInfo,
                 listKeyTraining: listKeyTraining,
                 dataTraining: [],
+                queryTrainingList: {
+                    page: 1,
+                    limit: 10
+                },
+                showTrainingDialog: false,
                 title: 'Thông tin cá nhân',
                 avatar: '',
                 fileImages:'',
@@ -135,7 +134,7 @@
                     file:false,
                     data:'',
                     id:''
-                },
+                }
             }            
         },
         computed: {
@@ -151,15 +150,18 @@
         },
 
         created() {
-            this.dataTraining = this.training;
             this.dataInfomation = this.user;
             this.avatar = this.user.avatar ? this.user.avatar : this.defaultAvatar;
+            this.dataTraining = this.dataInfomation.training;
         },
 
         mounted() {
             this.emitter.on("is-changed-medal", data => {
                 this.data_achievement.medal = data.medal.title;
                 this.data_achievement.achievement = data.achievement.title;
+            });
+            this.emitter.on('is-close-training-dialog', () => {
+                document.querySelector('article.article').classList.remove('showing_dialog');
             });
         },
 
@@ -225,6 +227,21 @@
             handleCancel(){
                 this.isUpdate = false;
                 this.avatar = this.user.avatar;
+            },
+            async fetchTraining() {
+                const { data } = await UserRepository.getTrainingInfo( this.queryTrainingList );
+                if(data.success) {
+                    this.dataTraining = data.data;
+                }
+            },
+            async showTrainingDetail(trainingId) {
+                const { data } = await UserRepository.getTrainingDetailInfo({training_id: trainingId});
+                if(data.success) {
+                    this.showTrainingDialog = true;
+                    this.emitter.emit('is-open-training-dialog', data.data);
+                    // CSS article z-index = 2
+                    document.querySelector('article.article').classList.add('showing_dialog');
+                }
             }
         }
     }
@@ -289,5 +306,8 @@
         width: 200px;
     }
 }
-
+.training_pagination {
+    margin: 0;
+    padding: 15px 0;
+}
 </style>

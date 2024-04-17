@@ -221,6 +221,36 @@ class AuthController extends Controller
         }
     }
 
+    public function trainingInfo(Request $request) {
+        try {
+            $results = $this->userRepo->trainingInfoUser($request->all());
+            return response()->json($results);
+        } catch (\Throwable $th) {
+            $results = array(
+                'message' => $th->getMessage(),
+                'data' => false,
+                'success' => false,
+                'status' => Response::HTTP_INTERNAL_SERVER_ERROR
+            );
+            return response()->json([$results],Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public function trainingDetailInfo(Request $request) {
+        try {
+            $results = $this->userRepo->trainingDetailInfoUser($request->all());
+            return response()->json($results);
+        } catch (\Throwable $th) {
+            $results = array(
+                'message' => $th->getMessage(),
+                'data' => false,
+                'success' => false,
+                'status' => Response::HTTP_INTERNAL_SERVER_ERROR
+            );
+            return response()->json([$results],Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
     //lấy tất cả nhân sự đang làm việc
     public function employee(){
         try {

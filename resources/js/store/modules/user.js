@@ -16,6 +16,7 @@ const state = {
     courses: [],
     equipments: [],
     training: [],
+    training_detail: [],
     data_medal: []
 };
 
@@ -40,6 +41,9 @@ const mutations = {
     },
     SET_TRAINING: (state, training) => {
         state.training = training;
+    },
+    SET_TRAINING_DETAIL: (state, data) => {
+        state.training_detail = data;
     },
     SET_COURSES: (state, courses) => {
         state.courses = courses;
@@ -267,6 +271,41 @@ const actions = {
             }
             setAuth(JSON.stringify(data))
         }
+    },
+
+    // get user training info
+    getTrainingInfo({ commit, state }) {
+        return new Promise((resolve, reject) => {
+            UserRepository.getTrainingInfo(state.token)
+                .then((response) => {
+                    const { data } = response;
+                    if (data.success) {
+                        let training = data.data.training;
+                        commit('SET_TRAINING', training);
+                    }
+                    resolve(response)
+                })
+                .catch((error) => {
+                    reject(error);
+                });
+        });
+    },
+    // get user training detail info
+    getTrainingDetailInfo({ commit, state }) {
+        return new Promise((resolve, reject) => {
+            UserRepository.getTrainingDetailInfo(state.token)
+                .then((response) => {
+                    const { data } = response;
+                    if (data.success) {
+                        let detail = data.data;
+                        commit('SET_TRAINING_DETAIL', detail);
+                    }
+                    resolve(response)
+                })
+                .catch((error) => {
+                    reject(error);
+                });
+        });
     },
     // update gold/exp/level of user
     // updateDataUser({ commit, state }, data){

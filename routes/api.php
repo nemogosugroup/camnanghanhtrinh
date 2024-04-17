@@ -34,6 +34,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::post('update/{id}', [AuthController::class, 'update']);
         Route::post('export', [AuthController::class, 'export']);
         Route::get('info', [AuthController::class, 'info']);
+        Route::get('training-info', [AuthController::class, 'trainingInfo']);
+        Route::get('training-detail-info', [AuthController::class, 'trainingDetailInfo']);
         Route::get('roles', [AuthController::class, 'roles']);
         Route::get('list', [AuthController::class, 'list']);
         Route::get('list-employee', [AuthController::class, 'employee']);

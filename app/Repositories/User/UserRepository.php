@@ -247,6 +247,43 @@ class UserRepository implements UserRepositoryInterface
         );
         return $results;
     }
+    public function trainingInfoUser(array $requests): array
+    {
+        $training = $this->gosuEmployee->training(auth()->user()->profile_id, $requests);
+        if($training['success']) {
+            $results = array(
+                'message' => $this->msg->getSuccess(),
+                'data' => $training['data'],
+                'success' => true,
+                'status' => Response::HTTP_OK
+            );
+        } else {
+            $results = array(
+                'message' => $this->msg->getError(),
+                'data' => false,
+                'status' => Response::HTTP_OK
+            );
+        }
+        return $results;
+    }
+    public function trainingDetailInfoUser(array $requests) {
+        $training = $this->gosuEmployee->trainingDetail(auth()->user()->profile_id, $requests);
+        if($training['success']) {
+            $results = array(
+                'message' => $this->msg->getSuccess(),
+                'data' => $training['data'],
+                'success' => true,
+                'status' => Response::HTTP_OK
+            );
+        } else {
+            $results = array(
+                'message' => $this->msg->getError(),
+                'data' => false,
+                'status' => Response::HTTP_OK
+            );
+        }
+        return $results;
+    }
 
     // lấy danh sách nhân sự đang làm việc
     public function listEmployee()
