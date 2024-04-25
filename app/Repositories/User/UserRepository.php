@@ -2,6 +2,7 @@
 
 namespace App\Repositories\User;
 use App\Repositories\Medal\UserMedalRepository;
+use Carbon\Carbon;
 use GrahamCampbell\ResultType\Success;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
@@ -189,13 +190,24 @@ class UserRepository implements UserRepositoryInterface
                 }else{
                     $user = $profile['data'];
                     $user['password'] = Hash::make($password);
+                    $user['is_director'] = (int)(isset($user['level']) && $user['level'] <= 4);
+                    unset($user['level']);
+                    $user['flag'] = $this->helpers->getUserFlag($user['employee_id']);
+
                     $this->createUser($user);
                 }
             }
             if(Auth::attempt(['email' => $email, 'password' => $password])){
                 $authUser = Auth::user();
+
+                // update flag if $authUser->flag = 0
+                if ($authUser->flag === 0) {
+                    $authUser->flag = $this->helpers->getUserFlag($authUser->employee_id);
+                    $authUser->save();
+                }
+
                 $roles = $authUser->roles->pluck('name');
-                $data = $authUser->toArray();                
+                $data = $authUser->toArray();
                 $data['access_token'] =  $authUser->createToken($authUser['email'])->plainTextToken; 
                 $data['roles'] = $roles;
                 // $data['courses'] = $authUser->courses->toArray();
@@ -222,6 +234,7 @@ class UserRepository implements UserRepositoryInterface
         }
         return $results;
     }
+
     public function infoUser() {
         $authUser = Auth::user();
         $roles = $authUser->roles->pluck('name');
@@ -272,6 +285,25 @@ class UserRepository implements UserRepositoryInterface
             $results = array(
                 'message' => $this->msg->getSuccess(),
                 'data' => $training['data'],
+                'success' => true,
+                'status' => Response::HTTP_OK
+            );
+        } else {
+            $results = array(
+                'message' => $this->msg->getError(),
+                'data' => false,
+                'status' => Response::HTTP_OK
+            );
+        }
+        return $results;
+    }
+    public function getMembersData(array $requests): array
+    {
+        $members = $this->gosuEmployee->membersData($requests);
+        if($members['success']) {
+            $results = array(
+                'message' => $this->msg->getSuccess(),
+                'data' => $members['data'],
                 'success' => true,
                 'status' => Response::HTTP_OK
             );

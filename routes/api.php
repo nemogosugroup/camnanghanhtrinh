@@ -36,6 +36,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::get('info', [AuthController::class, 'info']);
         Route::get('training-info', [AuthController::class, 'trainingInfo']);
         Route::get('training-detail-info', [AuthController::class, 'trainingDetailInfo']);
+        Route::get('members-data', [AuthController::class, 'membersData']);
         Route::get('roles', [AuthController::class, 'roles']);
         Route::get('list', [AuthController::class, 'list']);
         Route::get('list-employee', [AuthController::class, 'employee']);
