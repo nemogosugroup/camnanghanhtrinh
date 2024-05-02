@@ -221,7 +221,8 @@ class AuthController extends Controller
         }
     }
 
-    public function trainingInfo(Request $request) {
+    public function trainingInfo(Request $request): \Illuminate\Http\JsonResponse
+    {
         try {
             $results = $this->userRepo->trainingInfoUser($request->all());
             return response()->json($results);
@@ -236,9 +237,26 @@ class AuthController extends Controller
         }
     }
 
-    public function trainingDetailInfo(Request $request) {
+    public function trainingDetailInfo(Request $request): \Illuminate\Http\JsonResponse
+    {
         try {
             $results = $this->userRepo->trainingDetailInfoUser($request->all());
+            return response()->json($results);
+        } catch (\Throwable $th) {
+            $results = array(
+                'message' => $th->getMessage(),
+                'data' => false,
+                'success' => false,
+                'status' => Response::HTTP_INTERNAL_SERVER_ERROR
+            );
+            return response()->json([$results],Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public function membersData(Request $request): \Illuminate\Http\JsonResponse
+    {
+        try {
+            $results = $this->userRepo->getMembersData($request->all());
             return response()->json($results);
         } catch (\Throwable $th) {
             $results = array(

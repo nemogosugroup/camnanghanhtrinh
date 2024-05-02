@@ -13,7 +13,7 @@ class GosuEmployee
     {
         $this->msg = $message;
         $this->api = $api;
-        $this->apiKeyTraining = "30b58c32c3af4a9d49f116c27f863e76";
+        $this->ERP_API_KEY = "30b58c32c3af4a9d49f116c27f863e76";
     }
     /**
      *  lấy thông tin của user từ erp
@@ -51,6 +51,113 @@ class GosuEmployee
         return $result;
     }
     /**
+     * lấy danh sách nhân sự
+     */
+    public function listEmployee(){
+        try {
+            $listEmployee = [];
+            $result = array();
+            $result['success'] = false;
+            $result['message'] = $this->msg->getError();
+            $result['data']    = false;
+            $dataEmployee = Cache::get('list_employee');
+            if($dataEmployee) {
+                $listEmployee = unserialize($dataEmployee);
+                $result['success'] = true;
+                $result['message'] = $this->msg->getSuccess();
+                $result['data']    = $listEmployee;
+            }else{
+                $data = $this->api->GosuGetData('v1/hrm/employee/employee-lists', null);
+                if (isset($data->Code) && $data->Code == 1) {
+                    foreach ($data->Data as $key => $value) {
+                        $listEmployee[] = $this->toArrayEmployee($value);
+                    }
+                    // thêm list nhân sự vào cache tồn tại trong vòng một tháng
+                    Cache::put('list_employee', serialize($listEmployee) , now()->addMonth());
+                    $result['success'] = true;
+                    $result['message'] = $this->msg->getSuccess();
+                    $result['data']    = $listEmployee;
+                }
+            }
+            return $result;
+        } catch (\Exception $e) {
+            $result = array(
+                'success'    => false,
+                'error_code' => $e->getCode(),
+                'message'    => $e->getMessage()
+            );
+        }
+        return $result;
+    }
+    private function toArrayEmployee($data){
+        $obj = new \stdClass();
+        $obj->profile_id    = $data->ProfileId;
+        $obj->fullname      = $data->FullName;
+        $obj->avatar        = $data->AvatarUrl;
+        return get_object_vars($obj);
+    }
+    private function toArray($data){
+        $obj = new \stdClass();
+        $obj->profile_id    = $data->ProfileId;
+        $obj->employee_id   = $data->EmployeeId;
+        $obj->first_name    = $data->FirstName;
+        $obj->last_name     = $data->LastName;
+        $obj->avatar        = $data->AvatarUrl;
+        $obj->gender        = $data->Gender == 'Nam' ? 1 : 0;
+        $obj->birthday      = date("Y-m-d", strtotime( $data->DateOfBirth ));
+        $obj->email         = $data->Email;
+        $obj->area          = $data->AreaCompany;
+        $obj->phone         = $data->Mobile;
+        $obj->job           = $data->Job;
+        $obj->dept          = $data->DeptId;
+        $obj->department    = $data->Department;
+        $obj->flag          = (isset($data->flag) && $data->flag > 1) ? 1 : 0;
+        $obj->level         = $data->Level;
+        return get_object_vars($obj);
+    }
+    private function toArrySearchData($data){
+        $obj = new \stdClass();
+        $obj->profile_id    = $data->ProfileId;
+        $obj->employee_id   = $data->EmployeeId;
+        $obj->first_name    = $data->FirstName;
+        $obj->last_name     = $data->LastName;
+        $obj->avatar        = $data->AvatarUrl;
+        $obj->gender        = $data->Gender == 'Nam' ? 1 : 0;
+        $obj->birthday      = date("Y-m-d", strtotime( $data->DateOfBirth ));
+        $obj->email         = $data->Email;
+        $obj->area          = $data->AreaCompany;
+        $obj->phone         = $data->Mobile;
+        $obj->job           = $data->Job;
+        $obj->dept          = $data->DeptId;
+        $obj->department    = $data->Department;
+        $obj->flag          = (isset($data->flag) && $data->flag > 1) ? 1 : 0;
+        $obj->fullname      = $data->FirstName.' '.$data->LastName;
+        $obj->experience    = 0;
+        $obj->level         = 1;
+        $obj->exp_level     = 100000000;
+        return get_object_vars($obj);
+    }
+
+    private function dataTraining($data){
+        $results = [];
+        foreach ($data as $key => $value) {
+            $results[] = $this->toArrayTraining($value);
+        }
+        return $results;
+    }
+
+    private function toArrayTraining($data): array
+    {
+        $obj = new \stdClass();
+        $obj->starttime     = date("d-m-Y", strtotime( $data->StartTime ));
+        $obj->endtime       = date("d-m-Y", strtotime( $data->EndTime ));
+        $obj->training_at   = $data->TrainingAt;
+        $obj->training_type = $data->TrainingTypeName;
+        $obj->training_name = $data->OlogiesName;
+        $obj->images        = false;
+        return get_object_vars($obj);
+    }
+    /**
      * lấy thông tin đào tạo của user
      */
     public function training($profile_id, array $requests = []): array
@@ -62,7 +169,7 @@ class GosuEmployee
                 'ProfileId' => $profile_id,
                 'Page' => $requests['page'] ?? 1,
                 'PageSize' => $requests['limit'] ?? 10,
-                'secrectKey' => $this->apiKeyTraining,
+                'secrectKey' => $this->ERP_API_KEY,
             );
             $result = array();
             $result['success'] = false;
@@ -103,7 +210,7 @@ class GosuEmployee
             $params = array(
                 'ProfileId' => $profile_id,
                 'id' => $requests['training_id'],
-                'secrectKey' => $this->apiKeyTraining,
+                'secrectKey' => $this->ERP_API_KEY,
             );
             $result = array();
             $result['success'] = false;
@@ -129,34 +236,28 @@ class GosuEmployee
         return $result;
     }
     /**
-     * lấy danh sách nhân sự 
+     * lấy thông tin thành viên
      */
-    public function listEmployee(){
-        try { 
-            $listEmployee = [];
+    public function membersData(array $requests = []): array
+    {
+        try {
+            $params = array(
+                'deptId' => $requests['dept'],
+                'secrectKey' => $this->ERP_API_KEY,
+            );
             $result = array();
             $result['success'] = false;
             $result['message'] = $this->msg->getError();
             $result['data']    = false;
-            $dataEmployee = Cache::get('list_employee');            
-            if($dataEmployee) {    
-                $listEmployee = unserialize($dataEmployee);
+
+            $data = $this->api->GosuGetData('v1/hrm/employee/employee-lists-dept', $params);
+            if ($data->Code == 1) {
+                $dataMembers = $this->toArrayMembersData($data->Data ?? []);
                 $result['success'] = true;
                 $result['message'] = $this->msg->getSuccess();
-                $result['data']    = $listEmployee;
-            }else{
-                $data = $this->api->GosuGetData('v1/hrm/employee/employee-lists', null); 
-                if (isset($data->Code) && $data->Code == 1) {
-                    foreach ($data->Data as $key => $value) {
-                        $listEmployee[] = $this->toArrayEmployee($value);
-                    }
-                    // thêm list nhân sự vào cache tồn tại trong vòng một tháng
-                    Cache::put('list_employee', serialize($listEmployee) , now()->addMonth());
-                    $result['success'] = true;
-                    $result['message'] = $this->msg->getSuccess();
-                    $result['data']    = $listEmployee;
-                }
-            }           
+                $result['data']    = $dataMembers;
+            }
+
             return $result;
         } catch (\Exception $e) {
             $result = array(
@@ -166,54 +267,6 @@ class GosuEmployee
             );
         }
         return $result;
-    }
-    private function toArray($data){
-        $obj = new \stdClass();
-        $obj->profile_id    = $data->ProfileId;
-        $obj->employee_id   = $data->EmployeeId;
-        $obj->first_name    = $data->FirstName;
-        $obj->last_name     = $data->LastName;
-        $obj->avatar        = $data->AvatarUrl;
-        $obj->gender        = $data->Gender == 'Nam' ? 1 : 0;
-        $obj->birthday      = date("Y-m-d", strtotime( $data->DateOfBirth ));
-        $obj->email         = $data->Email;
-        $obj->area          = $data->AreaCompany;
-        $obj->phone         = $data->Mobile;
-        $obj->job           = $data->Job;
-        $obj->dept          = $data->DeptId;
-        $obj->department    = $data->Department;
-        $obj->flag          = (isset($data->flag) && $data->flag > 1) ? 1 : 0;
-        return get_object_vars($obj);
-    }
-    private function toArrySearchData($data){
-        $obj = new \stdClass();
-        $obj->profile_id    = $data->ProfileId;
-        $obj->employee_id   = $data->EmployeeId;
-        $obj->first_name    = $data->FirstName;
-        $obj->last_name     = $data->LastName;
-        $obj->avatar        = $data->AvatarUrl;
-        $obj->gender        = $data->Gender == 'Nam' ? 1 : 0;
-        $obj->birthday      = date("Y-m-d", strtotime( $data->DateOfBirth ));
-        $obj->email         = $data->Email;
-        $obj->area          = $data->AreaCompany;
-        $obj->phone         = $data->Mobile;
-        $obj->job           = $data->Job;
-        $obj->dept          = $data->DeptId;
-        $obj->department    = $data->Department;
-        $obj->flag          = (isset($data->flag) && $data->flag > 1) ? 1 : 0;
-        $obj->fullname      = $data->FirstName.' '.$data->LastName;
-        $obj->experience    = 0;
-        $obj->level         = 1;
-        $obj->exp_level     = 100000000;
-        return get_object_vars($obj);
-    }
-
-    private function dataTraining($data){
-        $results = [];
-        foreach ($data as $key => $value) {
-            $results[] = $this->toArrayTraining($value);
-        }
-        return $results;
     }
 
     private function toArrayTrainingList($data): array
@@ -244,22 +297,81 @@ class GosuEmployee
         return $result;
     }
 
-    private function toArrayTraining($data){
-        $obj = new \stdClass();
-        $obj->starttime     = date("d-m-Y", strtotime( $data->StartTime ));
-        $obj->endtime       = date("d-m-Y", strtotime( $data->EndTime ));
-        $obj->training_at   = $data->TrainingAt;
-        $obj->training_type = $data->TrainingTypeName;
-        $obj->training_name = $data->OlogiesName;
-        $obj->images        = false;
-        return get_object_vars($obj);
-    }
+    private function toArrayMembersData(array $data): array
+    {
+        $managers = $tmpMangers = $employees = [];
 
-    private function toArrayEmployee($data){
-        $obj = new \stdClass();
-        $obj->profile_id    = $data->ProfileId;
-        $obj->fullname      = $data->FullName;
-        $obj->avatar        = $data->AvatarUrl;
-        return get_object_vars($obj);
+        // get data from API
+        foreach ($data as $item) {
+            if ($item->Level < 7) {
+                $managers[] = [
+                    'tags' => ['Staff'],
+                    'name' => $item->FullName,
+                    'img' => $item->AvatarUrl,
+                    'role' => $item->JobName,
+                    'level' => $item->Level,
+                ];
+            } else {
+                $employees[] = [
+                    'tags' => ['Staff'],
+                    'name' => $item->FullName,
+                    'img' => $item->AvatarUrl,
+                    'role' => $item->JobName,
+                    'level' => $item->Level,
+                ];
+            }
+        }
+
+        // group user by level
+        $levelMapping = [
+            1 => [],
+            2 => [],
+            3 => [],
+            4 => [],
+            5 => [],
+            6 => [],
+            7 => []
+        ];
+
+        // MANAGERS
+        foreach ($managers as $profile) {
+            $level = $profile['level'];
+            $fullName = $profile['name'];
+            $levelMapping[$level][] = $fullName;
+        }
+
+        foreach ($levelMapping as $level => $names) {
+            if ($names) $tmpMangers[$level] = $names;
+        }
+
+        $i = 1; $j = 0;
+        foreach ($tmpMangers as $level => $members) {
+            foreach ($managers as $idx => $member) {
+                if ($member['level'] === $level) {
+                    if(count($members) > 1) {
+                        $managers[$idx]['id'] = $i + $j;
+                        $j++;
+                    } else {
+                        $managers[$idx]['id'] = $i;
+                    }
+                    if ($i > 1) {
+                        $managers[$idx]['pid'] = $i - 1;
+                    }
+                }
+            }
+            $i++;
+        }
+
+        // EMPLOYEES
+        $i = 1;
+        foreach ($employees as $idx => $employee) {
+            $employees[$idx]['id'] = $i;
+            $i++;
+        }
+
+        return [
+            'managers' => $managers,
+            'employees' => $employees,
+        ];
     }
 }

@@ -72,7 +72,7 @@
                         <pagination
                             v-if="dataTraining"
                             v-show="dataTraining.total > 10"
-                            v-bind:total="dataTraining.total"
+                            v-bind:total="dataTraining.total ?? 0"
                             v-model:page="queryTrainingList.page"
                             v-model:limit="queryTrainingList.limit"
                             :auto-scroll="false"
@@ -117,7 +117,7 @@
                 dataInfomation: [],              
                 listKeyInfo: listKeyInfo,
                 listKeyTraining: listKeyTraining,
-                dataTraining: [],
+                dataTraining: {},
                 queryTrainingList: {
                     page: 1,
                     limit: 10
