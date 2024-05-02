@@ -8,7 +8,7 @@ class GosuEmployee
     
     protected $msg;
     protected $api;
-    protected $apiKeyTraining;
+    protected $ERP_API_KEY;
     public function __construct(Message $message, GosuApi $api)
     {
         $this->msg = $message;
