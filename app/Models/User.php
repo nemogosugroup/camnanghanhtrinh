@@ -38,7 +38,8 @@ class User extends Authenticatable
         'experience',
         'gold',
         'flag',
-        'level'
+        'level',
+        'is_director'
     ];
 
     protected $appends = [

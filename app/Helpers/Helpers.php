@@ -1,5 +1,6 @@
 <?php 
 namespace App\Helpers;
+use Carbon\Carbon;
 use GuzzleHttp\Client;
 use Illuminate\Http\Response;
 use App\Helpers\Message;
@@ -164,5 +165,18 @@ class Helpers {
             'mission_id' => $mission_id // đây là Id cố định của nhiệm vụ cập nhập profile
         );
         return $this->modelUserMission->createOrNot($data);
+    }
+
+    public function getUserFlag(string $employeeId): int
+    {
+        $monthsProbationQty = 2;
+        // If someone changed this value 20 to 21 I were dead
+        $firstDayString = "20" . $employeeId;
+        $year = substr($firstDayString, 0, 4);
+        $month = substr($firstDayString, 4, 2);
+        $day = substr($firstDayString, 6);
+        $formattedDate = $year . "-" . $month . "-" . $day;
+
+        return (int) Carbon::parse($formattedDate)->addMonth($monthsProbationQty)->lessThan(Carbon::now());
     }
 }

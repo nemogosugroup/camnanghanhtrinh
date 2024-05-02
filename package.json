@@ -10,6 +10,7 @@
     "production": "mix --production"
   },
   "dependencies": {
+    "@balkangraph/orgchart.js": "^8.14.35",
     "@ckeditor/ckeditor5-build-classic": "^41.0.0",
     "@ckeditor/ckeditor5-vue": "^5.1.0",
     "@vue/cli-plugin-babel": "^5.0.8",
