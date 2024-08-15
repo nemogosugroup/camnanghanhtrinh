@@ -14,6 +14,7 @@ use App\Http\Controllers\Backend\Api\TypeEquipmentController;
 use App\Http\Controllers\Backend\Api\CategoryCourseController;
 use App\Http\Controllers\Backend\Api\CourseController;
 use App\Http\Controllers\Backend\Api\UserEquipmentController;
+use App\Http\Controllers\Backend\Api\VuLanTemplatesController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -91,6 +92,14 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::post('create', [CategoryCourseController::class, 'create']);
         Route::post('update/{id}', [CategoryCourseController::class, 'update']);
         Route::post('delete/{id}', [CategoryCourseController::class, 'destroy']);
+    });
+
+    ## VuLan Templates ##
+    Route::group(['prefix' => 'vulan-templates'], function () {
+        Route::get('list', [VuLanTemplatesController::class, 'index']);
+        Route::get('detail/{id}', [VuLanTemplatesController::class, 'detail']);
+        Route::post('create', [VuLanTemplatesController::class, 'create']);
+        Route::post('upload-preview-video', [VuLanTemplatesController::class, 'uploadPreviewVideo']);
     });
 });
 

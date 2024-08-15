@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\RoleController;
 use App\Http\Controllers\Backend\Api\MarketController;
 use App\Http\Controllers\Api\QuestController;
 use App\Http\Controllers\Api\EquipmentController;
+use App\Http\Controllers\Api\Events\VuLanController;
 
 /*
 |--------------------------------------------------------------------------
@@ -50,6 +51,14 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
             Route::get('list-equipped-items', [EquipmentController::class, 'getEquippedItems']);
             Route::post('remove-equipped-item', [EquipmentController::class, 'removeEquippedItem']);
             Route::post('use-equipment', [EquipmentController::class, 'useEquipment']);
+        });
+
+        ## VuLan ##
+        Route::group(['prefix' => 'vulan-templates'], function () {
+            Route::get('list', [VuLanController::class, 'templateList']);
+            Route::get('detail/{id}', [VuLanController::class, 'templateDetail']);
+            Route::post('upload-preview-video', [VuLanController::class, 'uploadPreviewVideo']);
+            Route::post('user-submit', [VuLanController::class, 'userSave']);
         });
     });
     Route::group(['prefix' => 'role'], function () {
