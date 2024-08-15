@@ -10,9 +10,9 @@
     "production": "mix --production"
   },
   "dependencies": {
-    "@ckeditor/ckeditor5-vue": "^7.0.0",
-    "@balkangraph/orgchart.js": "^8.14.35",
+    "@balkangraph/orgchart.js": "^8.14.47",
     "@ckeditor/ckeditor5-build-classic": "^41.0.0",
+    "@ckeditor/ckeditor5-vue": "^7.0.0",
     "@vue/cli-plugin-babel": "^5.0.8",
     "@vue/cli-plugin-eslint": "^5.0.8",
     "@vue/compiler-sfc": "^3.3.11",

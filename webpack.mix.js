@@ -20,5 +20,5 @@ mix.js("resources/js/app.js", "public/js")
     .postCss("resources/css/app.css", "public/css", [
         //
     ])
-    .copy('resources/js/assets/images/logo', 'public/images/logo')
-    .webpackConfig(config)
+    .copy("resources/js/assets/images/logo", "public/images/logo")
+    .webpackConfig(config);

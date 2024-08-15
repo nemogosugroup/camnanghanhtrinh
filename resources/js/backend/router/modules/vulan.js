@@ -16,17 +16,6 @@ const vuLanRouter = {
                 affix: true,
             },
         },
-        // {
-        //     //path: "vulan/:id(\\d+)",
-        //     path: "detail",
-        //     component: detailVuLan,
-        //     name: "DetailVuLan",
-        //     meta: {
-        //         title: "GOSU",
-        //         noCache: true,
-        //     },
-        //     hidden: true,
-        // },
     ],
 };
 
