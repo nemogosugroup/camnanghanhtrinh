@@ -12,7 +12,6 @@
   "dependencies": {
     "@balkangraph/orgchart.js": "^8.14.35",
     "@ballcat/vue-cropper": "^1.0.6",
-    "@ckeditor/ckeditor5-build-classic": "^41.0.0",
     "@ckeditor/ckeditor5-vue": "^7.0.0",
     "@vue/cli-plugin-babel": "^5.0.8",
     "@vue/cli-plugin-eslint": "^5.0.8",
@@ -64,7 +63,7 @@
     "babel-loader": "^9.1.3",
     "jquery": "^3.7.1",
     "resolve-url-loader": "^5.0.0",
-    "sass": "^1.69.5",
+    "sass": "1.77.6",
     "sass-loader": "^12.6.0",
     "svg-sprite-loader": "^6.0.11",
     "svgo-loader": "^4.0.0",

@@ -5,7 +5,6 @@
         </el-row>
         <hr>
         <el-row>
-            <h1>{{fileName}}</h1>
             <el-col v-bind:span="24">
                 <vue-cropper
                     ref="vueCropperRef"
@@ -32,10 +31,6 @@ export default {
             default: false
         },
         data: {
-            type: String,
-            default: ""
-        },
-        fileName: {
             type: String,
             default: ""
         },

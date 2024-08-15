@@ -7,12 +7,8 @@
         <el-row>
             <el-col v-bind:span="24" style="padding: 20px">
                 <div id="uploadBGImage" class="upload_image">
-                    <i class="icon_crop ri-crop-line" :class="{'d-none': !tmpDataBG.url}"
-                       @click="handleShowBGDialog"/>
-
                     <img class="show_img" :class="{'d-none': !tmpDataBG.url}" :src="tmpDataBG.url"
                          alt="">
-
                     <img class="icon_upload" :src="iconUpload" alt="" @click="openUploadBGInput">
                     <input id="uploadBGInput" ref="uploadBGInput" type="file" accept="image/*"
                            class="d-none"
@@ -45,23 +41,18 @@
                      :file-name="currentFileName"
                      @hidedialog="handleHideDialog"></dialog-crop>
 
-        <dialog-crop-b-g :dialog-form-visible="dialogBGFormVisible" :data="dataCropBG"
-                     :file-name="currentBGFileName"
-                     @hidedialog="handleHideBGDialog"></dialog-crop-b-g>
-
     </div>
 </template>
 
 <script>
 import DialogCrop from "@/backend/views/vulan/components/DialogCrop.vue";
-import DialogCropBG from "@/backend/views/vulan/components/DialogCropBG.vue";
 import AdminRepositoryFactory from "@/backend/respository";
 
 const VuLanRepository = AdminRepositoryFactory.get('vulanTemplates');
 
 export default {
     name: 'VuLanSlider2',
-    components: {DialogCrop, DialogCropBG},
+    components: {DialogCrop},
     data() {
         return {
             iconUpload: "/static/vulan/generals/icon_upload.png",
@@ -84,11 +75,6 @@ export default {
             currentFileName: "",
             dialogFormVisible: false,
             dialogVisibleRemove: false,
-
-            dataCropBG: "",
-            currentBGFileName: "",
-            dialogBGFormVisible: false,
-            dialogBGVisibleRemove: false,
 
             tmp2Data: {
                 "template_id": 2,
@@ -127,10 +113,37 @@ export default {
                         ],
                         "main_items": [
                             {
-                                // "type": "",
-                                // "url": "",
-                                // "show_content": false
-                            }
+                                "type": "",
+                                "url": "",
+                                "style": {
+                                    "left": 1375,
+                                    "top": 540
+                                }
+                            },
+                            {
+                                "type": "",
+                                "url": "",
+                                "style": {
+                                    "left": 1375,
+                                    "top": 540
+                                }
+                            },
+                            {
+                                "type": "",
+                                "url": "",
+                                "style": {
+                                    "left": 1375,
+                                    "top": 540
+                                }
+                            },
+                            {
+                                "type": "",
+                                "url": "",
+                                "style": {
+                                    "left": 1375,
+                                    "top": 540
+                                }
+                            },
                         ]
                     }
                 }
@@ -142,7 +155,6 @@ export default {
 
     created() {
         this.emitter.off('send-cropped-image');
-        this.emitter.off('send-cropped-bg-image');
     },
 
     mounted() {
@@ -232,27 +244,15 @@ export default {
             this.currentFileName = "";
             this.currentNumber = 0;
         },
-        handleShowBGDialog() {
-            this.dialogBGFormVisible = true;
-            this.dialogBGVisibleRemove = true;
-            this.dataCropBG = this.tmpDataBG.url;
-            this.currentBGFileName = this.tmpDataBG.fileName;
-        },
-        handleHideBGDialog() {
-            this.dialogBGFormVisible = false;
-            this.dialogBGVisibleRemove = false;
-            this.dataCropBG = "";
-            this.currentBGFileName = "";
-        },
         userSubmit() {
             let formData = new FormData();
             formData.append('background[file]', this.backgroundData.file);
             formData.append('background[type]', this.backgroundData.type);
             formData.append('background[show_content]', this.backgroundData.show_content);
-            this.filesData.forEach(data => {
-                formData.append('files[][file]', data.file);
-                formData.append('files[][type]', data.type);
-                formData.append('files[][show_content]', data.show_content);
+            this.filesData.forEach((data, idx) => {
+                formData.append(`files[${idx}][file]`, data.file);
+                formData.append(`files[${idx}][type]`, data.type);
+                formData.append(`files[${idx}][show_content]`, data.show_content);
             });
             formData.append("template_id", this.tmp2Data.template_id);
             formData.append("history_id", this.tmp2Data.history_id);
