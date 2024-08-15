@@ -25,6 +25,7 @@ const colorMenuMarket = {
     'equipment':'#ffba00',
     'trip':'#42b983',
     'market':'#673ab7',
+    'members':'#ff5b00',
 }
 // update vàng, điểm kinh nghiệm, trang bị/khoá học của user
 const updateInfoUser = (data) => {

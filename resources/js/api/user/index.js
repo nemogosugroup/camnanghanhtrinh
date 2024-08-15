@@ -31,6 +31,13 @@ export default {
             params: query
         })
     },
+    getMembersData(query) {
+        return request({
+            url: `${resource}` + "/members-data",
+            method: 'get',
+            params: query
+        })
+    },
     getRoles(token) {
         return request({
             url: `${resource}` + "/roles",
