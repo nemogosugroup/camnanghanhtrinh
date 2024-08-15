@@ -32,5 +32,4 @@ app.use(ElementPlus, {
     size: Cookies.get("size") || "default", // set element-plus default size
     // locale: enLang // Bạn có thể sử dụng locale nếu cần, hãy đảm bảo đã import và cấu hình nó
 });
-import { CkeditorPlugin } from "@ckeditor/ckeditor5-vue";
-app.use(store).use(router).use(CkeditorPlugin).mount("#app");
+app.use(store).use(router).mount("#app");

@@ -88,10 +88,6 @@ import 'swiper/css/effect-cube';
 import AdminRepositoryFactory from '@/backend/respository';
 const vulanRepository = AdminRepositoryFactory.get('vulan');
 const listImageDefault = [
-    // {
-    //     url: imageSlider,
-    //     type: "images"
-    // },
     {
         url: ImagesSlider1,
         type: "images",
@@ -143,6 +139,7 @@ const dataSliderTemplate = {
 }
 import { mapGetters } from "vuex";
 import { ElMessage } from "element-plus";
+
 export default {
     name: 'Vulan',
     components: {
@@ -151,7 +148,7 @@ export default {
         Descriptions,
         TitleVulan,
         Logo,
-        ButtonAction
+        ButtonAction,
     },
     data() {
         return {
