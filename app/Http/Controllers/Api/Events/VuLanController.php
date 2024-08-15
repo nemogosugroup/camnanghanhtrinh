@@ -16,9 +16,9 @@ class VuLanController extends Controller
     /**
      * @var VulanRepository
      */
-    protected VulanRepository $repo;
-    protected Message $msg;
-    protected Helpers $helper;
+    protected $repo;
+    protected $msg;
+    protected $helper;
 
     public function __construct(
         VulanRepository $repo,
