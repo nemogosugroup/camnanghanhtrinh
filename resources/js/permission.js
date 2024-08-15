@@ -1,6 +1,6 @@
 import router from "./router";
 import store from "./store";
-import { ElMessage } from 'element-plus'
+import { ElMessage } from "element-plus";
 import NProgress from "nprogress"; // progress bar
 import "nprogress/nprogress.css"; // progress bar style
 import { getAccessToken, removeToken, setLayout } from "@/utils/auth"; // get token from cookie
@@ -8,10 +8,10 @@ import getPageTitle from "@/utils/get-page-title";
 
 NProgress.configure({ showSpinner: false }); // NProgress Configuration
 
-const whiteList = ["/login","/logout", "/auth-redirect"]; // no redirect whitelist
+const whiteList = ["/login", "/logout", "/auth-redirect"]; // no redirect whitelist
 router.beforeEach(async (to, from, next) => {
     // start progress bar
-    NProgress.start();    
+    NProgress.start();
     // set page title
     document.title = getPageTitle(to.meta.title);
     // determine whether the user has logged in
@@ -22,12 +22,12 @@ router.beforeEach(async (to, from, next) => {
         const hasRoles = store.getters.roles && store.getters.roles.length > 0;
         setLayout(to.meta.active);
         if (hasRoles) {
-            let roles = store.getters.roles
+            let roles = store.getters.roles;
             const accessRoutes = await store.dispatch(
                 "permission/generateRoutes",
                 roles
             );
-            accessRoutes.forEach(route => {
+            accessRoutes.forEach((route) => {
                 router.addRoute(route);
             });
             next();
@@ -43,7 +43,7 @@ router.beforeEach(async (to, from, next) => {
                 "permission/generateRoutes",
                 roles
             );
-            accessRoutes.forEach(route => {
+            accessRoutes.forEach((route) => {
                 router.addRoute(route);
             });
             if (to.path === "/login") {
@@ -55,7 +55,6 @@ router.beforeEach(async (to, from, next) => {
         }
     } else {
         /* has no token*/
-
         if (whiteList.indexOf(to.path) !== -1) {
             // in the free login whitelist, go directly
             next();
