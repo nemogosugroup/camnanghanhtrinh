@@ -6,6 +6,7 @@ import HandBookQuest from "@/views/handbook/quest";
 import HandBookEquipment from "@/views/handbook/equipment";
 import HandBookTrip from "@/views/handbook/trip";
 import HandBookMarket from "@/views/handbook/market";
+import HandBookMembers from "@/views/handbook/members";
 //import CategoryCourseMarket from "@/views/handbook/market/components/course";
 //import CategoryCourseMarket from "@/views/handbook/market/components/course";
 //import CategoryEquipmentMarket from "@/views/handbook/market/components/equipment";
@@ -185,6 +186,21 @@ const handbookRoute = {
                 },                    
             ]
         },
+        {
+            path: '/so-tay-hanh-trinh/members',
+            name: 'HandBookMember',
+            component: HandBookMembers,
+            meta: {
+                title: 'Thành Viên',
+                icon:'ri-git-repository-fill',
+                noCache: true,
+                active: 'members',
+                color:Helper.colorMenuMarket.members,
+                activeMenu: "/so-tay-hanh-trinh"
+            },
+            hidden: true,
+            show:true
+        }
     ],
 }
 export default handbookRoute;
