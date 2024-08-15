@@ -12,7 +12,7 @@
   "dependencies": {
     "@balkangraph/orgchart.js": "^8.14.35",
     "@ballcat/vue-cropper": "^1.0.6",
-    "@ckeditor/ckeditor5-vue": "^7.0.0",
+    "@ckeditor/ckeditor5-vue": "^5.1.0",
     "@vue/cli-plugin-babel": "^5.0.8",
     "@vue/cli-plugin-eslint": "^5.0.8",
     "@vue/compiler-sfc": "^3.3.11",
