@@ -49,6 +49,7 @@ export default {
             drapTitle: {
                 left: this.style.left,
                 top: this.style.top,
+                color: this.style.color,
                 isDragging: false,  // Trạng thái kéo thả
                 offsetX: 0,  // Khoảng cách ngang từ con trỏ tới thẻ <div>
                 offsetY: 0,   // Khoảng cách dọc từ con trỏ tới thẻ <div>
@@ -79,6 +80,8 @@ export default {
     methods: {
         changeColor() {
             this.color = { color: this.colorTitle };
+            this.drapTitle.color = this.colorTitle;
+            this.$emit('getStyleTitle', this.drapTitle, 'slider_1');
         },
         hanldeEmitData(left, top) {
             this.drapTitle.left = left;

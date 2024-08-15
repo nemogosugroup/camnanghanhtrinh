@@ -1,5 +1,5 @@
 import request from "@/backend/respository/request";
-const resource = "/vulan";
+const resource = "/vulan-templates";
 
 export default {
     create(data) {
@@ -13,10 +13,17 @@ export default {
         });
     },
 
-    update(query) {
-        let data = query["data"];
+    detail(id) {
+        //get id template
         return request({
-            url: `${resource}` + "/update/" + `${query.id}`,
+            url: `${resource}` + "/detail/" + `${id}`,
+            method: "get",
+        });
+    },
+
+    update(data, id) {
+        return request({
+            url: `${resource}` + "/update/" + `${id}`,
             method: "post",
             data,
             headers: {

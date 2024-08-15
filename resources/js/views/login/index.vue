@@ -1,16 +1,10 @@
 <template>
-     <div class="app-wrapper">
+    <div class="app-wrapper">
         <el-container>
             <el-aside class="sidebar-container">
                 <div class="login-container">
-                    <el-form
-                        ref="loginForm"
-                        :model="loginForm"
-                        :rules="loginRules"
-                        class="login-form"
-                        autocomplete="on"
-                        label-position="left"
-                    >
+                    <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" autocomplete="on"
+                        label-position="left">
                         <div class="title-container">
                             <h3 class="title"><img v-if="logo" :src="logo" class="sidebar-logo"></h3>
                         </div>
@@ -19,49 +13,23 @@
                             <span class="svg-container">
                                 <i class="ri-user-line"></i>
                             </span>
-                            <el-input
-                                ref="email"
-                                v-model="loginForm.email"
-                                placeholder="Email"
-                                name="email"
-                                type="email"
-                                tabindex="1"
-                                autocomplete="on"
-                            />
+                            <el-input ref="email" v-model="loginForm.email" placeholder="Email" name="email"
+                                type="email" tabindex="1" autocomplete="on" />
                         </el-form-item>
 
-                        <el-tooltip
-                            v-model="capsTooltip"
-                            content="Caps lock is On"
-                            placement="right"
-                            manual
-                        >
+                        <el-tooltip v-model="capsTooltip" content="Caps lock is On" placement="right" manual>
                             <el-form-item prop="password">
                                 <span class="svg-container">
                                     <i class="ri-lock-line"></i>
                                 </span>
-                                <el-input
-                                    :key="passwordType"
-                                    ref="password"
-                                    v-model="loginForm.password"
-                                    :type="passwordType"
-                                    placeholder="Password"
-                                    name="password"
-                                    tabindex="2"
-                                    autocomplete="on"
-                                    @keyup="checkCapslock"
-                                    @blur="capsTooltip = false"
-                                    @keyup.enter="handleLogin"
-                                />
+                                <el-input :key="passwordType" ref="password" v-model="loginForm.password"
+                                    :type="passwordType" placeholder="Password" name="password" tabindex="2"
+                                    autocomplete="on" @keyup="checkCapslock" @blur="capsTooltip = false"
+                                    @keyup.enter="handleLogin" />
                             </el-form-item>
                         </el-tooltip>
-                        <el-button
-                            :loading="loading"
-                            type="primary"
-                            style="width: 100%; margin-bottom: 30px"
-                            @click.prevent="handleLogin"
-                            >Login</el-button
-                        >
+                        <el-button :loading="loading" type="primary" style="width: 100%; margin-bottom: 30px"
+                            @click.prevent="handleLogin">Login</el-button>
                     </el-form>
                 </div>
             </el-aside>
@@ -136,7 +104,7 @@ export default {
     destroyed() {
     },
     computed: {
-        backgroundLogin(){
+        backgroundLogin() {
             return `background-image: url(${this.bgLogin})`;
         },
     },
@@ -159,27 +127,31 @@ export default {
                                     message: data.message,
                                     type: 'success'
                                 })
-                                
+
                                 //console.log("check this.redirectUri",this.redirectUri);
-                                if(this.redirectUri){
-                                    
+                                if (this.redirectUri) {
+
                                     //console.log("check this.redirectUri 2",this.redirectUri);
-                                    window.location.href = this.redirectUri+'?token='+getAccessToken()+'&state='+this.oAuthState;
-                                }else{
+                                    window.location.href = this.redirectUri + '?token=' + getAccessToken() + '&state=' + this.oAuthState;
+                                } else {
                                     //console.log("check this.redirect",this.redirect);
+                                    // this.$router.push({
+                                    //     path: this.redirect || "/",
+                                    //     query: this.otherQuery,
+                                    // });
                                     this.$router.push({
-                                        path: this.redirect || "/",
+                                        path: this.redirect || "/vulan/",
                                         query: this.otherQuery,
                                     });
                                 }
-                                
-                                
-                            }else{
+
+
+                            } else {
                                 this.$message({
                                     message: data.message,
                                     type: 'error'
                                 })
-                            }                            
+                            }
                             this.loading = false;
                         })
                         .catch(() => {
@@ -221,6 +193,7 @@ $cursor: #fff;
         display: inline-block;
         height: 47px;
         width: calc(100% - 50px);
+
         input {
             background: transparent;
             border: 0px;
@@ -244,11 +217,13 @@ $cursor: #fff;
         border-radius: 5px;
         color: #454545;
         margin-bottom: 20px;
+
         &.is-error {
             .el-input__wrapper {
                 box-shadow: none;
             }
         }
+
         .el-input__wrapper {
             width: 100%;
             background: transparent;
@@ -269,15 +244,18 @@ $light_gray: #eee;
 $width_main: calc(100% - 30%);
 $width_siderbar: calc(30%);
 $height_logo: 70px;
+
 #app {
     .sidebar-container {
         width: $width_siderbar !important;
         padding: 0;
+
         .sidebar-logo {
             max-height: $height_logo;
         }
     }
 }
+
 .login-container {
     min-height: 100%;
     width: 100%;
@@ -285,9 +263,10 @@ $height_logo: 70px;
     overflow: hidden;
     display: flex;
     align-items: center;
+
     .login-form {
         position: relative;
-        width:100%;
+        width: 100%;
         max-width: 500px;
         padding: 0px 35px;
         margin: 0 auto;
@@ -348,19 +327,21 @@ $height_logo: 70px;
         }
     }
 }
+
 .main-login {
     width: $width_main;
     margin-left: $width_siderbar;
     height: 100vh;
     position: relative;
-    &:before{
+
+    &:before {
         width: 100%;
         height: 100%;
         position: absolute;
         left: 0;
         top: 0;
         background: $bgOverlay;
-        content:''
+        content: ''
     }
 }
 </style>

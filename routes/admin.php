@@ -19,13 +19,13 @@ use App\Http\Controllers\Backend\Api\VuLanTemplatesController;
 |--------------------------------------------------------------------------
 | API Routes
 |--------------------------------------------------------------------------
-| 
+|
 | Here is where you can register API routes for your application. These
 | routes are loaded by the RouteServiceProvider within a group which
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-Route::group(['middleware' => ['auth:sanctum']], function () {    
+Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::group(['prefix' => 'medal'], function () {
         Route::get('list', [MedalController::class, 'index']);
         Route::post('create', [MedalController::class, 'create']);
@@ -38,7 +38,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::post('update/{id}', [CategoryMedalController::class, 'update']);
         Route::post('delete/{id}', [CategoryMedalController::class, 'destroy']);
     });
-    Route::group(['prefix' => 'category-mission'], function () {      
+    Route::group(['prefix' => 'category-mission'], function () {
         Route::get('list', [CategoryMissionController::class, 'index']);
         Route::post('create', [CategoryMissionController::class, 'create']);
         Route::post('update/{id}', [CategoryMissionController::class, 'update']);
@@ -99,6 +99,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::get('list', [VuLanTemplatesController::class, 'index']);
         Route::get('detail/{id}', [VuLanTemplatesController::class, 'detail']);
         Route::post('create', [VuLanTemplatesController::class, 'create']);
+        Route::post('update/{id}', [VuLanTemplatesController::class, 'update']);
         Route::post('upload-preview-video', [VuLanTemplatesController::class, 'uploadPreviewVideo']);
     });
 });
