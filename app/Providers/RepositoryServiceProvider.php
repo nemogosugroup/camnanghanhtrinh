@@ -11,7 +11,11 @@ use App\Repositories\Interfaces\Backend\EquipmentRepositoryInterface;
 use App\Repositories\Interfaces\Backend\TypeEquipmentRepositoryInterface;
 use App\Repositories\Interfaces\Backend\UserEquipmentRepositoryInterface;
 use App\Repositories\Interfaces\Backend\UserMedalRepositoryInterface;
+use App\Repositories\Interfaces\Backend\VuLanHistoryRepositoryInterface;
+use App\Repositories\Interfaces\Backend\VuLanRepositoryInterface;
 use App\Repositories\Medal\UserMedalRepository;
+use App\Repositories\Vulan\VulanHistoryRepository;
+use App\Repositories\Vulan\VulanRepository;
 use Illuminate\Support\ServiceProvider;
 use App\Repositories\User\UserRepository;
 use App\Repositories\Medal\MedalRepository;
@@ -42,6 +46,8 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(TypeEquipmentRepositoryInterface::class, TypeEquipmentRepository::class);
         $this->app->bind(QuestRepositoryInterface::class, QuestRepository::class);
         $this->app->bind(UserMedalRepositoryInterface::class, UserMedalRepository::class);
+        $this->app->bind(VuLanRepositoryInterface::class, VulanRepository::class);
+        $this->app->bind(VuLanHistoryRepositoryInterface::class, VulanHistoryRepository::class);
     }
 
     /**
