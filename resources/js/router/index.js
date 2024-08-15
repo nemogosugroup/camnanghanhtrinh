@@ -142,7 +142,6 @@ export const constantRoutes = [
         },
         hidden: true, // Ẩn router này khỏi thanh menu nếu cần
     },
-    { path: "/:pathMatch(.*)*", redirect: "/404", hidden: true },
 ];
 export const asyncRoutes = [
     { path: "/:pathMatch(.*)*", redirect: "/404", hidden: true },

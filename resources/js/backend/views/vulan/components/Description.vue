@@ -3,8 +3,14 @@
         :style="{ top: drapDesc.top + 'px', left: drapDesc.left + 'px' }">
         <div class="content-desc">
             <div @click="hanldeDestroy">
-                <ckeditor :editor="editor" v-model="drapDesc.content" :config="editorConfig" @input="onEditorInput"
-                    @blur="onEditorBlur" />
+                <!--<ckeditor :editor="editor" v-model="drapDesc.content" :config="editorConfig" @input="onEditorInput"
+                    @blur="onEditorBlur" /> #}-->
+                <div>
+                    <!--<Toolbar :editor="editorRef" :defaultConfig="toolbarConfig"
+                        :mode="mode" />-->
+                    <Editor style="max-width: 400px;" v-model="drapDesc.content" :defaultConfig="editorConfig"
+                        :mode="mode" @onBlur="onEditorBlur" @onChange="onEditorBlur" />
+                </div>
             </div>
             <span class="edit"><i class="ri-edit-2-fill"></i></span>
         </div>
@@ -21,9 +27,16 @@ import { InlineEditor, Autosave, Essentials, FontColor, Paragraph, Undo } from '
 import 'ckeditor5/ckeditor5.css';
 import $ from 'jquery';
 import 'jquery-ui/ui/widgets/draggable';
+import '@wangeditor/editor/dist/css/style.css'
+import { Editor, Toolbar } from '@wangeditor/editor-for-vue';
+import { i18nChangeLanguage } from '@wangeditor/editor'
+
+// Switch language - 'en' or 'zh-CN'
+i18nChangeLanguage('en')
+
 export default {
     name: 'Descriptions',
-    components: {},
+    components: { Editor, Toolbar },
     props: {
         style: {
             type: Object,
@@ -143,5 +156,19 @@ export default {
     padding: 10px;
     position: absolute;
     color: #fff;
+}
+
+:deep(.w-e-text-container) {
+    background-color: transparent;
+    border: 0;
+    color: #fff;
+
+    .w-e-bar-show {
+        top: -100% !important
+    }
+}
+
+#draggableDesc {
+    z-index: 991;
 }
 </style>
