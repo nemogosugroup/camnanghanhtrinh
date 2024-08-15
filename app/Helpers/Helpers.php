@@ -10,6 +10,7 @@ use App\Models\Level;
 use App\Models\UserEquipment;
 use App\Models\UserMission;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 class Helpers {
     protected $msg;
@@ -89,6 +90,52 @@ class Helpers {
         $file->move(public_path('static/uploads/avatar'), $fileName);
         $url = '/'.$folderName.'/'.$fileName;
         return $url;
+    }
+
+    /**
+     * upload files
+     */
+    public function upLoadVuLanFiles($file){
+        $folderPreview = 'static/vulan/uploads/preview-video/' . auth()->user()->id;
+        if (File::exists($folderPreview)) {
+            File::deleteDirectory($folderPreview);
+        }
+
+        $folderName = 'static/vulan/uploads/' . auth()->user()->id;
+        $path = public_path() . '/' . $folderName;
+        if (!is_dir($path)) {
+            mkdir($path, 0755);
+        }
+        $fullName   = $file->getClientOriginalName();
+        $checkFiles = explode(".", $fullName);
+        $title      = current( $checkFiles );
+        $extension  = end( $checkFiles );
+        $fileName   = Str::slug($title.time()).'.'.$extension;
+        $file->move(public_path('static/vulan/uploads/' . auth()->user()->id), $fileName);
+
+        return '/'.$folderName.'/'.$fileName;
+    }
+
+    /**
+     * upload files
+     */
+    public function upLoadVuLanPreviewVideo($file){
+        $folderName = 'static/vulan/uploads/preview-video/' . auth()->user()->id;
+        if (File::exists($folderName)) {
+            File::deleteDirectory($folderName);
+        }
+        $path = public_path() . '/' . $folderName;
+        if (!is_dir($path)) {
+            mkdir($path, 0755);
+        }
+        $fullName   = $file->getClientOriginalName();
+        $checkFiles = explode(".", $fullName);
+        $title      = current( $checkFiles );
+        $extension  = end( $checkFiles );
+        $fileName   = Str::slug($title.time()).'.'.$extension;
+        $file->move(public_path('static/vulan/uploads/preview-video/' . auth()->user()->id), $fileName);
+
+        return '/'.$folderName.'/'.$fileName;
     }
     /**
      * function update gold/level/exp of user
