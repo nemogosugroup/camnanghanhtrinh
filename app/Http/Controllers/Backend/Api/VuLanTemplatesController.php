@@ -17,10 +17,10 @@ class VuLanTemplatesController extends Controller
     /**
      * @var VulanRepository
      */
-    protected VulanRepository $repo;
-    protected VulanHistoryRepository $historyRepo;
-    protected Message $msg;
-    protected Helpers $helper;
+    protected $repo;
+    protected $historyRepo;
+    protected $msg;
+    protected $helper;
 
     public function __construct(
         VulanRepository $repo,
