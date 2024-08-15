@@ -1,8 +1,5 @@
-import Layout from "@/layout";
-import VuLan from "@/backend/views/vulan";
 import Slider1 from "@/backend/views/vulan/templates/Slider1";
-// import Slider1 from "@/backend/views/vulan/templates/Slider1";
-// import VuLan from "@/backend/views/vulan";
+import Slider2 from "@/backend/views/vulan/templates/Slider2";
 
 const templateVulanRouter = {
     path: "/admin/vulan/",
@@ -31,7 +28,17 @@ const templateVulanRouter = {
             },
             hidden: true,
         },
-    ],
+        {
+            path: "template-2",
+            component: Slider2,
+            name: "Template2",
+            meta: {
+                title: "Vu lan Template 2",
+                icon: "ri-hand-heart-fill",
+                affix: true,
+            },
+        },
+    ]
 };
 
 export default templateVulanRouter;
