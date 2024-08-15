@@ -1,47 +1,53 @@
 var path = require("path");
-const webpack = require('webpack');
-const SVGSpritemapPlugin = require('svg-sprite-loader/plugin');
+const webpack = require("webpack");
+const SVGSpritemapPlugin = require("svg-sprite-loader/plugin");
 function resolve(dir) {
     return path.join(__dirname, "/resources/js", dir);
 }
 
 module.exports = {
     resolve: {
-        extensions: [".*",".wasm",".mjs",".js",".jsx",".json",".vue"],
+        extensions: [".*", ".wasm", ".mjs", ".js", ".jsx", ".json", ".vue"],
         alias: {
             "@": path.join(__dirname, "/resources/js"),
             "@style": path.join(__dirname, "/resources/sass"),
-            "@image": path.join(__dirname, "/resources/images")
+            "@image": path.join(__dirname, "/resources/images"),
+            "@fonts": path.join(__dirname, "/resources/fonts"),
         },
         fallback: {
-            "path": require.resolve("path-browserify")
-        }
+            path: require.resolve("path-browserify"),
+        },
     },
     module: {
-      rules: [
-        {
-          test: /\.vue$/,
-          loader: 'vue-loader'
-        },
-        {
-          test: /\.js$/,
-          loader: 'babel-loader',
-          exclude: /node_modules/
-        },
-        {
-          test: /\.scss$/,
-          use: [
-            'sass-loader',
-          ],
-        },
-      ]
+        rules: [
+            {
+                test: /\.vue$/,
+                loader: "vue-loader",
+            },
+            {
+                test: /\.js$/,
+                loader: "babel-loader",
+                exclude: /node_modules/,
+            },
+            {
+                test: /\.scss$/,
+                use: ["sass-loader"],
+            },
+            // {
+            //     test: /\.(eot|ttf|woff|woff2)$/,
+            //     loader: "file-loader",
+            //     options: {
+            //         name: "/resources/fonts/[name].[ext]",
+            //     },
+            // },
+        ],
     },
     plugins: [
         new webpack.DefinePlugin({
-          __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: JSON.stringify(true),
+            __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: JSON.stringify(true),
         }),
     ],
     output: {
-      chunkFilename: 'js/main/[name].js?id=[chunkhash]',
-    }
+        chunkFilename: "js/main/[name].js?id=[chunkhash]",
+    },
 };

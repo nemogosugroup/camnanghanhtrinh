@@ -1,0 +1,261 @@
+@font-face {
+    font-family: "SVN-Aleo";
+    src: url("@fonts/SVN-AleoLightItalic.eot");
+    src: url("@fonts/SVN-AleoLightItalic.eot?#iefix")
+            format("embedded-opentype"),
+        url("@fonts/SVN-AleoLightItalic.woff2") format("woff2"),
+        url("@fonts/SVN-AleoLightItalic.woff") format("woff"),
+        url("@fonts/SVN-AleoLightItalic.ttf") format("truetype"),
+        url("@fonts/SVN-AleoLightItalic.svg#@fonts/SVN-AleoLightItalic")
+            format("svg");
+    font-weight: 300;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "SVN-Aleo";
+    src: url("@fonts/SVN-AleoItalic.eot");
+    src: url("@fonts/SVN-AleoItalic.eot?#iefix") format("embedded-opentype"),
+        url("@fonts/SVN-AleoItalic.woff2") format("woff2"),
+        url("@fonts/SVN-AleoItalic.woff") format("woff"),
+        url("@fonts/SVN-AleoItalic.ttf") format("truetype"),
+        url("@fonts/SVN-AleoItalic.svg#@fonts/SVN-AleoItalic") format("svg");
+    font-weight: normal;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "SVN-Aleo";
+    src: url("@fonts/SVN-AleoBold.eot");
+    src: url("@fonts/SVN-AleoBold.eot?#iefix") format("embedded-opentype"),
+        url("@fonts/SVN-AleoBold.woff2") format("woff2"),
+        url("@fonts/SVN-AleoBold.woff") format("woff"),
+        url("@fonts/SVN-AleoBold.ttf") format("truetype"),
+        url("@fonts/SVN-AleoBold.svg#@fonts/SVN-AleoBold") format("svg");
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "SVN-Aleo";
+    src: url("@fonts/SVN-AleoBoldItalic.eot");
+    src: url("@fonts/SVN-AleoBoldItalic.eot?#iefix") format("embedded-opentype"),
+        url("@fonts/SVN-AleoBoldItalic.woff2") format("woff2"),
+        url("@fonts/SVN-AleoBoldItalic.woff") format("woff"),
+        url("@fonts/SVN-AleoBoldItalic.ttf") format("truetype"),
+        url("@fonts/SVN-AleoBoldItalic.svg#@fonts/SVN-AleoBoldItalic")
+            format("svg");
+    font-weight: bold;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "SVN-Aleo";
+    src: url("@fonts/SVN-AleoRegular.eot");
+    src: url("@fonts/SVN-AleoRegular.eot?#iefix") format("embedded-opentype"),
+        url("@fonts/SVN-AleoRegular.woff2") format("woff2"),
+        url("@fonts/SVN-AleoRegular.woff") format("woff"),
+        url("@fonts/SVN-AleoRegular.ttf") format("truetype"),
+        url("@fonts/SVN-AleoRegular.svg#@fonts/SVN-AleoRegular") format("svg");
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "SVN-Aleo";
+    src: url("@fonts/SVN-AleoLight.eot");
+    src: url("@fonts/SVN-AleoLight.eot?#iefix") format("embedded-opentype"),
+        url("@fonts/SVN-AleoLight.woff2") format("woff2"),
+        url("@fonts/SVN-AleoLight.woff") format("woff"),
+        url("@fonts/SVN-AleoLight.ttf") format("truetype"),
+        url("@fonts/SVN-AleoLight.svg#@fonts/SVN-AleoLight") format("svg");
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "SVN-Bellico";
+    src: url("@fonts/SVN-Bellico.eot");
+    src: url("@fonts/SVN-Bellico.eot?#iefix") format("embedded-opentype"),
+        url("@fonts/SVN-Bellico.woff2") format("woff2"),
+        url("@fonts/SVN-Bellico.woff") format("woff"),
+        url("@fonts/SVN-Bellico.ttf") format("truetype"),
+        url("@fonts/SVN-Bellico.svg#@fonts/SVN-Bellico") format("svg");
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
+.bellico {
+    font-family: "SVN-Bellico", sans-serif;
+    font-weight: normal;
+}
+.aleo-bold-italic {
+    font-family: "SVN-Aleo", sans-serif;
+    font-weight: bold;
+    font-style: italic;
+}
+.aleo-italic {
+    font-family: "SVN-Aleo", sans-serif;
+    font-weight: normal;
+    font-style: italic;
+}
+.roboto-medium {
+    font-family: "Roboto", sans-serif;
+    font-weight: 500;
+}
+.roboto-regular {
+    font-family: "Roboto", sans-serif;
+    font-weight: 400;
+}
+.vulan-container {
+    .index {
+        z-index: 99;
+    }
+    .move {
+        color: #000;
+        background-color: #fff;
+        padding: 2.5px 8px;
+        border-radius: 3px;
+        -webkit-border-radius: 3px;
+        -moz-border-radius: 3px;
+        -ms-border-radius: 3px;
+        -o-border-radius: 3px;
+        font-family: "Roboto";
+        font-weight: 500;
+        font-size: 18px;
+        line-height: 20px;
+        margin-left: 5px;
+    }
+    .edit {
+        color: #000;
+        background-color: #fff;
+        width: 23px;
+        height: 23px;
+        border-radius: 3px;
+        -webkit-border-radius: 3px;
+        -moz-border-radius: 3px;
+        -ms-border-radius: 3px;
+        -o-border-radius: 3px;
+        font-size: 18px;
+        list-style: 23px;
+    }
+    .flex {
+        display: flex;
+    }
+    .flex-end {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+    }
+    .title-vulan {
+        h1 {
+            font-size: 170px;
+            line-height: 100%;
+            margin: 0;
+        }
+        .aleo-bold-italic {
+            font-size: 170px;
+            line-height: 100%;
+        }
+        .aleo-italic {
+            line-height: 100%;
+            font-size: 26px;
+            letter-spacing: 3px;
+            position: absolute;
+            right: 5px;
+            bottom: -10px;
+        }
+    }
+    .content-desc {
+        font-family: "SVN-Aleo";
+        font-size: 24px;
+        line-height: 100%;
+        display: flex;
+        align-items: center;
+        p {
+            margin-top: 0 !important;
+            margin-bottom: 5px !important;
+        }
+    }
+    #draggableDesc {
+        max-width: 500px;
+        text-align: center;
+        padding: 0;
+    }
+    .editImages {
+        position: absolute;
+        right: 30px;
+        top: 30px;
+        z-index: 11;
+        .button {
+            border-radius: 3px;
+            color: #000;
+            background-color: #fff;
+            font-size: 18px;
+            line-height: 20px;
+            padding: 2.5px 8px;
+            height: auto;
+            border: 0;
+            transition: all 0.3s ease-in-out;
+            -webkit-transition: all 0.3s ease-in-out;
+            -moz-transition: all 0.3s ease-in-out;
+            -ms-transition: all 0.3s ease-in-out;
+            -o-transition: all 0.3s ease-in-out;
+            i {
+                font-size: 18px;
+                margin-left: 3px;
+            }
+            .uploadImages {
+                display: flex;
+                align-items: center;
+            }
+        }
+        .itemImage {
+            padding: 10px;
+            background: #fff;
+            display: flex;
+            flex-wrap: wrap;
+            flex-direction: column;
+            align-items: center;
+        }
+    }
+    .wrap-button {
+        position: absolute;
+        right: 30px;
+        bottom: 30px;
+        .button {
+            color: #000;
+            background-color: #fff;
+            font-size: 18px;
+            line-height: 20px;
+            padding: 2.5px 8px;
+            height: auto;
+            border: 0;
+            transition: all 0.3s ease-in-out;
+            -webkit-transition: all 0.3s ease-in-out;
+            -moz-transition: all 0.3s ease-in-out;
+            -ms-transition: all 0.3s ease-in-out;
+            -o-transition: all 0.3s ease-in-out;
+            i {
+                font-size: 18px;
+                margin-left: 3px;
+            }
+            // &:hover {
+            //     background-color: #ed8b33;
+            //     transition: all 0.3s ease-in-out;
+            //     -webkit-transition: all 0.3s ease-in-out;
+            //     -moz-transition: all 0.3s ease-in-out;
+            //     -ms-transition: all 0.3s ease-in-out;
+            //     -o-transition: all 0.3s ease-in-out;
+            //     color: #fff;
+            // }
+        }
+    }
+}
