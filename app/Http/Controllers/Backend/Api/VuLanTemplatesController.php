@@ -84,7 +84,7 @@ class VuLanTemplatesController extends Controller
     }
 
     public function create(Request $request): \Illuminate\Http\JsonResponse
-    {dd($request->all());
+    {
         try {
             $filesData = [];
             $files = $request->file('files');
@@ -97,7 +97,7 @@ class VuLanTemplatesController extends Controller
 
             $content = $this->historyRepo->convertContent($request->input("template_id"), $request->input("content"), $filesData);
 
-            $this->historyRepo->create([
+            $data = $this->historyRepo->create([
                 "template_id" => $request->input("template_id"),
                 "history_id" => $request->input("history_id"),
                 "content" => json_encode($content),
@@ -105,7 +105,7 @@ class VuLanTemplatesController extends Controller
 
             $results = array(
                 'success' => true,
-                'data' => $userFiles,
+                'data' => $data,
                 'message' => $this->msg->getSuccess(),
                 'status' => ResponseAlias::HTTP_OK
             );
