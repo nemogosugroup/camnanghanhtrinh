@@ -44,21 +44,17 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::get('store', [AuthController::class, 'store']);
         Route::post('add', [AuthController::class, 'add']);
         Route::get('get', [AuthController::class, 'getCourseEquipment']);
-
-        Route::get('/', [AuthController::class, 'user']);
-        Route::group(['prefix' => 'equipment'], function () {
-            Route::get('list-inventory-items', [EquipmentController::class, 'getInventoryItems']);
-            Route::get('list-equipped-items', [EquipmentController::class, 'getEquippedItems']);
-            Route::post('remove-equipped-item', [EquipmentController::class, 'removeEquippedItem']);
-            Route::post('use-equipment', [EquipmentController::class, 'useEquipment']);
-        });
-
-        ## VuLan ##
         Route::group(['prefix' => 'vulan-templates'], function () {
             Route::get('list', [VuLanController::class, 'templateList']);
             Route::get('detail/{id}', [VuLanController::class, 'templateDetail']);
             Route::post('upload-preview-video', [VuLanController::class, 'uploadPreviewVideo']);
             Route::post('user-submit', [VuLanController::class, 'userSave']);
+        });
+        Route::group(['prefix' => 'equipment'], function () {
+            Route::get('list-inventory-items', [EquipmentController::class, 'getInventoryItems']);
+            Route::get('list-equipped-items', [EquipmentController::class, 'getEquippedItems']);
+            Route::post('remove-equipped-item', [EquipmentController::class, 'removeEquippedItem']);
+            Route::post('use-equipment', [EquipmentController::class, 'useEquipment']);
         });
     });
     Route::group(['prefix' => 'role'], function () {
@@ -74,4 +70,11 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::post('create', [QuestController::class, 'create']);
         Route::post('update', [QuestController::class, 'update']);
     });
+});
+## VuLan ##
+Route::group(['prefix' => 'vulan-templates'], function () {
+    Route::get('list', [VuLanController::class, 'templateList']);
+    Route::get('detail/{id}', [VuLanController::class, 'templateDetail']);
+    // Route::post('upload-preview-video', [VuLanController::class, 'uploadPreviewVideo']);
+    // Route::post('user-submit', [VuLanController::class, 'userSave']);
 });

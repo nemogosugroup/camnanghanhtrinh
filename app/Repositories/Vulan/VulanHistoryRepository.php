@@ -40,14 +40,12 @@ class VulanHistoryRepository extends BaseRepository implements VuLanHistoryRepos
     public function convertContent(int $templateId, string $rqContent, array $filesData)
     {
         $result = json_decode($rqContent, true);
-//        if ($templateId === 1) {
-        if ($templateId === 1) {
-            $result['items'] = $filesData;
 
+        if ($templateId === 1) {
+            $result['slider_1']['items'] = $filesData;
         } else if ($templateId === 2) {
 
         }
-
         return $result;
     }
 }

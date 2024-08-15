@@ -42,7 +42,7 @@
                             </div>
                             <div
                                 :class="`content-wish ${!item.show_content ? 'hidden-content' : ''} ${isShow[index] ? 'show' : ''}`">
-                                <Descriptions :style="dataSlider.content.slider_1.desc.style"
+                                <Descriptions v-if="dataSlider" :style="dataSlider.content.slider_1.desc.style"
                                     :content="dataSlider.content.slider_1.desc.content" :isEdit="isEdit"
                                     @getContentDesc="handleContentDesc" />
                             </div>
@@ -52,17 +52,17 @@
                 <div v-else class="slider-images">
                     <el-image :key="index" :src="listImages[0].url" />
                     <div class="content-wish">
-                        <Descriptions :style="dataSlider.content.slider_1.desc.style"
+                        <Descriptions v-if="dataSlider" :style="dataSlider.content.slider_1.desc.style"
                             :content="dataSlider.content.slider_1.desc.content" :isEdit="isEdit"
                             @getContentDesc="handleContentDesc" />
                     </div>
                 </div>
-                <Logo :style="dataSlider.content.slider_1.logo.style" :isEdit="isEdit"
+                <Logo v-if="dataSlider" :style="dataSlider.content.slider_1.logo.style" :isEdit="isEdit"
                     @getStyleLogo="handleStyleLogo" />
-                <TitleVulan :style="dataSlider.content.slider_1.title.style" :isEdit="isEdit"
+                <TitleVulan v-if="dataSlider" :style="dataSlider.content.slider_1.title.style" :isEdit="isEdit"
                     @getStyleTitle="handleStyleTitle" />
-                <ButtonAction @handleShowHidePreview="handleShowHidePreview" :isCreate="isCreate"
-                    @create="handleCreate" />
+                <ButtonAction @handleShowHidePreview="handleShowHidePreview" :isCreate="isCreate" @create="handleCreate"
+                    :isEditPost="isEditPost" @edit="handleEdit" :isLoading="loading" />
             </div>
         </div>
     </div>
@@ -141,6 +141,8 @@ const dataSliderTemplate = {
         }
     }
 }
+import { mapGetters } from "vuex";
+import { ElMessage } from "element-plus";
 export default {
     name: 'Vulan',
     components: {
@@ -153,13 +155,9 @@ export default {
     },
     data() {
         return {
-            dataSlider: dataSliderTemplate,
+            dataSlider: false,
             allowTouchMove: true,
-            // styleLogo: dataSlider.content.slider_1.logo.style,
-            // styleTitle: dataSlider.content.slider_1.title.style,
-            // styleDesc: dataSlider.content.slider_1.desc.style,
-            // contentDesc: dataSlider.content.slider_1.desc.content,
-            colorBg: dataSliderTemplate.content.slider_1.background.color,
+            colorBg: '#ed8b33',
             colorBackground: null,
             listImages: [],
             countImages: 0,
@@ -169,7 +167,11 @@ export default {
             listItemImages: listImageDefault,
             isShow: [],
             isCreate: false,
-            listFiles: []
+            isEditPost: false,
+            listFiles: [],
+            user_id: false,
+            history_id: false,
+            loading: false,
         }
     },
     setup() {
@@ -189,19 +191,30 @@ export default {
     filters: {
 
     },
-
-    created() {
-        //this.listImages = this.dataSlider.content.slider_1.items;
+    computed: {
+        ...mapGetters(["user"]),
+    },
+    async created() {
         this.listImages = listImageDefault;
         this.countImages = this.listImages.length;
+        await this.getDetail();
+        this.colorBg = this.dataSlider.content.slider_1.background.color;
     },
     mounted() {
         this.colorBackground = this.colorBg
-
+        this.user_id = this.user.id
     },
     beforeDestroy() {
     },
     methods: {
+        async getDetail() {
+            const { data } = await vulanRepository.detail(1);
+            if (data.success) {
+                this.dataSlider = data.data;
+                this.dataSlider.template_id = data.data.id; // update template Id
+                this.dataSlider.id = false; // xoá id id này sẽ để dùng history_id
+            }
+        },
         changeColor() {
             this.colorBackground = this.colorBg;
             this.dataSlider.content.slider_1.background.color = this.colorBg;
@@ -223,6 +236,7 @@ export default {
                 if (type == 'slider_1') {
                     this.dataSlider.content.slider_1.title.style.left = data.left
                     this.dataSlider.content.slider_1.title.style.top = data.top
+                    this.dataSlider.content.slider_1.title.style.color = data.color
                 }
                 this.isCreate = true;
             }
@@ -277,8 +291,8 @@ export default {
             for (let index = 0; index < this.listItemImages.length; index++) {
                 const item = this.listItemImages[index];
                 let _item = {};
-                _item.url = "";
-                _item.type = "";
+                _item.url = item.url;
+                _item.type = "image";
                 _item.show_content = item.show_content;
                 itemImages.push(_item);
             }
@@ -286,7 +300,6 @@ export default {
         },
         // show hide preview
         handleShowHidePreview(data) {
-            console.log('dataSlider.content.slider_1.desc.content', this.dataSlider.content.slider_1.desc.content)
             this.isEdit = data // show hide prevew
         },
         // show content (lời chúc)
@@ -294,18 +307,89 @@ export default {
             this.isShow[index] = !this.isShow[index];
         },
         //update
+        async handleEdit(check) {
+            if (check && this.dataSlider.id) {
+                this.loading = true;
+                const formData = new FormData();
+                console.log('this.dataSlider.content', this.dataSlider.content);
+                formData.append("content", JSON.stringify(this.dataSlider.content));
+                formData.append("user_id", this.user_id);
+                formData.append("template_id", this.dataSlider.template_id);
+                if (this.listFiles.length > 0) {
+                    this.listFiles.forEach((file, index) => {
+                        formData.append(`files[${index}][file]`, file);
+                        formData.append(`files[${index}][type]`, "image");
+                        formData.append(`files[${index}][show_content]`, this.listItemImages[index].show_content ? 1 : 0);
+                    });
+                    this.listFiles = [];
+                }
+                try {
+                    const { data } = await vulanRepository.update(formData, this.dataSlider.id);
+                    if (data.success) {
+                        this.dataSlider = data.data;
+                        this.isEditPost = true;
+                        this.isCreate = false;
+                        ElMessage.success("cập nhập thành công");
+                        this.listItemImages = this.dataSlider.content.slider_1.items.map((item) => {
+                            const data = {
+                                "show_content": item.show_content == "1" ? true : false,
+                                "url": item.url,
+                                "type": item.type,
+                            }
+                            return data;
+                        });
+                    }
+                } catch (error) {
+                    console.error('error', error)
+                }
+                this.loading = false;
+            }
+        },
         //create
         async handleCreate(check) {
             if (check) {
+                this.loading = true;
                 const formData = new FormData();
                 // Thêm nhiều file vào FormData
-                if (this.listFiles.length > 0) {
-                    this.listFiles.forEach((file, index) => {
-                        formData.append(`files[${index}]`, file);
-                    });
+                if (this.user_id) {
+                    if (this.listFiles.length > 0) {
+                        this.listFiles.forEach((file, index) => {
+                            formData.append(`files[${index}][file]`, file);
+                            formData.append(`files[${index}][type]`, "image");
+                            formData.append(`files[${index}][show_content]`, this.listItemImages[index].show_content ? 1 : 0);
+                        });
+                        formData.append("content", JSON.stringify(this.dataSlider.content));
+                        formData.append("template_id", this.dataSlider.template_id);
+                        formData.append("user_id", this.user_id);
+                        try {
+                            const { data } = await vulanRepository.create(formData);
+                            if (data.success) {
+                                this.dataSlider = data.data;
+                                this.isEditPost = true;
+                                this.isCreate = false;
+                                this.listItemImages = this.dataSlider.content.slider_1.items.map((item) => {
+                                    const data = {
+                                        "show_content": item.show_content == "1" ? true : false,
+                                        "url": item.url,
+                                        "type": item.type,
+                                    }
+                                    return data;
+                                });
+                                this.listFiles = [];
+                                console.log('this.listItemImages', this.listItemImages);
+                                console.log('this.dataSlider.content.slider_1.items', this.dataSlider.content.slider_1.items);
+                                ElMessage.success("Tạo mới thành công");
+                            }
+                        } catch (error) {
+                            console.error('error', error)
+                        }
+                    } else {
+                        ElMessage.error("Vui lòng chọn ảnh nền");
+                    }
+                    this.loading = false;
+                } else {
+                    ElMessage.error("Bạn không có quyền tạo");
                 }
-                formData.append("content", JSON.stringify(this.dataSlider));
-                const { data } = await vulanRepository.create(formData);
             }
         }
     }
@@ -390,7 +474,7 @@ export default {
 .slider-images {
     .itemImage {
         width: 100%;
-        height: 100%;
+        height: 100vh;
         position: relative;
         transform: translateX(0%);
         transition: all .3s ease-in-out;

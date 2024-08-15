@@ -7,6 +7,7 @@ use App\Repositories\Vulan\VulanRepository;
 use App\Helpers\Message;
 use App\Helpers\Helpers;
 use App\Models\VuLanTemplate;
+use App\Models\VuLanHistory;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 
@@ -23,7 +24,7 @@ class VuLanController extends Controller
         VulanRepository $repo,
         Message         $message,
         Helpers         $helper,
-        VuLanTemplate $model
+        VuLanHistory $model
     )
     {
         $this->repo = $repo;
@@ -35,10 +36,12 @@ class VuLanController extends Controller
     public function templateList(): \Illuminate\Http\JsonResponse
     {
         try {
+            $templates = VuLanTemplate::all();
             $lists = $this->repo->getAll();
             $results = array(
                 'success' => true,
                 'data' => $lists,
+                'templates'=>$templates->toArray(),
                 'message' => $this->msg->getSuccess(),
                 'status' => ResponseAlias::HTTP_OK
             );
