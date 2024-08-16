@@ -16,9 +16,15 @@
                 <el-row :gutter="20">
                     <el-col :span="6" v-for="(item, index) in lists" :key="index">
                         <div class="item-vulan">
-                            <el-image :src="item.demo_img ? item.demo_img : imagesDefault" />
+                            <el-image v-if="item.template_id == 1"
+                                :src="item.content.slider_1.items.length > 0 ? item.content.slider_1.items[0]['url'] : imagesDefault"
+                                :fit="`cover`" />
+                            <el-image v-if="item.template_id == 2"
+                                :src="item.content.slider_2.items.length > 0 ? item.content.slider_2.items[0]['url'] : imagesDefault"
+                                :fit="`cover`" />
                             <div class="action" v-if="item.edit">
-                                <button @click="handleRemove(item.id)" style="cursor: pointer"><i class="ri-delete-bin-6-fill"></i></button>
+                                <button @click="handleRemove(item.id)" style="cursor: pointer"><i
+                                        class="ri-delete-bin-6-fill"></i></button>
                             </div>
                             <el-button type="warning" @click="handleReadmore(item.id)">Xem thêm</el-button>
                         </div>
@@ -34,7 +40,7 @@ import { mapGetters } from "vuex";
 import Navbar from './LayoutVuLan/components/Navbar';
 import RepositoryFactory from '@/utils/RepositoryFactory';
 import ImagesSlider1 from '@/assets/images/vulan/sl1.jpg';
-import {ElMessage} from "element-plus";
+import { ElMessage } from "element-plus";
 const vulanRepository = RepositoryFactory.get('vulan');
 export default {
     name: 'VuLanTemplates',
@@ -58,6 +64,7 @@ export default {
 
     async created() {
         await this.fetch();
+        console.log(this.lists);
     },
     computed: {
         ...mapGetters(["user"]),
@@ -126,7 +133,7 @@ export default {
     text-align: center;
 
     &:hover {
-        top: 10px;
+        top: -10px;
         transition: all .3s ease-in-out;
     }
 

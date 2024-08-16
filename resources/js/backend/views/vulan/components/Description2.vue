@@ -3,8 +3,8 @@
         :style="{ top: drapDesc.top + 'px', left: drapDesc.left + 'px' }">
         <div class="content-desc" :style="`background-image: url(${bg_textarea})`">
             <div @click="hanldeDestroy">
-                <Editor style="max-width: 400px;" v-model="drapDesc.content" :defaultConfig="editorConfig"
-                        :mode="mode" @onBlur="onEditorBlur" @onChange="onEditorBlur" />
+                <Editor style="max-width: 400px;" v-model="drapDesc.content" :defaultConfig="editorConfig" :mode="mode"
+                    @onBlur="onEditorBlur" @onChange="onEditorBlur" @click="handleSelectAll" />
             </div>
             <span class="edit"><i class="ri-edit-2-fill"></i></span>
         </div>
@@ -17,8 +17,6 @@
     </div>
 </template>
 <script>
-import { InlineEditor, Autosave, Essentials, FontColor, Paragraph, Undo } from 'ckeditor5';
-import 'ckeditor5/ckeditor5.css';
 import $ from 'jquery';
 import 'jquery-ui/ui/widgets/draggable';
 import '@wangeditor/editor/dist/css/style.css'
@@ -29,7 +27,7 @@ i18nChangeLanguage('en')
 
 export default {
     name: 'Descriptions2',
-    components: {Editor},
+    components: { Editor },
     props: {
         style: {
             type: Object,
@@ -59,14 +57,8 @@ export default {
                 content: this.content
             },
             color: this.style.color,
-            editorConfig: {
-                toolbar: {
-                    items: ['fontColor'],
-                    shouldNotGroupWhenFull: false
-                },
-                plugins: [Autosave, Essentials, FontColor, Paragraph, Undo],
-            },
-            editor: InlineEditor
+            editorDesc: null,
+            check: false,
         }
     },
     setup() {
@@ -79,6 +71,7 @@ export default {
     },
     mounted() {
         this.initDraggable();
+        window.addEventListener('click', this.handleClick);
     },
     watch: {
         isEdit(newVal) {
@@ -115,15 +108,38 @@ export default {
                 this.initDraggable(); // Khởi tạo lại draggable
             });
         },
-        onEditorBlur() {
+        onEditorBlur(editor) {
+            this.editorDesc = editor;
             this.$nextTick(() => {
                 this.initDraggable(); // Khởi tạo lại draggable
                 this.$emit('getContentDesc', this.drapDesc, 'slider_2');
             });
         },
         hanldeDestroy() {
-            $(this.$refs.draggable).draggable("destroy");
-        }
+            if ($(this.$refs.draggable).length > 0) {
+                $(this.$refs.draggable).draggable("destroy");
+            }
+        },
+        handleSelectAll(editor) {
+            if ($(this.$refs.draggable).length > 0) {
+                if (!this.check) {
+                    this.editorDesc.selectAll();
+                    this.check = true;
+                }
+            }
+        },
+        handleClick(event) {
+            const targetElement = event.target;
+            const classList = targetElement.classList;
+            if ($(this.$refs.draggable).length > 0) {
+                if (classList.value != '') {
+                    if (this.check) {
+                        this.editorDesc.deselect();
+                        this.check = false;
+                    }
+                }
+            }
+        },
     }
 }
 </script>
@@ -152,6 +168,7 @@ export default {
     position: absolute;
     color: #000;
 }
+
 .vulan-container .content-desc {
     align-items: start;
     width: 700px;
@@ -161,7 +178,8 @@ export default {
     padding-top: 70px;
     padding-left: 90px;
 }
-.vulan-container .content-desc > div {
+
+.vulan-container .content-desc>div {
     transform: rotate(1deg);
 }
 
