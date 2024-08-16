@@ -199,17 +199,25 @@ export default {
     computed: {
         ...mapGetters(["user"]),
     },
-    async created() {
+    created() {
         this.listImages = listImageDefault;
         this.countImages = this.listImages.length;
+        this.emitter.off("get-position-group-data");
         this.emitter.off("get-file-group-data");
-        await this.getDetail();
+        this.getDetail();
     },
     mounted() {
         this.colorBackground = this.colorBg
 
+        this.emitter.on("get-position-group-data", data => {
+            this.dataSlider.content.slider_2.main_items[data.idx].style.left = data.data.style.left;
+            this.dataSlider.content.slider_2.main_items[data.idx].style.top = data.data.style.top;
+            this.isCreate = true;
+        });
+
         this.emitter.on("get-file-group-data", data => {
-            this.dataSlider.content.slider_2.main_items[data.idx] = data.data;
+            this.dataSlider.content.slider_2.main_items[data.idx].type = data.data.type;
+            this.dataSlider.content.slider_2.main_items[data.idx].url = data.data.url;
             this.listMainFiles[data.idx] = data.data.file;
             this.isCreate = true;
         });

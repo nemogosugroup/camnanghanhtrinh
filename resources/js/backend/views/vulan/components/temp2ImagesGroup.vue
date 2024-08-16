@@ -108,8 +108,8 @@ export default {
                     stop: (event, ui) => {
                         const position = ui.position;
                         item.style.left = position.left;
-                        item.style.right = position.right;
-                        $this.emitter.emit("get-img-group-data", {data: item, idx: idx});
+                        item.style.top = position.top;
+                        $this.emitter.emit("get-position-group-data", {data: item, idx: idx});
                     }
                 });
             });
