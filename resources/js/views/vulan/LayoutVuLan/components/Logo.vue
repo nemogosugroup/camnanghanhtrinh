@@ -1,12 +1,9 @@
 <template>
     <div class="sidebar-logo-container" :class="{ 'collapse': collapse }">
         <transition name="sidebarLogoFade">
-            <router-link v-if="checkUser" class="sidebar-logo-link" to="/so-tay-hanh-trinh">
+            <div class="sidebar-logo-link" @click="redirectRouter">
                 <img v-if="logo" :src="logo" class="sidebar-logo">
-            </router-link>
-            <router-link v-else class="sidebar-logo-link" to="/">
-                <img v-if="logo" :src="logo" class="sidebar-logo">
-            </router-link>
+            </div>
         </transition>
     </div>
 </template>
@@ -36,6 +33,15 @@ export default {
     created() {
         this.checkUser = Object.keys(this.user).length > 0 ? true : false;
     },
+    methods: {
+        redirectRouter() {
+            if (this.checkUser) {
+                this.$router.push(`/so-tay-hanh-trinh/`);
+            } else {
+                this.$router.push(`/vulan/index`);
+            }
+        }
+    }
 }
 </script>
 
@@ -59,6 +65,7 @@ export default {
     & .sidebar-logo-link {
         height: 100%;
         width: 100%;
+        cursor: pointer;
 
         & .sidebar-logo {
             height: 32px;
