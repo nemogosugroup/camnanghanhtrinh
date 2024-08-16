@@ -124,6 +124,7 @@ export default {
         onEditorBlur() {
             this.$nextTick(() => {
                 this.initDraggable(); // Khởi tạo lại draggable
+                this.$emit('getContentDesc', this.drapDesc, 'slider_1');
             });
         },
         hanldeDestroy() {

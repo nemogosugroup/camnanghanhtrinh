@@ -33,7 +33,7 @@
                             @getStyleTitle="handleStyleTitle"/>
                 <Temp2ImagesGroup :data="dataSlider.content.slider_2.main_items" :isEdit="isEdit"/>
                 <ButtonAction @handleShowHidePreview="handleShowHidePreview" :isCreate="isCreate"
-                              @create="handleCreate"/>
+                              :isEditPost="isEditPost" @create="handleCreate"/>
             </div>
         </div>
     </div>
@@ -58,6 +58,8 @@ import 'swiper/css/effect-cube';
 
 //repository
 import AdminRepositoryFactory from '@/backend/respository';
+import {ElMessage} from "element-plus";
+import {mapGetters} from "vuex";
 
 const vulanRepository = AdminRepositoryFactory.get('vulan');
 const listImageDefault = [
@@ -164,7 +166,11 @@ export default {
             listItemImages: listImageDefault,
             isShow: [],
             isCreate: false,
-            listFiles: []
+            isEditPost: false,
+            listFiles: [],
+            listMainFiles: [],
+            user_id: false,
+            history_id: false
         }
     },
     setup() {
@@ -181,21 +187,35 @@ export default {
         };
     },
     filters: {},
-
-    created() {
+    computed: {
+        ...mapGetters(["user"]),
+    },
+    async created() {
         this.listImages = listImageDefault;
         this.countImages = this.listImages.length;
-        this.emitter.off("get-img-group-data");
+        this.emitter.off("get-file-group-data");
+        await this.getDetail();
     },
     mounted() {
         this.colorBackground = this.colorBg
-        this.emitter.on("get-img-group-data", data => {
-            this.dataSlider.content.slider_2.items[data.idx] = data.data;
+        this.emitter.on("get-file-group-data", data => {
+            this.dataSlider.content.slider_2.main_items[data.idx] = data.data;
+            this.listMainFiles.push(data.data.file);
+            this.isCreate = true;
         });
+        this.user_id = this.user.id
     },
     beforeDestroy() {
     },
     methods: {
+        async getDetail() {
+            const { data } = await vulanRepository.detail(2);
+            if (data.success) {
+                this.dataSlider = data.data;
+                this.dataSlider.template_id = data.data.id; // update template Id
+                this.dataSlider.id = false; // xoá id id này sẽ để dùng history_id
+            }
+        },
         changeColor() {
             this.colorBackground = this.colorBg;
             this.dataSlider.content.slider_2.background.color = this.colorBg;
@@ -282,18 +302,93 @@ export default {
             this.isShow[index] = !this.isShow[index];
         },
         //update
+        async handleEdit(check) {
+            if (check && this.dataSlider.id) {
+                this.loading = true;
+                const formData = new FormData();
+                console.log('this.dataSlider.content', this.dataSlider.content);
+                formData.append("content", JSON.stringify(this.dataSlider.content));
+                formData.append("user_id", this.user_id);
+                formData.append("template_id", this.dataSlider.id);
+                if (this.listFiles.length > 0) {
+                    this.listFiles.forEach((file, index) => {
+                        formData.append(`files[${index}][file]`, file);
+                        formData.append(`files[${index}][type]`, "image");
+                        formData.append(`files[${index}][show_content]`, this.listItemImages[index].show_content ? 1 : 0);
+                    });
+                    this.listFiles = [];
+                }
+                try {
+                    const { data } = await vulanRepository.update(formData, this.dataSlider.id);
+                    if (data.success) {
+                        this.dataSlider = data.data;
+                        this.isEditPost = true;
+                        this.isCreate = false;
+                        ElMessage.success("cập nhập thành công");
+                        this.listItemImages = this.dataSlider.content.slider_2.items.map((item) => {
+                            const data = {
+                                "show_content": item.show_content == "1" ? true : false,
+                                "url": item.url,
+                                "type": item.type,
+                            }
+                            return data;
+                        });
+                    }
+                } catch (error) {
+                    console.error('error', error)
+                }
+                this.loading = false;
+            }
+        },
         //create
         async handleCreate(check) {
             if (check) {
+                this.loading = true;
                 const formData = new FormData();
                 // Thêm nhiều file vào FormData
-                if (this.listFiles.length > 0) {
-                    this.listFiles.forEach((file, index) => {
-                        formData.append(`files[${index}]`, file);
-                    });
+                if (this.user_id) {
+                    if (this.listFiles.length > 0) {
+                        this.listFiles.forEach((file, index) => {
+                            formData.append(`files[${index}][file]`, file);
+                            formData.append(`files[${index}][type]`, "image");
+                            formData.append(`files[${index}][show_content]`, 1);
+                        });
+                    } else {
+                        ElMessage.error("Vui lòng chọn ảnh nền");
+                    }
+
+                    if (this.listMainFiles.length > 3) {
+                        this.listMainFiles.forEach((file, index) => {console.log()
+                            formData.append(`main_files[${index}][file]`, file);
+                            formData.append(`main_files[${index}][type]`, file.type.includes("video") ? "video" : "image");
+                        });
+                    } else {
+                        ElMessage.error("Vui lòng chọn đủ các file chính");
+                    }
+
+                    if (this.listFiles.length > 0 && this.listMainFiles.length > 3) {
+                        formData.append("content", JSON.stringify(this.dataSlider.content));
+                        formData.append("template_id", this.dataSlider.id);
+                        formData.append("user_id", this.user_id);
+                        try {
+                            const { data } = await vulanRepository.create(formData);
+                            if (data.success) {
+                                this.dataSlider = data.data;
+                                this.isEditPost = true;
+                                this.isCreate = false;
+                                this.listFiles = [];
+                                this.listMainFiles = [];
+                                ElMessage.success("Tạo mới thành công");
+                            }
+                        } catch (error) {
+                            console.error('error', error)
+                        }
+                    }
+
+                    this.loading = false;
+                } else {
+                    ElMessage.error("Bạn không có quyền tạo");
                 }
-                formData.append("content", JSON.stringify(this.dataSlider));
-                const {data} = await vulanRepository.create(formData);
             }
         }
     }

@@ -3,8 +3,8 @@
         :style="{ top: drapDesc.top + 'px', left: drapDesc.left + 'px' }">
         <div class="content-desc" :style="`background-image: url(${bg_textarea})`">
             <div @click="hanldeDestroy">
-                <ckeditor :editor="editor" v-model="drapDesc.content" :config="editorConfig" @input="onEditorInput"
-                    @blur="onEditorBlur" />
+                <Editor style="max-width: 400px;" v-model="drapDesc.content" :defaultConfig="editorConfig"
+                        :mode="mode" @onBlur="onEditorBlur" @onChange="onEditorBlur" />
             </div>
             <span class="edit"><i class="ri-edit-2-fill"></i></span>
         </div>
@@ -21,10 +21,15 @@ import { InlineEditor, Autosave, Essentials, FontColor, Paragraph, Undo } from '
 import 'ckeditor5/ckeditor5.css';
 import $ from 'jquery';
 import 'jquery-ui/ui/widgets/draggable';
-import 'jquery-ui/ui/widgets/draggable';
+import '@wangeditor/editor/dist/css/style.css'
+import { Editor, Toolbar } from '@wangeditor/editor-for-vue';
+import { i18nChangeLanguage } from '@wangeditor/editor'
+
+i18nChangeLanguage('en')
+
 export default {
     name: 'Descriptions2',
-    components: {},
+    components: {Editor},
     props: {
         style: {
             type: Object,
@@ -99,10 +104,10 @@ export default {
         hanldeEmitData(left, top) {
             this.drapDesc.left = left;
             this.drapDesc.top = top;
-            this.$emit('getContentDesc', this.drapDesc, 'slider_1');
+            this.$emit('getContentDesc', this.drapDesc, 'slider_2');
         },
         onEditorInput() {
-            this.$emit('getContentDesc', this.drapDesc, 'slider_1');
+            this.$emit('getContentDesc', this.drapDesc, 'slider_2');
         },
         reloadDraggable() {
             $(this.$refs.draggable).draggable("destroy"); // Hủy draggable hiện tại
@@ -113,6 +118,7 @@ export default {
         onEditorBlur() {
             this.$nextTick(() => {
                 this.initDraggable(); // Khởi tạo lại draggable
+                this.$emit('getContentDesc', this.drapDesc, 'slider_2');
             });
         },
         hanldeDestroy() {
@@ -157,5 +163,19 @@ export default {
 }
 .vulan-container .content-desc > div {
     transform: rotate(1deg);
+}
+
+:deep(.w-e-text-container) {
+    background-color: transparent;
+    border: 0;
+    color: #000;
+
+    .w-e-bar-show {
+        top: -100% !important
+    }
+}
+
+#draggableDesc {
+    z-index: 991;
 }
 </style>

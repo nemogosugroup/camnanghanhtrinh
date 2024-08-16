@@ -160,13 +160,13 @@ export default {
                     };
                     reader.readAsDataURL(file);
 
-                    this.data[`${number - 1}`].file = file;
                 } else {
                     this.data[`${number - 1}`].url = this.userSubmitPreviewVideo(file, number - 1);
                     this.data[`${number - 1}`].type = "video";
                 }
 
-                this.emitter.emit("get-img-group-data", {data: this.data[`${number - 1}`], idx: number - 1});
+                this.data[`${number - 1}`].file = file;
+                this.emitter.emit("get-file-group-data", {data: this.data[`${number - 1}`], idx: number - 1});
             }
         },
         userSubmitPreviewVideo(videoFile, number) {

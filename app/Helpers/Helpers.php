@@ -121,9 +121,6 @@ class Helpers {
      */
     public function upLoadVuLanPreviewVideo($file){
         $folderName = 'static/vulan/uploads/preview-video/' . auth()->user()->id;
-        if (File::exists($folderName)) {
-            File::deleteDirectory($folderName);
-        }
         $path = public_path() . '/' . $folderName;
         if (!is_dir($path)) {
             mkdir($path, 0755);
