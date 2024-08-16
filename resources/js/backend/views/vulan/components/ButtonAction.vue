@@ -102,7 +102,12 @@ export default {
         shareFacebook() {
             let url = window.location.href;
             let title = "Vu Lan 2024";
-            let facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}&t=${encodeURIComponent(title)}`;
+
+            let description = 'Hình ảnh đẹp của gia đình bạn trong ngày lễ Vu Lan';
+            let imageUrl = 'https://camnanghanhtrinh.gosucorp.vn/images/sl1.jpg';
+
+            let facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}&t=${encodeURIComponent(title)}&description=${encodeURIComponent(description)}&picture=${encodeURIComponent(imageUrl)}`;
+
             window.open(facebookUrl, "pop", "width=768, height=768, scrollbars=no");
         }
     }
