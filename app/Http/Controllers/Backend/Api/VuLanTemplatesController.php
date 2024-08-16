@@ -10,6 +10,7 @@ use App\Helpers\Message;
 use App\Helpers\Helpers;
 use App\Models\VuLanTemplate;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 
 class VuLanTemplatesController extends Controller
@@ -86,6 +87,7 @@ class VuLanTemplatesController extends Controller
     public function create(Request $request): \Illuminate\Http\JsonResponse
     {
         try {
+            $templateId = (int) $request->input('template_id');
             $filesData = [];
             $files = $request->file('files');
             $types = $request->input('files');
@@ -94,14 +96,31 @@ class VuLanTemplatesController extends Controller
                 $filesData[$idx]['type'] = $types[$idx]['type'];
                 $filesData[$idx]['show_content'] = $types[$idx]['show_content'];
             }
-            $content = $this->historyRepo->convertContent($request->input("template_id"), $request->input("content"), $filesData);
+            if ($templateId === 2) {
+                $mainFilesData = [];
+                $mainFiles = $request->file('main_files');
+                $mainTypes = $request->input('main_files');
+                foreach ($mainFiles as $idx => $data) {
+                    $mainFilesData[$idx]['url'] = $this->helper->upLoadVuLanFiles($data['file']);
+                    $mainFilesData[$idx]['type'] = $mainTypes[$idx]['type'];
+                }
+                $folderPreview = 'static/vulan/uploads/preview-video/' . auth()->user()->id;
+                if (File::exists($folderPreview)) {
+                    File::deleteDirectory($folderPreview);
+                }
+
+                $content = $this->historyRepo->convertContentSlider2($request->input("content"), $filesData, $mainFilesData);
+            } else {
+                $content = $this->historyRepo->convertContent($request->input("content"), $filesData);
+            }
+
 
             $data = $this->historyRepo->create([
-                "template_id" => $request->input("template_id"),
+                "template_id" => $templateId,
                 "history_id" => $request->input("history_id"),
                 "content" => json_encode($content),
                 "user_id" => $request->input("user_id"),
-                "name" => "Template".$request->input("template_id"),
+                "name" => "Template ".$templateId,
             ]);
             $results = array(
                 'success' => true,
@@ -156,7 +175,7 @@ class VuLanTemplatesController extends Controller
                     $filesData[$idx]['type'] = $types[$idx]['type'];
                     $filesData[$idx]['show_content'] = $types[$idx]['show_content'];
                 }
-                $content = $this->historyRepo->convertContent($request->input("template_id"), $request->input("content"), $filesData);
+                $content = $this->historyRepo->convertContent($request->input("content"), $filesData);
             }else{
                 $content = json_decode($request->input("content"), true);
             }

@@ -19,7 +19,7 @@ const templateVulanRouter = {
         },
         {
             path: "template-2",
-            component: Slider1,
+            component: Slider2,
             name: "Template2",
             meta: {
                 title: "Vu lan",
@@ -27,17 +27,7 @@ const templateVulanRouter = {
                 affix: true,
             },
             hidden: true,
-        },
-        {
-            path: "template-2",
-            component: Slider2,
-            name: "Template2",
-            meta: {
-                title: "Vu lan Template 2",
-                icon: "ri-hand-heart-fill",
-                affix: true,
-            },
-        },
+        }
     ]
 };
 
