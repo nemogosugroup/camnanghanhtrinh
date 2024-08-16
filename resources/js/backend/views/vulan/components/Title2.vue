@@ -80,7 +80,7 @@ export default {
         hanldeEmitData(left, top) {
             this.drapTitle.left = left;
             this.drapTitle.top = top;
-            this.$emit('getStyleTitle', this.drapTitle, 'slider_1');
+            this.$emit('getStyleTitle', this.drapTitle, 'slider_2');
         },
         initDraggable() {
             const draggableElement = $(this.$refs.draggable);

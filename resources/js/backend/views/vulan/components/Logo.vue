@@ -84,7 +84,7 @@ export default {
         hanldeEmitData(left, top) {
             this.drapLogo.left = left;
             this.drapLogo.top = top;
-            this.$emit('getStyleLogo', this.drapLogo, 'slider_1');
+            this.$emit('getStyleLogo', this.drapLogo, 'slider_2');
         },
         reloadDraggable() {
             $(this.$refs.draggable).draggable("destroy"); // Hủy draggable hiện tại
