@@ -3,11 +3,14 @@
         <div class="container-slider vulan-container">
             <div ref="slider" class="slider-1 bg" :style="`background-color:${colorBg}`">
                 <div v-if="isEdit" class="editImages">
+                    <span class="button roboto-medium" @click="hanldeBack">
+                        <span class="text">Trở lại</span> <i class="ri-arrow-go-back-line"></i>
+                    </span>
                     <div class="uploadImages">
                         <span class="button roboto-medium">
                             <input class="hidden-input" type="file" multiple @change="(event) => handleUpload(event)"
                                 accept="image/jpeg">
-                            <span class="text">Chỉnh sửa</span> <i class="ri-edit-2-fill"></i>
+                            <span class="text">Thêm ảnh</span> <i class="ri-edit-2-fill"></i>
                         </span>
                         <span class="change-color"><el-color-picker v-model="colorBg" @change="changeColor" /></span>
                     </div>
@@ -23,19 +26,19 @@
                         </div>
                     </div>
                 </div>
+                <div v-else class="editImages">
+                    <span class="button roboto-medium" @click="hanldeBack">
+                        <span class="text">Trở lại</span> <i class="ri-arrow-go-back-line"></i>
+                    </span>
+                </div>
                 <div v-if="!isEdit" class="slider-images">
-                    <swiper :effect="'cube'" :grabCursor="true" :pagination="true" :cubeEffect="{
-                        shadow: false,
-                        slideShadows: false,
-                        shadowOffset: 0,
-                        shadowScale: 0,
-                    }" :modules="modules" :autoplay="{
-                        delay: 10000000,
+                    <swiper :effect="'fade'" :grabCursor="true" :modules="modules" :autoplay="{
+                        delay: 2000,
                         disableOnInteraction: false,
                     }" class="mySwiper">
                         <swiper-slide v-for="(item, index) in listItemImages" :key="index">
                             <div :class="`itemImage ${isShow[index] ? 'hide' : ''}`">
-                                <el-image :src="item.url" />
+                                <el-image :src="item.url" :fit="`cover`" />
                                 <span v-if="!item.show_content" class="show-content"
                                     @click="handleShowContent(index)"><i ref="icon"
                                         :class="`${isShow[index] ? 'ri-arrow-right-circle-line' : 'ri-arrow-left-circle-line'}`"></i></span>
@@ -50,7 +53,7 @@
                     </swiper>
                 </div>
                 <div v-else class="slider-images">
-                    <el-image :key="index" :src="listImages[0].url" />
+                    <el-image :key="index" :src="listImages[0].url" :fit="`cover`" />
                     <div class="content-wish">
                         <Descriptions v-if="dataSlider" :style="dataSlider.content.slider_1.desc.style"
                             :content="dataSlider.content.slider_1.desc.content" :isEdit="isEdit"
@@ -62,7 +65,7 @@
                 <TitleVulan v-if="dataSlider" :style="dataSlider.content.slider_1.title.style" :isEdit="isEdit"
                     @getStyleTitle="handleStyleTitle" />
                 <ButtonAction @handleShowHidePreview="handleShowHidePreview" :isCreate="isCreate"
-                              :isEditPost="isEditPost" :isPublic="true" @create="handleCreate" :isLoading="loading"/>
+                    :isEditPost="isEditPost" :isPublic="true" @create="handleCreate" :isLoading="loading" />
             </div>
         </div>
     </div>
@@ -71,20 +74,21 @@
         <div class="container-slider vulan-container">
             <div ref="slider" class="slider-1 bg" :style="`background-color:${colorBg}`">
                 <div class="slider-images BG">
-                    <el-image :key="index" :src="dataSlider.content.slider_2.items[dataSlider.content.slider_2.items.length - 1].url"/>
+                    <el-image :key="index"
+                        :src="dataSlider.content.slider_2.items[dataSlider.content.slider_2.items.length - 1].url" />
                     <div class="content-wish">
                         <Descriptions2 :style="dataSlider.content.slider_2.desc.style"
-                                      :content="dataSlider.content.slider_2.desc.content" :isEdit="isEdit"
-                                      @getContentDesc="handleContentDesc"/>
+                            :content="dataSlider.content.slider_2.desc.content" :isEdit="isEdit"
+                            @getContentDesc="handleContentDesc" />
                     </div>
                 </div>
                 <Logo :style="dataSlider.content.slider_2.logo.style" :isEdit="isEdit"
-                      @getStyleLogo="handleStyleLogo"/>
+                    @getStyleLogo="handleStyleLogo" />
                 <TitleVulan2 :style="dataSlider.content.slider_2.title.style" :isEdit="isEdit"
-                            @getStyleTitle="handleStyleTitle"/>
-                <Temp2ImagesGroup :data="dataSlider.content.slider_2.main_items" :isEdit="isEdit"/>
+                    @getStyleTitle="handleStyleTitle" />
+                <Temp2ImagesGroup :data="dataSlider.content.slider_2.main_items" :isEdit="isEdit" />
                 <ButtonAction @handleShowHidePreview="handleShowHidePreview" :isCreate="isCreate"
-                              :isEditPost="isEditPost" :isPublic="true" @create="handleCreate" :isLoading="loading"/>
+                    :isEditPost="isEditPost" :isPublic="true" @create="handleCreate" :isLoading="loading" />
             </div>
         </div>
     </div>
@@ -98,7 +102,7 @@ import TitleVulan2 from '@/backend/views/vulan/components/Title2.vue';
 import Logo from '@/backend/views/vulan/components/Logo.vue';
 import ButtonAction from '@/backend/views/vulan/components/ButtonAction.vue';
 import ImagesSlider1 from '@/assets/images/vulan/sl1.jpg';
-import { Navigation, Pagination, Scrollbar, A11y, EffectCards, Autoplay, EffectCube } from 'swiper/modules';
+import { Navigation, Pagination, Scrollbar, A11y, EffectCards, Autoplay, EffectCube, EffectFade } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/vue';
 
 // Import Swiper styles
@@ -174,7 +178,7 @@ export default {
         return {
             onSwiper,
             onSlideChange,
-            modules: [Navigation, Pagination, Scrollbar, A11y, EffectCards, Autoplay, EffectCube],
+            modules: [Navigation, Pagination, Scrollbar, A11y, EffectCards, Autoplay, EffectCube, EffectFade],
             //modules: [],
         };
     },
@@ -234,6 +238,9 @@ export default {
         // show content (lời chúc)
         handleShowContent(index) {
             this.isShow[index] = !this.isShow[index];
+        },
+        hanldeBack() {
+            this.$router.push({ name: "VuLanIndex" });
         },
     }
 }
@@ -338,7 +345,7 @@ export default {
         font-size: 50px;
         position: absolute;
         top: 50%;
-        z-index: 999;
+        z-index: 9999;
         right: 10px;
         transform: translate(0px, -50%);
         cursor: pointer;

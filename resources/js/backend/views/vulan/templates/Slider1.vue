@@ -3,11 +3,14 @@
         <div class="container-slider vulan-container">
             <div ref="slider" class="slider-1 bg" :style="`background-color:${colorBg}`">
                 <div v-if="isEdit" class="editImages">
+                    <span class="button roboto-medium" @click="hanldeBack">
+                        <span class="text">Trở lại</span> <i class="ri-arrow-go-back-line"></i>
+                    </span>
                     <div class="uploadImages">
                         <span class="button roboto-medium">
                             <input class="hidden-input" type="file" multiple @change="(event) => handleUpload(event)"
                                 accept="image/jpeg">
-                            <span class="text">Chỉnh sửa</span> <i class="ri-edit-2-fill"></i>
+                            <span class="text">Thêm ảnh</span> <i class="ri-edit-2-fill"></i>
                         </span>
                         <span class="change-color"><el-color-picker v-model="colorBg" @change="changeColor" /></span>
                     </div>
@@ -23,14 +26,14 @@
                         </div>
                     </div>
                 </div>
+                <div v-else class="editImages">
+                    <span class="button roboto-medium" @click="hanldeBack">
+                        <span class="text">Trở lại</span> <i class="ri-arrow-go-back-line"></i>
+                    </span>
+                </div>
                 <div v-if="!isEdit" class="slider-images">
-                    <swiper :effect="'cube'" :grabCursor="true" :pagination="true" :cubeEffect="{
-                        shadow: false,
-                        slideShadows: false,
-                        shadowOffset: 0,
-                        shadowScale: 0,
-                    }" :modules="modules" :autoplay="{
-                        delay: 10000000,
+                    <swiper :effect="'fade'" :grabCursor="true" :modules="modules" :autoplay="{
+                        delay: 1000,
                         disableOnInteraction: false,
                     }" class="mySwiper">
                         <swiper-slide v-for="(item, index) in listItemImages" :key="index">
@@ -73,7 +76,7 @@ import TitleVulan from '@/backend/views/vulan/components/Title.vue';
 import Logo from '@/backend/views/vulan/components/Logo.vue';
 import ButtonAction from '@/backend/views/vulan/components/ButtonAction.vue';
 import ImagesSlider1 from '@/assets/images/vulan/sl1.jpg';
-import { Navigation, Pagination, Scrollbar, A11y, EffectCards, Autoplay, EffectCube } from 'swiper/modules';
+import { Navigation, Pagination, Scrollbar, A11y, EffectCards, Autoplay, EffectCube, EffectFade } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/vue';
 
 // Import Swiper styles
@@ -94,49 +97,6 @@ const listImageDefault = [
         show_content: true
     }
 ]
-const dataSliderTemplate = {
-    "id": 1,
-    "title": "Vu Lan Template No1",
-    "content": {
-        "slider_1": {
-            "background": {
-                "color": "#ed8b33"
-            },
-            "logo": {
-                "style": {
-                    "left": 25,
-                    "top": 25
-                }
-            },
-            "title": {
-                "style": {
-                    "left": 1180,
-                    "top": 300,
-                    "color": '#fff'
-                }
-            },
-            "desc": {
-                "content": "Nhập lời chúc của bản tại đây!",
-                "style": {
-                    "left": 1375,
-                    "top": 540
-                }
-            },
-            "items": [
-                {
-                    "type": "image",
-                    "url": "",
-                    "show_content": true,
-                },
-                {
-                    "type": "image",
-                    "url": "",
-                    "show_content": true,
-                },
-            ]
-        }
-    }
-}
 import { mapGetters } from "vuex";
 import { ElMessage } from "element-plus";
 
@@ -181,7 +141,7 @@ export default {
         return {
             onSwiper,
             onSlideChange,
-            modules: [Navigation, Pagination, Scrollbar, A11y, EffectCards, Autoplay, EffectCube],
+            modules: [Navigation, Pagination, Scrollbar, A11y, EffectCards, Autoplay, EffectCube, EffectFade],
             //modules: [],
         };
     },
@@ -389,7 +349,10 @@ export default {
                     ElMessage.error("Bạn không có quyền tạo");
                 }
             }
-        }
+        },
+        hanldeBack() {
+            this.$router.push({ name: "VuLanIndex" });
+        },
     }
 }
 
@@ -493,7 +456,7 @@ export default {
         font-size: 50px;
         position: absolute;
         top: 50%;
-        z-index: 999;
+        z-index: 9999;
         right: 10px;
         transform: translate(0px, -50%);
         cursor: pointer;
