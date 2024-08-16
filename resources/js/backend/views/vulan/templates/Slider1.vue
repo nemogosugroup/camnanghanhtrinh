@@ -3,10 +3,11 @@
         <div class="container-slider vulan-container">
             <div ref="slider" class="slider-1 bg" :style="`background-color:${colorBg}`">
                 <div v-if="isEdit" class="editImages">
-                    <span class="button roboto-medium" @click="hanldeBack">
-                        <span class="text">Trở lại</span> <i class="ri-arrow-go-back-line"></i>
-                    </span>
                     <div class="uploadImages">
+                        <span style="margin-right: 3px; cursor: pointer;" class="button roboto-medium"
+                            @click="hanldeBack">
+                            <span class="text">Trở lại</span> <i class="ri-arrow-go-back-line"></i>
+                        </span>
                         <span class="button roboto-medium">
                             <input class="hidden-input" type="file" multiple @change="(event) => handleUpload(event)"
                                 accept="image/jpeg">

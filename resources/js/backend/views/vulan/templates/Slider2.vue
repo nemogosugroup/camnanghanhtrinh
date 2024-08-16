@@ -3,7 +3,7 @@
         <div class="container-slider vulan-container">
             <div ref="slider" class="slider-1 bg" :style="`background-color:${colorBg}`">
                 <div v-if="isEdit" class="editImages">
-                    <span class="button roboto-medium" @click="hanldeBack">
+                    <span style="cursor: pointer;" class="button roboto-medium" @click="hanldeBack">
                         <span class="text">Trở lại</span> <i class="ri-arrow-go-back-line"></i>
                     </span>
                     <div class="uploadImages">
