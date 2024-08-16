@@ -45,12 +45,13 @@
 import $ from 'jquery';
 import 'jquery-ui/ui/widgets/draggable';
 import DialogCrop from "@/backend/views/vulan/components/DialogCrop.vue";
+import DialogCaptureScreen from "@/backend/views/vulan/components/DialogCaptureScreen.vue";
 import AdminRepositoryFactory from "@/backend/respository";
 
 const VuLanRepository = AdminRepositoryFactory.get('vulanTemplates');
 export default {
     name: 'temp2ImagesGroup',
-    components: {DialogCrop},
+    components: {DialogCrop, DialogCaptureScreen},
     props: {
         data: {
             type: Object,
@@ -69,7 +70,6 @@ export default {
             dataCrop: "",
             currentNumber: 0,
             dialogFormVisible: false,
-            dialogVisibleRemove: false,
         }
     },
     setup() {
@@ -86,6 +86,7 @@ export default {
             this.data[`${data.number - 1}`].file = this.dataURLtoFile(this.dataCrop, `file_${data.number - 1}.jpg`);
             this.data[`${data.number - 1}`].url = data.blob;
             this.data[`${data.number - 1}`].type = "image";
+            this.emitter.emit("get-file-group-data", {data: this.data[`${data.number - 1}`], idx: data.number - 1});
         });
     },
     watch: {
@@ -123,13 +124,11 @@ export default {
         },
         handleShowDialog(number) {
             this.dialogFormVisible = true;
-            this.dialogVisibleRemove = true;
             this.dataCrop = this.data[`${number - 1}`].url;
             this.currentNumber = number;
         },
         handleHideDialog() {
             this.dialogFormVisible = false;
-            this.dialogVisibleRemove = false;
             this.dataCrop = "";
             this.currentNumber = 0;
         },
@@ -328,7 +327,6 @@ export default {
     .show_img {
         width: 100%;
         height: 100%;
-        object-fit: cover;
     }
 
     .show_video {

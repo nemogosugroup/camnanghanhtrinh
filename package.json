@@ -28,6 +28,7 @@
     "element-plus": "^2.4.3",
     "file-saver": "^2.0.5",
     "fuse.js": "^7.0.0",
+    "html2canvas": "^1.4.1",
     "jquery-ui": "^1.14.0",
     "js-cookie": "^3.0.5",
     "json-lint": "^0.1.0",

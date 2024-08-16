@@ -1,5 +1,6 @@
 <template>
     <div class="wrap-button index">
+
         <div v-if="!isPublic" class="flex-center">
             <el-button v-if="isCreate && !isEditPost" :loading="loading" @click="handleCreate"
                 class="button roboto-regular">Tạo mới <i class="ri-add-box-line"></i></el-button>
@@ -15,6 +16,7 @@
         </div>
 
         <div v-else class="flex-center">
+            <el-button v-if="isPublic" class="button roboto-regular" @click="captureScreen">Screenshot <i class="ri-camera-line"></i></el-button>
             <el-button v-if="isPublic" class="button roboto-regular" @click="copyLink">Copy link <i class="ri-link-m"></i></el-button>
             <el-button v-if="isPublic" class="button roboto-regular" @click="shareFacebook">Share <i
                 class="ri-share-forward-2-fill"></i></el-button>
@@ -23,7 +25,7 @@
 </template>
 <script>
 import {ElMessage} from "element-plus";
-
+import html2canvas from 'html2canvas';
 export default {
     name: 'ButtonAction',
     components: {},
@@ -52,7 +54,8 @@ export default {
     data() {
         return {
             isShowReview: false,
-            loading: false
+            loading: false,
+            imageUrl: null
         }
     },
     setup() {
@@ -62,12 +65,14 @@ export default {
     },
 
     created() {
+        this.emitter.off("ready-to-capture-screen");
     },
     mounted() {
-
-    },
-    beforeDestroy() {
-
+        this.emitter.on("ready-to-capture-screen", value => {
+            setTimeout(() => {
+                this.handleCaptureScreen();
+            }, 500);
+        });
     },
     watch: {
         isLoading(newVal) {
@@ -76,6 +81,23 @@ export default {
         }
     },
     methods: {
+        captureScreen() {
+            this.emitter.emit("prepare-capture-screen", true);
+        },
+        handleCaptureScreen() {
+            html2canvas(document.body, {
+                scale: 1,
+                width: window.innerWidth,
+                height: window.innerHeight
+            })
+            .then(canvas => {
+                this.imageUrl = canvas.toDataURL('image/jpeg', 1.0);
+                this.emitter.emit("after-capture-screen", this.imageUrl);
+            });
+            setTimeout(() => {
+                this.emitter.emit("re-prepare-capture-screen", false);
+            }, 1000);
+        },
         handleReview() {
             this.isShowReview = !this.isShowReview;
             if (this.isShowReview) {
@@ -102,10 +124,8 @@ export default {
         shareFacebook() {
             let url = window.location.href;
             let title = "Vu Lan 2024";
-
             let description = 'Hình ảnh đẹp của gia đình bạn trong ngày lễ Vu Lan';
             let imageUrl = 'https://camnanghanhtrinh.gosucorp.vn/images/sl1.jpg';
-
             let facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}&t=${encodeURIComponent(title)}&description=${encodeURIComponent(description)}&picture=${encodeURIComponent(imageUrl)}`;
 
             window.open(facebookUrl, "pop", "width=768, height=768, scrollbars=no");
