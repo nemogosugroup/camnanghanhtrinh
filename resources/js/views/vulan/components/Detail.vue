@@ -185,6 +185,7 @@ export default {
         ...mapGetters(["user"]),
     },
     async created() {
+        this.createOgTags();
         const id = this.$route.params && this.$route.params.id;
         this.listImages = listImageDefault;
         this.countImages = this.listImages.length;
@@ -206,6 +207,19 @@ export default {
         this.user_id = this.user.id
     },
     methods: {
+        createOgTags() {
+            const head = document.getElementsByTagName('head')[0];
+
+            const ogTitle = document.createElement('meta');
+            ogTitle.setAttribute('property', 'og:title');
+            ogTitle.setAttribute('content', "Vu Lan 2024");
+            head.appendChild(ogTitle);
+
+            const ogImage = document.createElement('meta');
+            ogImage.setAttribute('property', 'og:image');
+            ogImage.setAttribute('content', "https://camnanghanhtrinh.gosucorp.vn/images/sl1.jpg");
+            head.appendChild(ogImage);
+        },
         async fetch(id) {
             const { data } = await vulanRepository.detail(id);
             if (data.success) {

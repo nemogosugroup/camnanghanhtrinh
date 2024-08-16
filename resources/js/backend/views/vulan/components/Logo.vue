@@ -2,13 +2,17 @@
     <div v-if="isEdit" ref="draggable" id="draggableLogo" class="draggable index logo"
         :style="{ top: drapLogo.top + 'px', left: drapLogo.left + 'px' }">
         <div class="flex-center">
-            <el-image :src="Logo" />
+            <a href="https://gosucorp.vn/" target="_blank">
+                <el-image :src="Logo" />
+            </a>
             <span class="move" @click="hanldeEnableMove($event)">Điều chỉnh <i class="ri-drag-move-2-fill"></i></span>
         </div>
     </div>
     <div v-else class="index logo" :style="{ top: drapLogo.top + 'px', left: drapLogo.left + 'px' }">
         <div class="flex-center">
-            <el-image :src="Logo" />
+            <a href="https://gosucorp.vn/" target="_blank">
+                <el-image :src="Logo" />
+            </a>
         </div>
     </div>
 </template>
