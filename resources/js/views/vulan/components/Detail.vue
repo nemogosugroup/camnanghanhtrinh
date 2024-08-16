@@ -78,6 +78,11 @@
 
     <div v-if="this.template_id === 2" class="app-container">
         <div class="container-slider vulan-container">
+            <div class="editImages">
+                <span style="cursor: pointer;" class="button roboto-medium" @click="hanldeBack">
+                <span class="text">Trở lại</span> <i class="ri-arrow-go-back-line"></i>
+            </span>
+            </div>
             <div ref="slider" class="slider-1 bg" :style="`background-color:${colorBg}`">
                 <div class="slider-images BG">
                     <el-image :key="index"
