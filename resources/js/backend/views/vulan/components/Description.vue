@@ -3,13 +3,10 @@
         :style="{ top: drapDesc.top + 'px', left: drapDesc.left + 'px' }">
         <div class="content-desc">
             <div @click="hanldeDestroy">
-                <!--<ckeditor :editor="editor" v-model="drapDesc.content" :config="editorConfig" @input="onEditorInput"
-                    @blur="onEditorBlur" /> #}-->
                 <div>
-                    <!--<Toolbar :editor="editorRef" :defaultConfig="toolbarConfig"
-                        :mode="mode" />-->
-                    <Editor style="max-width: 400px;" v-model="drapDesc.content" :defaultConfig="editorConfig"
-                        :mode="mode" @onBlur="onEditorBlur" @onChange="onEditorBlur" />
+                    <Editor ref="editor" class="desc" style="max-width: 400px;" v-model="drapDesc.content"
+                        :defaultConfig="editorConfig" @onChange="onEditorBlur" @onFocus="handleFocus"
+                        @onBlur="onEditorBlur" @click="handleSelectAll" />
                 </div>
             </div>
             <span class="edit"><i class="ri-edit-2-fill"></i></span>
@@ -23,8 +20,6 @@
     </div>
 </template>
 <script>
-import { InlineEditor, Autosave, Essentials, FontColor, Paragraph, Undo } from 'ckeditor5';
-import 'ckeditor5/ckeditor5.css';
 import $ from 'jquery';
 import 'jquery-ui/ui/widgets/draggable';
 import '@wangeditor/editor/dist/css/style.css'
@@ -65,14 +60,8 @@ export default {
                 content: this.content
             },
             color: this.style.color,
-            editorConfig: {
-                toolbar: {
-                    items: ['fontColor'],
-                    shouldNotGroupWhenFull: false
-                },
-                plugins: [Autosave, Essentials, FontColor, Paragraph, Undo],
-            },
-            editor: InlineEditor
+            editorDesc: null,
+            check: false,
         }
     },
     setup() {
@@ -85,6 +74,7 @@ export default {
     },
     mounted() {
         this.initDraggable();
+        window.addEventListener('click', this.handleClick);
     },
     watch: {
         isEdit(newVal) {
@@ -116,20 +106,48 @@ export default {
             this.$emit('getContentDesc', this.drapDesc, 'slider_1');
         },
         reloadDraggable() {
-            $(this.$refs.draggable).draggable("destroy"); // Hủy draggable hiện tại
+            if ($(this.$refs.draggable).length > 0) {
+                $(this.$refs.draggable).draggable("destroy"); // Hủy draggable hiện tại
+            }
             this.$nextTick(() => {
                 this.initDraggable(); // Khởi tạo lại draggable
             });
         },
-        onEditorBlur() {
+        onEditorBlur(editor) {
+            //editor.deselect();
             this.$nextTick(() => {
                 this.initDraggable(); // Khởi tạo lại draggable
                 this.$emit('getContentDesc', this.drapDesc, 'slider_1');
             });
         },
+        handleFocus(editor) {
+            this.editorDesc = editor;
+        },
         hanldeDestroy() {
-            $(this.$refs.draggable).draggable("destroy");
-        }
+            if ($(this.$refs.draggable).length > 0) {
+                $(this.$refs.draggable).draggable("destroy");
+            }
+        },
+        handleSelectAll(editor) {
+            if ($(this.$refs.draggable).length > 0) {
+                if (!this.check) {
+                    this.editorDesc.selectAll();
+                    this.check = true;
+                }
+            }
+        },
+        handleClick(event) {
+            const targetElement = event.target;
+            const classList = targetElement.classList;
+            if ($(this.$refs.draggable).length > 0) {
+                if (classList.value != '') {
+                    if (this.check) {
+                        this.editorDesc.deselect();
+                        this.check = false;
+                    }
+                }
+            }
+        },
     }
 }
 </script>
