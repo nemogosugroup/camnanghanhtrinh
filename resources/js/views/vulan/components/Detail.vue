@@ -210,7 +210,7 @@ export default {
             const { data } = await vulanRepository.detail(id);
             if (data.success) {
                 this.template_id = data.data.template_id;
-                this.dataSlider = data.data;console.log(this.dataSlider)
+                this.dataSlider = data.data;
 
                 if (this.template_id === 1) {
                     this.listItemImages = this.dataSlider.content.slider_1.items.map((item) => item);
