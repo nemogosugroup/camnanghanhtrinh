@@ -1,5 +1,5 @@
 <template>
-    <div class="app-container">
+    <div v-if="this.template_id === 1" class="app-container">
         <div class="container-slider vulan-container">
             <div ref="slider" class="slider-1 bg" :style="`background-color:${colorBg}`">
                 <div v-if="isEdit" class="editImages">
@@ -66,10 +66,35 @@
             </div>
         </div>
     </div>
+
+    <div v-if="this.template_id === 2" class="app-container">
+        <div class="container-slider vulan-container">
+            <div ref="slider" class="slider-1 bg" :style="`background-color:${colorBg}`">
+                <div class="slider-images BG">
+                    <el-image :key="index" :src="dataSlider.content.slider_2.items[dataSlider.content.slider_2.items.length - 1].url"/>
+                    <div class="content-wish">
+                        <Descriptions2 :style="dataSlider.content.slider_2.desc.style"
+                                      :content="dataSlider.content.slider_2.desc.content" :isEdit="isEdit"
+                                      @getContentDesc="handleContentDesc"/>
+                    </div>
+                </div>
+                <Logo :style="dataSlider.content.slider_2.logo.style" :isEdit="isEdit"
+                      @getStyleLogo="handleStyleLogo"/>
+                <TitleVulan2 :style="dataSlider.content.slider_2.title.style" :isEdit="isEdit"
+                            @getStyleTitle="handleStyleTitle"/>
+                <Temp2ImagesGroup :data="dataSlider.content.slider_2.main_items" :isEdit="isEdit"/>
+                <ButtonAction @handleShowHidePreview="handleShowHidePreview" :isCreate="isCreate"
+                              :isEditPost="isEditPost" :isPublic="true" @create="handleCreate" :isLoading="loading"/>
+            </div>
+        </div>
+    </div>
+
 </template>
 <script>
 import Descriptions from '@/backend/views/vulan/components/Description.vue';
+import Descriptions2 from '@/backend/views/vulan/components/Description2.vue';
 import TitleVulan from '@/backend/views/vulan/components/Title.vue';
+import TitleVulan2 from '@/backend/views/vulan/components/Title2.vue';
 import Logo from '@/backend/views/vulan/components/Logo.vue';
 import ButtonAction from '@/backend/views/vulan/components/ButtonAction.vue';
 import ImagesSlider1 from '@/assets/images/vulan/sl1.jpg';
@@ -103,13 +128,17 @@ const listImageDefault = [
 ]
 import { mapGetters } from "vuex";
 import { ElMessage } from "element-plus";
+import Temp2ImagesGroup from "@/backend/views/vulan/components/temp2ImagesGroup.vue";
 export default {
     name: 'Detail',
     components: {
+        Temp2ImagesGroup,
         Swiper,
         SwiperSlide,
         Descriptions,
         TitleVulan,
+        Descriptions2,
+        TitleVulan2,
         Logo,
         ButtonAction
     },
@@ -132,6 +161,7 @@ export default {
             user_id: false,
             history_id: false,
             loading: false,
+            template_id: false
         }
     },
     setup() {
@@ -159,15 +189,17 @@ export default {
         this.listImages = listImageDefault;
         this.countImages = this.listImages.length;
         await this.fetch(id);
-        this.colorBg = this.dataSlider.content.slider_1.background.color;
-        this.listItemImages = this.dataSlider.content.slider_1.items.map((item) => {
-            const data = {
-                "show_content": item.show_content == "1" ? true : false,
-                "url": item.url,
-                "type": item.type,
-            }
-            return data;
-        });
+        if (this.dataSlider.template_id === 1) {
+            this.colorBg = this.dataSlider.content.slider_1.background.color;
+            this.listItemImages = this.dataSlider.content.slider_1.items.map((item) => {
+                const data = {
+                    "show_content": item.show_content == "1" ? true : false,
+                    "url": item.url,
+                    "type": item.type,
+                }
+                return data;
+            });
+        }
     },
     mounted() {
         this.colorBackground = this.colorBg
@@ -177,8 +209,12 @@ export default {
         async fetch(id) {
             const { data } = await vulanRepository.detail(id);
             if (data.success) {
-                this.dataSlider = data.data;
-                this.listItemImages = this.dataSlider.content.slider_1.items.map((item) => item);
+                this.template_id = data.data.template_id;
+                this.dataSlider = data.data;console.log(this.dataSlider)
+
+                if (this.template_id === 1) {
+                    this.listItemImages = this.dataSlider.content.slider_1.items.map((item) => item);
+                }
             }
         },
         // show content (lời chúc)
