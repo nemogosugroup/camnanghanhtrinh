@@ -51,7 +51,7 @@ router.beforeEach(async (to, from, next) => {
                 NProgress.done();
             } else {
                 if (to.path === "/") {
-                    next({ name: "VuLanIndex" });
+                    next({ name: "HandBook" });
                 } else {
                     next({ ...to, replace: true });
                 }
