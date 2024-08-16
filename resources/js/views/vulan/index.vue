@@ -132,6 +132,16 @@ export default {
     margin-top: 25px;
     text-align: center;
 
+    :deep(.el-image) {
+        width: 100%;
+        height: 100%;
+    }
+
+    :deep(.el-image__inner) {
+        width: 100%;
+        height: 250px;
+    }
+
     &:hover {
         top: -10px;
         transition: all .3s ease-in-out;
