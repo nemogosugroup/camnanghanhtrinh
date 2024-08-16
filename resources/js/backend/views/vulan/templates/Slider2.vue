@@ -41,7 +41,7 @@
                     @getStyleTitle="handleStyleTitle" />
                 <Temp2ImagesGroup :data="dataSlider.content.slider_2.main_items" :isEdit="isEdit" />
                 <ButtonAction @handleShowHidePreview="handleShowHidePreview" :isCreate="isCreate"
-                    :isEditPost="isEditPost" :isPublic="false" @create="handleCreate" />
+                    :isEditPost="isEditPost" :isPublic="false" @create="handleCreate" :isLoading="loading" />
             </div>
         </div>
     </div>
@@ -178,7 +178,8 @@ export default {
             listFiles: [],
             listMainFiles: [],
             user_id: false,
-            history_id: false
+            history_id: false,
+            loading: false
         }
     },
     setup() {
@@ -206,11 +207,13 @@ export default {
     },
     mounted() {
         this.colorBackground = this.colorBg
+
         this.emitter.on("get-file-group-data", data => {
             this.dataSlider.content.slider_2.main_items[data.idx] = data.data;
-            this.listMainFiles.push(data.data.file);
+            this.listMainFiles[data.idx] = data.data.file;
             this.isCreate = true;
         });
+
         this.user_id = this.user.id
     },
     beforeDestroy() {
@@ -308,45 +311,6 @@ export default {
         // show content (lời chúc)
         handleShowContent(index) {
             this.isShow[index] = !this.isShow[index];
-        },
-        //update
-        async handleEdit(check) {
-            if (check && this.dataSlider.id) {
-                this.loading = true;
-                const formData = new FormData();
-                console.log('this.dataSlider.content', this.dataSlider.content);
-                formData.append("content", JSON.stringify(this.dataSlider.content));
-                formData.append("user_id", this.user_id);
-                formData.append("template_id", this.dataSlider.id);
-                if (this.listFiles.length > 0) {
-                    this.listFiles.forEach((file, index) => {
-                        formData.append(`files[${index}][file]`, file);
-                        formData.append(`files[${index}][type]`, "image");
-                        formData.append(`files[${index}][show_content]`, this.listItemImages[index].show_content ? 1 : 0);
-                    });
-                    this.listFiles = [];
-                }
-                try {
-                    const { data } = await vulanRepository.update(formData, this.dataSlider.id);
-                    if (data.success) {
-                        this.dataSlider = data.data;
-                        this.isEditPost = true;
-                        this.isCreate = false;
-                        ElMessage.success("cập nhập thành công");
-                        this.listItemImages = this.dataSlider.content.slider_2.items.map((item) => {
-                            const data = {
-                                "show_content": item.show_content == "1" ? true : false,
-                                "url": item.url,
-                                "type": item.type,
-                            }
-                            return data;
-                        });
-                    }
-                } catch (error) {
-                    console.error('error', error)
-                }
-                this.loading = false;
-            }
         },
         //create
         async handleCreate(check) {
