@@ -1,10 +1,10 @@
 <template>
     <div class="sidebar-logo-container" :class="{ 'collapse': collapse }">
         <transition name="sidebarLogoFade">
-            <router-link v-if="collapse" key="collapse" class="sidebar-logo-link" to="/">
-                <img v-if="icon" :src="icon" class="sidebar-logo">
+            <router-link v-if="checkUser" class="sidebar-logo-link" to="/so-tay-hanh-trinh">
+                <img v-if="logo" :src="logo" class="sidebar-logo">
             </router-link>
-            <router-link v-else key="expand" class="sidebar-logo-link" to="/">
+            <router-link v-else class="sidebar-logo-link" to="/">
                 <img v-if="logo" :src="logo" class="sidebar-logo">
             </router-link>
         </transition>
@@ -12,6 +12,7 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 import imagesLogo from "@/assets/images/logo/GOSU_full.png";
 import imagesIcon from "@/assets/images/logo/GOSU_icon.png";
 export default {
@@ -22,12 +23,19 @@ export default {
             required: true
         }
     },
+    computed: {
+        ...mapGetters(["user"]),
+    },
     data() {
         return {
             logo: imagesLogo,
-            icon: imagesIcon
+            icon: imagesIcon,
+            checkUser: false
         }
-    }
+    },
+    created() {
+        this.checkUser = Object.keys(this.user).length > 0 ? true : false;
+    },
 }
 </script>
 
