@@ -2,6 +2,7 @@ import { asyncRoutes, constantRoutes } from "@/router";
 import { adminRoute } from "@/backend/router";
 import handbookRoute from "@/router/modules/hankbook";
 import hyperlinkRoute from "@/router/modules/hyperlink";
+import templateVulanRouter from "@/backend/router/modules/templatevulan";
 
 /**
  * Use meta.role to determine if the current user has permission
@@ -70,6 +71,7 @@ const actions = {
         return new Promise((resolve) => {
             let accessedRoutes = [];
             accessedRoutes = mergeRoute(accessedRoutes, asyncRoutes, "path");
+            let _templateVulanRouter = [templateVulanRouter];
             if (roles) {
                 if (roles.includes("admin")) {
                     accessedRoutes = mergeRoute(
@@ -97,6 +99,11 @@ const actions = {
                     accessedRoutes = mergeRoute(
                         accessedRoutes,
                         hyperlinkRoute,
+                        "path"
+                    );
+                    accessedRoutes = mergeRoute(
+                        accessedRoutes,
+                        _templateVulanRouter,
                         "path"
                     );
                 }
