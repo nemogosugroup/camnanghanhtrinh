@@ -75,6 +75,5 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 Route::group(['prefix' => 'vulan-templates'], function () {
     Route::get('list', [VuLanController::class, 'templateList']);
     Route::get('detail/{id}', [VuLanController::class, 'templateDetail']);
-    // Route::post('upload-preview-video', [VuLanController::class, 'uploadPreviewVideo']);
-    // Route::post('user-submit', [VuLanController::class, 'userSave']);
+    Route::post('delete/{id}', [VuLanController::class, 'delete']);
 });

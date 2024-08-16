@@ -15,4 +15,10 @@ export default {
             method: "get",
         });
     },
+    delete(id) {
+        return request({
+            url: `${resource}` + `/delete/${id}`,
+            method: "post",
+        });
+    },
 };

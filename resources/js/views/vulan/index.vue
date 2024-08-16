@@ -18,9 +18,7 @@
                         <div class="item-vulan">
                             <el-image :src="item.demo_img ? item.demo_img : imagesDefault" />
                             <div class="action" v-if="item.edit">
-                                <!--<router-link :to="`/vulan/edit/${item.id}`"><button><i
-                                            class="ri-edit-2-fill"></i></button></router-link>-->
-                                <button @click="handleRemove(item.id)"><i class="ri-delete-bin-6-fill"></i></button>
+                                <button @click="handleRemove(item.id)" style="cursor: pointer"><i class="ri-delete-bin-6-fill"></i></button>
                             </div>
                             <el-button type="warning" @click="handleReadmore(item.id)">Xem thêm</el-button>
                         </div>
@@ -36,6 +34,7 @@ import { mapGetters } from "vuex";
 import Navbar from './LayoutVuLan/components/Navbar';
 import RepositoryFactory from '@/utils/RepositoryFactory';
 import ImagesSlider1 from '@/assets/images/vulan/sl1.jpg';
+import {ElMessage} from "element-plus";
 const vulanRepository = RepositoryFactory.get('vulan');
 export default {
     name: 'VuLanTemplates',
@@ -79,7 +78,6 @@ export default {
                     item.edit = this.user.id == item.user_id ? true : false;
                     return item
                 });
-                console.log('this.lists', this.lists);
             }
         },
         chooseTemplate(index) {
@@ -92,8 +90,12 @@ export default {
         handleReadmore(id) {
             this.$router.push(`/vulan/detail/${id}`);
         },
-        handleRemove() {
-
+        async handleRemove(id) {
+            const { data } = await vulanRepository.delete(id);
+            if (data.success) {
+                await this.fetch();
+                ElMessage.success("Đã xoá thành công");
+            }
         }
     }
 }
