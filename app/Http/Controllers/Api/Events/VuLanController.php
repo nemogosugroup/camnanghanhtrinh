@@ -9,6 +9,7 @@ use App\Helpers\Helpers;
 use App\Models\VuLanTemplate;
 use App\Models\VuLanHistory;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 
 class VuLanController extends Controller
@@ -61,6 +62,56 @@ class VuLanController extends Controller
     {
         try {
             $data = $this->repo->getById($id);
+            $results = array(
+                'success' => true,
+                'data' => $data,
+                'message' => $this->msg->getSuccess(),
+                'status' => ResponseAlias::HTTP_OK
+            );
+            return response()->json($results);
+
+        } catch (\Throwable $th) {
+            $results = array(
+                'message' => $th->getMessage(),
+                'success' => false,
+                'status' => ResponseAlias::HTTP_OK
+            );
+            return response()->json([$results], ResponseAlias::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public function delete(int $id): \Illuminate\Http\JsonResponse
+    {
+        try {
+            $removeFiles = [];
+            $data = $this->repo->getById($id);
+
+            if ($data['template_id'] === 1) {
+
+                $removeFiles = array_map(function ($item) {
+                    return $item['url'];
+                }, $data['content']['slider_1']['items']);
+
+            } else if ($data['template_id'] === 2) {
+
+                $removeFiles = array_map(function ($item) {
+                    return public_path($item['url']);
+                }, $data['content']['slider_2']['items']);
+                $removeMainFiles = array_map(function ($item) {
+                    return public_path($item['url']);
+                }, $data['content']['slider_2']['main_items']);
+
+                $removeFiles = array_merge($removeFiles, $removeMainFiles);
+            }
+
+            foreach ($removeFiles as $filePath) {
+                if (File::exists($filePath)) {
+                    File::delete($filePath);
+                }
+            }
+
+            $this->repo->delete($id);
+
             $results = array(
                 'success' => true,
                 'data' => $data,
