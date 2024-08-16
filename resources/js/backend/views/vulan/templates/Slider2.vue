@@ -20,7 +20,7 @@
                     </span>
                 </div>
                 <div v-if="!isEdit" class="slider-images">
-                    <el-image :key="index" :src="listImages[0].url" />
+                    <el-image :src="listImages[0].url" />
                     <div class="content-wish">
                         <Descriptions :style="dataSlider.content.slider_2.desc.style"
                             :content="dataSlider.content.slider_2.desc.content" :isEdit="isEdit"
@@ -361,13 +361,10 @@ export default {
                             formData.append(`files[${index}][type]`, "image");
                             formData.append(`files[${index}][show_content]`, 1);
                         });
-                    } else {
-                        ElMessage.error("Vui lòng chọn ảnh nền");
                     }
 
                     if (this.listMainFiles.length > 3) {
                         this.listMainFiles.forEach((file, index) => {
-                            console.log()
                             formData.append(`main_files[${index}][file]`, file);
                             formData.append(`main_files[${index}][type]`, file.type.includes("video") ? "video" : "image");
                         });
@@ -375,7 +372,7 @@ export default {
                         ElMessage.error("Vui lòng chọn đủ các file chính");
                     }
 
-                    if (this.listFiles.length > 0 && this.listMainFiles.length > 3) {
+                    if (this.listMainFiles.length > 3) {
                         formData.append("content", JSON.stringify(this.dataSlider.content));
                         formData.append("template_id", this.dataSlider.template_id);
                         formData.append("user_id", this.user_id);
@@ -497,6 +494,13 @@ export default {
 }
 
 .slider-images {
+    :deep(.el-image) {
+        width: 100%;
+        height: 100vh;
+    }
+    :deep(.el-image__inner) {
+        object-fit: cover;
+    }
     .itemImage {
         width: 100%;
         height: 100%;

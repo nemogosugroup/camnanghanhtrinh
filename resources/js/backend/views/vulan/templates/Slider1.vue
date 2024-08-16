@@ -322,35 +322,34 @@ export default {
                             formData.append(`files[${index}][type]`, "image");
                             formData.append(`files[${index}][show_content]`, this.listItemImages[index].show_content ? 1 : 0);
                         });
-                        formData.append("content", JSON.stringify(this.dataSlider.content));
-                        formData.append("template_id", this.dataSlider.template_id);
-                        formData.append("user_id", this.user_id);
-                        try {
-                            const { data } = await vulanRepository.create(formData);
-                            if (data.success) {
-                                this.dataSlider = data.data;
-                                this.$router.push("/vulan/detail/" + this.dataSlider.id)
-                                this.isEditPost = true;
-                                this.isCreate = false;
-                                this.listItemImages = this.dataSlider.content.slider_1.items.map((item) => {
-                                    const data = {
-                                        "show_content": item.show_content == "1" ? true : false,
-                                        "url": item.url,
-                                        "type": item.type,
-                                    }
-                                    return data;
-                                });
-                                this.listFiles = [];
-                                console.log('this.listItemImages', this.listItemImages);
-                                console.log('this.dataSlider.content.slider_1.items', this.dataSlider.content.slider_1.items);
-                                ElMessage.success("Tạo mới thành công");
-                            }
-                        } catch (error) {
-                            console.error('error', error)
-                        }
-                    } else {
-                        ElMessage.error("Vui lòng chọn ảnh nền");
                     }
+                    formData.append("content", JSON.stringify(this.dataSlider.content));
+                    formData.append("template_id", this.dataSlider.template_id);
+                    formData.append("user_id", this.user_id);
+                    try {
+                        const { data } = await vulanRepository.create(formData);
+                        if (data.success) {
+                            this.dataSlider = data.data;
+                            this.$router.push("/vulan/detail/" + this.dataSlider.id)
+                            this.isEditPost = true;
+                            this.isCreate = false;
+                            this.listItemImages = this.dataSlider.content.slider_1.items.map((item) => {
+                                const data = {
+                                    "show_content": item.show_content == "1" ? true : false,
+                                    "url": item.url,
+                                    "type": item.type,
+                                }
+                                return data;
+                            });
+                            this.listFiles = [];
+                            console.log('this.listItemImages', this.listItemImages);
+                            console.log('this.dataSlider.content.slider_1.items', this.dataSlider.content.slider_1.items);
+                            ElMessage.success("Tạo mới thành công");
+                        }
+                    } catch (error) {
+                        console.error('error', error)
+                    }
+
                     this.loading = false;
                 } else {
                     ElMessage.error("Bạn không có quyền tạo");
