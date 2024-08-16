@@ -3,37 +3,45 @@
         <div class="container-slider vulan-container">
             <div ref="slider" class="slider-1 bg" :style="`background-color:${colorBg}`">
                 <div v-if="isEdit" class="editImages">
+                    <span style="cursor: pointer;" class="button roboto-medium" @click="hanldeBack">
+                        <span class="text">Trở lại</span> <i class="ri-arrow-go-back-line"></i>
+                    </span>
                     <div class="uploadImages">
                         <span class="button roboto-medium">
                             <input class="hidden-input" type="file" multiple @change="(event) => handleUpload(event)"
-                                   accept="image/jpeg">
-                            <span class="text">Chỉnh sửa</span> <i class="ri-edit-2-fill"></i>
+                                accept="image/jpeg">
+                            <span class="text">Thêm ảnh</span> <i class="ri-edit-2-fill"></i>
                         </span>
                     </div>
                 </div>
+                <div v-else class="editImages">
+                    <span class="button roboto-medium" @click="hanldeBack">
+                        <span class="text">Trở lại</span> <i class="ri-arrow-go-back-line"></i>
+                    </span>
+                </div>
                 <div v-if="!isEdit" class="slider-images">
-                    <el-image :key="index" :src="listImages[0].url"/>
+                    <el-image :key="index" :src="listImages[0].url" />
                     <div class="content-wish">
                         <Descriptions :style="dataSlider.content.slider_2.desc.style"
-                                      :content="dataSlider.content.slider_2.desc.content" :isEdit="isEdit"
-                                      @getContentDesc="handleContentDesc"/>
+                            :content="dataSlider.content.slider_2.desc.content" :isEdit="isEdit"
+                            @getContentDesc="handleContentDesc" />
                     </div>
                 </div>
                 <div v-else class="slider-images">
-                    <el-image :key="index" :src="listImages[0].url"/>
+                    <el-image :key="index" :src="listImages[0].url" />
                     <div class="content-wish">
                         <Descriptions :style="dataSlider.content.slider_2.desc.style"
-                                      :content="dataSlider.content.slider_2.desc.content" :isEdit="isEdit"
-                                      @getContentDesc="handleContentDesc"/>
+                            :content="dataSlider.content.slider_2.desc.content" :isEdit="isEdit"
+                            @getContentDesc="handleContentDesc" />
                     </div>
                 </div>
                 <Logo :style="dataSlider.content.slider_2.logo.style" :isEdit="isEdit"
-                      @getStyleLogo="handleStyleLogo"/>
+                    @getStyleLogo="handleStyleLogo" />
                 <TitleVulan :style="dataSlider.content.slider_2.title.style" :isEdit="isEdit"
-                            @getStyleTitle="handleStyleTitle"/>
-                <Temp2ImagesGroup :data="dataSlider.content.slider_2.main_items" :isEdit="isEdit"/>
+                    @getStyleTitle="handleStyleTitle" />
+                <Temp2ImagesGroup :data="dataSlider.content.slider_2.main_items" :isEdit="isEdit" />
                 <ButtonAction @handleShowHidePreview="handleShowHidePreview" :isCreate="isCreate"
-                              :isEditPost="isEditPost" :isPublic="false" @create="handleCreate"/>
+                    :isEditPost="isEditPost" :isPublic="false" @create="handleCreate" />
             </div>
         </div>
     </div>
@@ -45,8 +53,8 @@ import TitleVulan from '@/backend/views/vulan/components/Title2.vue';
 import Logo from '@/backend/views/vulan/components/Logo.vue';
 import ButtonAction from '@/backend/views/vulan/components/ButtonAction.vue';
 import ImagesSlider2 from '@/assets/images/vulan/sl2.jpg';
-import {Navigation, Pagination, Scrollbar, A11y, EffectCards, Autoplay, EffectCube} from 'swiper/modules';
-import {Swiper, SwiperSlide} from 'swiper/vue';
+import { Navigation, Pagination, Scrollbar, A11y, EffectCards, Autoplay, EffectCube } from 'swiper/modules';
+import { Swiper, SwiperSlide } from 'swiper/vue';
 
 // Import Swiper styles
 import 'swiper/css';
@@ -58,8 +66,8 @@ import 'swiper/css/effect-cube';
 
 //repository
 import AdminRepositoryFactory from '@/backend/respository';
-import {ElMessage} from "element-plus";
-import {mapGetters} from "vuex";
+import { ElMessage } from "element-plus";
+import { mapGetters } from "vuex";
 
 const vulanRepository = AdminRepositoryFactory.get('vulan');
 const listImageDefault = [
@@ -358,7 +366,8 @@ export default {
                     }
 
                     if (this.listMainFiles.length > 3) {
-                        this.listMainFiles.forEach((file, index) => {console.log()
+                        this.listMainFiles.forEach((file, index) => {
+                            console.log()
                             formData.append(`main_files[${index}][file]`, file);
                             formData.append(`main_files[${index}][type]`, file.type.includes("video") ? "video" : "image");
                         });
@@ -391,7 +400,10 @@ export default {
                     ElMessage.error("Bạn không có quyền tạo");
                 }
             }
-        }
+        },
+        hanldeBack() {
+            this.$router.push({ name: "VuLanIndex" });
+        },
     }
 }
 
@@ -469,6 +481,19 @@ export default {
 
 .uploadImages .button {
     position: relative;
+}
+
+.editImages {
+    display: flex;
+    align-items: center;
+
+    .uploadImages {
+        margin-left: 3px;
+
+        .button {
+            padding: 1.5px 8px
+        }
+    }
 }
 
 .slider-images {
