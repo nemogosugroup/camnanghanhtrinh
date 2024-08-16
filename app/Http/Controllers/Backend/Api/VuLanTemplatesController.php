@@ -91,10 +91,12 @@ class VuLanTemplatesController extends Controller
             $filesData = [];
             $files = $request->file('files');
             $types = $request->input('files');
-            foreach ($files as $idx => $data) {
-                $filesData[$idx]['url'] = $this->helper->upLoadVuLanFiles($data['file']);
-                $filesData[$idx]['type'] = $types[$idx]['type'];
-                $filesData[$idx]['show_content'] = $types[$idx]['show_content'];
+            if ($types) {
+                foreach ($files as $idx => $data) {
+                    $filesData[$idx]['url'] = $this->helper->upLoadVuLanFiles($data['file']);
+                    $filesData[$idx]['type'] = $types[$idx]['type'];
+                    $filesData[$idx]['show_content'] = $types[$idx]['show_content'];
+                }
             }
             if ($templateId === 2) {
                 $mainFilesData = [];
@@ -111,7 +113,11 @@ class VuLanTemplatesController extends Controller
 
                 $content = $this->historyRepo->convertContentSlider2($request->input("content"), $filesData, $mainFilesData);
             } else {
-                $content = $this->historyRepo->convertContent($request->input("content"), $filesData);
+                if ($types) {
+                    $content = $this->historyRepo->convertContent($request->input("content"), $filesData);
+                } else {
+                    $content = json_decode($request->input("content"), true);
+                }
             }
 
 

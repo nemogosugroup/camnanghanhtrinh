@@ -49,7 +49,9 @@ class VulanHistoryRepository extends BaseRepository implements VuLanHistoryRepos
     public function convertContentSlider2(string $rqContent, array $filesData, array $mainFilesData)
     {
         $result = json_decode($rqContent, true);
-        $result['slider_2']['items'] = $filesData;
+        if (count($filesData) > 0) {
+            $result['slider_2']['items'] = $filesData;
+        }
         foreach ($result['slider_2']['main_items'] as $idx => $item) {
             $result['slider_2']['main_items'][$idx]['url'] = $mainFilesData[$idx]['url'];
         }
