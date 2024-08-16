@@ -36,7 +36,7 @@ export default {
     methods: {
         redirectRouter() {
             if (this.checkUser) {
-                this.$router.push(`/so-tay-hanh-trinh/`);
+                this.$router.push({ name: "HandBook" });
             } else {
                 this.$router.push(`/vulan/index`);
             }

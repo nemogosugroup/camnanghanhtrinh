@@ -30,7 +30,7 @@ export default {
     },
     methods: {
         redirectRouter() {
-            this.$router.push(`/so-tay-hanh-trinh/`);
+            this.$router.push({ name: "HandBook" });
         }
     }
 }
