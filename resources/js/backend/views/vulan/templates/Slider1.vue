@@ -362,6 +362,7 @@ export default {
                             const { data } = await vulanRepository.create(formData);
                             if (data.success) {
                                 this.dataSlider = data.data;
+                                this.$router.push("/vulan/detail/" + this.dataSlider.id)
                                 this.isEditPost = true;
                                 this.isCreate = false;
                                 this.listItemImages = this.dataSlider.content.slider_1.items.map((item) => {
