@@ -33,7 +33,7 @@
                             @getStyleTitle="handleStyleTitle"/>
                 <Temp2ImagesGroup :data="dataSlider.content.slider_2.main_items" :isEdit="isEdit"/>
                 <ButtonAction @handleShowHidePreview="handleShowHidePreview" :isCreate="isCreate"
-                              :isEditPost="isEditPost" @create="handleCreate"/>
+                              :isEditPost="isEditPost" :isPublic="false" @create="handleCreate"/>
             </div>
         </div>
     </div>
@@ -368,7 +368,7 @@ export default {
 
                     if (this.listFiles.length > 0 && this.listMainFiles.length > 3) {
                         formData.append("content", JSON.stringify(this.dataSlider.content));
-                        formData.append("template_id", this.dataSlider.id);
+                        formData.append("template_id", this.dataSlider.template_id);
                         formData.append("user_id", this.user_id);
                         try {
                             const { data } = await vulanRepository.create(formData);

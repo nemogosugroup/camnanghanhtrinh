@@ -1,6 +1,6 @@
 <template>
     <div class="wrap-button index">
-        <div class="flex-center">
+        <div v-if="!isPublic" class="flex-center">
             <el-button v-if="isCreate && !isEditPost" :loading="loading" @click="handleCreate"
                 class="button roboto-regular">Tạo mới <i class="ri-add-box-line"></i></el-button>
             <el-button v-if="isEditPost" @click="handleEdit" :loading="loading" class="button roboto-regular">Chỉnh sửa
@@ -13,13 +13,26 @@
             <el-button v-if="isEditPost" class="button roboto-regular">Share <i
                     class="ri-share-forward-2-fill"></i></el-button>
         </div>
+
+        <div v-else class="flex-center">
+            <el-button v-if="isPublic" class="button roboto-regular" @click="copyLink">Copy link <i class="ri-link-m"></i></el-button>
+            <el-button v-if="isPublic" class="button roboto-regular" @click="shareFacebook">Share <i
+                class="ri-share-forward-2-fill"></i></el-button>
+        </div>
     </div>
 </template>
 <script>
+import {ElMessage} from "element-plus";
+
 export default {
     name: 'ButtonAction',
     components: {},
     props: {
+        isPublic: {
+            type: Boolean,
+            required: true,
+            default: false
+        },
         isCreate: {
             type: Boolean,
             required: true,
@@ -76,6 +89,21 @@ export default {
         },
         handleEdit() {
             this.$emit('edit', true);
+        },
+        copyLink() {
+            navigator.clipboard.writeText(window.location.href)
+                .then(() => {
+                    ElMessage.success("Liên kết đã được sao chép!");
+                })
+                .catch(err => {
+                    console.error('Có lỗi xảy ra khi sao chép:', err);
+                });
+        },
+        shareFacebook() {
+            let url = window.location.href;
+            let title = "Vu Lan 2024";
+            let facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}&t=${encodeURIComponent(title)}`;
+            window.open(facebookUrl, "pop", "width=768, height=768, scrollbars=no");
         }
     }
 }

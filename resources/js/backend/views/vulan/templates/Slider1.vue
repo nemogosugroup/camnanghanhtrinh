@@ -62,7 +62,7 @@
                 <TitleVulan v-if="dataSlider" :style="dataSlider.content.slider_1.title.style" :isEdit="isEdit"
                     @getStyleTitle="handleStyleTitle" />
                 <ButtonAction @handleShowHidePreview="handleShowHidePreview" :isCreate="isCreate" @create="handleCreate"
-                    :isEditPost="isEditPost" @edit="handleEdit" :isLoading="loading" />
+                    :isEditPost="isEditPost" @edit="handleEdit" :isPublic="false" :isLoading="loading" />
             </div>
         </div>
     </div>
