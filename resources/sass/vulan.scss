@@ -261,4 +261,11 @@
             // }
         }
     }
+    .swiper-cube .swiper-slide-next,
+    .swiper-cube .swiper-slide-prev {
+        opacity: 0;
+    }
+    .swiper-cube .swiper-slide-active {
+        opacity: 1;
+    }
 }

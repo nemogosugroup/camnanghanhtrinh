@@ -3,10 +3,10 @@
         <div class="container-slider vulan-container">
             <div ref="slider" class="slider-1 bg" :style="`background-color:${colorBg}`">
                 <div v-if="isEdit" class="editImages">
-                    <span class="button roboto-medium" @click="hanldeBack">
-                        <span class="text">Trở lại</span> <i class="ri-arrow-go-back-line"></i>
-                    </span>
                     <div class="uploadImages">
+                        <span style="cursor: pointer;" class="button roboto-medium" @click="hanldeBack">
+                            <span class="text">Trở lại</span> <i class="ri-arrow-go-back-line"></i>
+                        </span>
                         <span class="button roboto-medium">
                             <input class="hidden-input" type="file" multiple @change="(event) => handleUpload(event)"
                                 accept="image/jpeg">
@@ -32,10 +32,16 @@
                     </span>
                 </div>
                 <div v-if="!isEdit" class="slider-images">
-                    <swiper :effect="'fade'" :grabCursor="true" :modules="modules" :autoplay="{
-                        delay: 2000,
-                        disableOnInteraction: false,
-                    }" class="mySwiper">
+                    <swiper :effect="'cube'" :grabCursor="true" @slideChange="onSlideChange" :pagination="true"
+                        :cubeEffect="{
+                            shadow: false,
+                            slideShadows: false,
+                            shadowOffset: 0,
+                            shadowScale: 0,
+                        }" :modules="modules" :autoplay="{
+                            delay: 20000000,
+                            disableOnInteraction: false,
+                        }" class="mySwiper">
                         <swiper-slide v-for="(item, index) in listItemImages" :key="index">
                             <div :class="`itemImage ${isShow[index] ? 'hide' : ''}`">
                                 <el-image :src="item.url" :fit="`cover`" />
@@ -102,7 +108,7 @@ import TitleVulan2 from '@/backend/views/vulan/components/Title2.vue';
 import Logo from '@/backend/views/vulan/components/Logo.vue';
 import ButtonAction from '@/backend/views/vulan/components/ButtonAction.vue';
 import ImagesSlider1 from '@/assets/images/vulan/sl1.jpg';
-import { Navigation, Pagination, Scrollbar, A11y, EffectCards, Autoplay, EffectCube, EffectFade } from 'swiper/modules';
+import { Navigation, Pagination, Scrollbar, A11y, EffectCards, Autoplay, EffectCube } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/vue';
 
 // Import Swiper styles
@@ -172,13 +178,14 @@ export default {
         const onSwiper = (swiper) => {
             console.log(swiper);
         };
-        const onSlideChange = () => {
-            console.log('slide change');
+        const onSlideChange = (index) => {
+            const numberIndex = index.activeIndex;
+            console.log('slide change', numberIndex);
         };
         return {
             onSwiper,
             onSlideChange,
-            modules: [Navigation, Pagination, Scrollbar, A11y, EffectCards, Autoplay, EffectCube, EffectFade],
+            modules: [Navigation, Pagination, Scrollbar, A11y, EffectCards, Autoplay, EffectCube],
             //modules: [],
         };
     },

@@ -33,10 +33,16 @@
                     </span>
                 </div>
                 <div v-if="!isEdit" class="slider-images">
-                    <swiper :effect="'fade'" :grabCursor="true" :modules="modules" :autoplay="{
-                        delay: 1000,
-                        disableOnInteraction: false,
-                    }" class="mySwiper">
+                    <swiper :effect="'cube'" :grabCursor="true" @slideChange="onSlideChange" :pagination="true"
+                        :cubeEffect="{
+                            shadow: false,
+                            slideShadows: false,
+                            shadowOffset: 0,
+                            shadowScale: 0,
+                        }" :modules="modules" :autoplay="{
+                            delay: 2000000,
+                            disableOnInteraction: false,
+                        }" class="mySwiper">
                         <swiper-slide v-for="(item, index) in listItemImages" :key="index">
                             <div :class="`itemImage ${isShow[index] ? 'hide' : ''}`">
                                 <el-image :src="item.url" :fit="`cover`" />
@@ -136,8 +142,8 @@ export default {
         const onSwiper = (swiper) => {
             console.log(swiper);
         };
-        const onSlideChange = () => {
-            console.log('slide change');
+        const onSlideChange = (index) => {
+            console.log('slide change', index);
         };
         return {
             onSwiper,
