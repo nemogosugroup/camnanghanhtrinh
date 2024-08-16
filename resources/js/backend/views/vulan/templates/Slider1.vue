@@ -35,7 +35,7 @@
                     }" class="mySwiper">
                         <swiper-slide v-for="(item, index) in listItemImages" :key="index">
                             <div :class="`itemImage ${isShow[index] ? 'hide' : ''}`">
-                                <el-image :src="item.url" />
+                                <el-image :src="item.url" :fit="`cover`" />
                                 <span v-if="!item.show_content" class="show-content"
                                     @click="handleShowContent(index)"><i ref="icon"
                                         :class="`${isShow[index] ? 'ri-arrow-right-circle-line' : 'ri-arrow-left-circle-line'}`"></i></span>
@@ -50,7 +50,7 @@
                     </swiper>
                 </div>
                 <div v-else class="slider-images">
-                    <el-image :key="index" :src="listImages[0].url" />
+                    <el-image :key="index" :src="listImages[0].url" :fit="`cover`" />
                     <div class="content-wish">
                         <Descriptions v-if="dataSlider" :style="dataSlider.content.slider_1.desc.style"
                             :content="dataSlider.content.slider_1.desc.content" :isEdit="isEdit"
