@@ -18,11 +18,11 @@
                         <div class="item-vulan">
                             <el-image :src="item.demo_img ? item.demo_img : imagesDefault" />
                             <div class="action" v-if="item.edit">
-                                <router-link :to="`/vulan/edit/${item.id}`"><button><i
-                                            class="ri-edit-2-fill"></i></button></router-link>
+                                <!--<router-link :to="`/vulan/edit/${item.id}`"><button><i
+                                            class="ri-edit-2-fill"></i></button></router-link>-->
                                 <button @click="handleRemove(item.id)"><i class="ri-delete-bin-6-fill"></i></button>
                             </div>
-                            <el-button type="warning" @click="handleReadmore(item.id)">Xem</el-button>
+                            <el-button type="warning" @click="handleReadmore(item.id)">Xem thêm</el-button>
                         </div>
                     </el-col>
                 </el-row>
@@ -121,6 +121,7 @@ export default {
     transition: all .3s ease-in-out;
     padding: 10px;
     margin-top: 25px;
+    text-align: center;
 
     &:hover {
         top: 10px;
