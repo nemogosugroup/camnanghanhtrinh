@@ -9,7 +9,8 @@
                             <span class="text">Trở lại</span> <i class="ri-arrow-go-back-line"></i>
                         </span>
                         <span class="button roboto-medium">
-                            <input class="hidden-input" type="file" multiple @change="(event) => handleUpload(event)"
+                            <!--  -->
+                            <input class="hidden-input" multiple type="file" @change="(event) => handleUpload(event)"
                                 accept="image/jpeg">
                             <span class="text">Thêm ảnh</span> <i class="ri-edit-2-fill"></i>
                         </span>
@@ -32,7 +33,7 @@
                         <span class="text">Trở lại</span> <i class="ri-arrow-go-back-line"></i>
                     </span>
                 </div>
-                <div v-if="!isEdit" class="slider-images">
+                <div v-if="!isEdit || showSlider" class="slider-images">
                     <swiper :effect="'cube'" :grabCursor="true" @slideChange="onSlideChange" :pagination="true"
                         :cubeEffect="{
                             shadow: false,
@@ -46,12 +47,17 @@
                         <swiper-slide v-for="(item, index) in listItemImages" :key="index">
                             <div :class="`itemImage ${isShow[index] ? 'hide' : ''}`">
                                 <el-image :src="item.url" :fit="`cover`" />
-                                <span v-if="!item.show_content" class="show-content"
+                                <span v-if="!item.show_content && !isEdit" class="show-content"
                                     @click="handleShowContent(index)"><i ref="icon"
                                         :class="`${isShow[index] ? 'ri-arrow-right-circle-line' : 'ri-arrow-left-circle-line'}`"></i></span>
                             </div>
-                            <div
+                            <div v-if="!isEdit"
                                 :class="`content-wish ${!item.show_content ? 'hidden-content' : ''} ${isShow[index] ? 'show' : ''}`">
+                                <Descriptions v-if="dataSlider" :style="dataSlider.content.slider_1.desc.style"
+                                    :content="dataSlider.content.slider_1.desc.content" :isEdit="isEdit"
+                                    @getContentDesc="handleContentDesc" />
+                            </div>
+                            <div v-else class="content-wish">
                                 <Descriptions v-if="dataSlider" :style="dataSlider.content.slider_1.desc.style"
                                     :content="dataSlider.content.slider_1.desc.content" :isEdit="isEdit"
                                     @getContentDesc="handleContentDesc" />
@@ -60,7 +66,7 @@
                     </swiper>
                 </div>
                 <div v-else class="slider-images">
-                    <el-image :key="index" :src="listImages[0].url" :fit="`cover`" />
+                    <el-image :key="index" :src="listItemImages[0].url" :fit="`cover`" />
                     <div class="content-wish">
                         <Descriptions v-if="dataSlider" :style="dataSlider.content.slider_1.desc.style"
                             :content="dataSlider.content.slider_1.desc.content" :isEdit="isEdit"
@@ -136,6 +142,7 @@ export default {
             user_id: false,
             history_id: false,
             loading: false,
+            showSlider: false,
         }
     },
     setup() {
@@ -246,6 +253,7 @@ export default {
                 Promise.all(promises).then(() => {
                     //console.log('this.listItemImages', this.listItemImages);
                     this.isCreate = true;
+                    this.showSlider = true;
                 });
             }
         },
@@ -436,6 +444,10 @@ export default {
 
 .uploadImages .button {
     position: relative;
+}
+
+.vulan-container .editImages {
+    z-index: 100;
 }
 
 .slider-images {
