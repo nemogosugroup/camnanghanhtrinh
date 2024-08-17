@@ -30,7 +30,7 @@ router.beforeEach(async (to, from, next) => {
             accessRoutes.forEach((route) => {
                 router.addRoute(route);
             });
-            if (to.path === "/") {
+            if (to.name === "404") {
                 next({ name: "HandBook" });
             }
             next();
@@ -53,6 +53,9 @@ router.beforeEach(async (to, from, next) => {
                 next();
                 NProgress.done();
             } else {
+                if (to.name === "404") {
+                    next({ name: "HandBook" });
+                }
                 if (to.path === "/") {
                     next({ name: "HandBook" });
                 } else {
