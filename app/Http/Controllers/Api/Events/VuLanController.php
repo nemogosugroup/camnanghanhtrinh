@@ -34,11 +34,11 @@ class VuLanController extends Controller
         $this->repo->addModel($model);
     }
 
-    public function templateList(): \Illuminate\Http\JsonResponse
+    public function templateList(Request $request): \Illuminate\Http\JsonResponse
     {
         try {
             $templates = VuLanTemplate::all();
-            $lists = $this->repo->getAll();
+            $lists = $this->repo->getAllHistory($request->all());
             $results = array(
                 'success' => true,
                 'data' => $lists,

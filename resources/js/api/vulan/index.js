@@ -2,11 +2,11 @@ import request from "@/utils/request";
 const resource = "/vulan-templates";
 
 export default {
-    list() {
+    list(query) {
         return request({
             url: `${resource}` + "/list",
             method: "get",
-            //params: query,
+            params: query,
         });
     },
     detail(id) {
