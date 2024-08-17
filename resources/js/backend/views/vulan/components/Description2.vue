@@ -189,6 +189,7 @@ export default {
     max-width: 400px;
     line-height: 36px;
     transform: rotate(1deg);
+    text-align: center;
 }
 
 :deep(.w-e-text-container) {
