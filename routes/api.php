@@ -44,6 +44,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::get('store', [AuthController::class, 'store']);
         Route::post('add', [AuthController::class, 'add']);
         Route::get('get', [AuthController::class, 'getCourseEquipment']);
+        Route::get('/', [AuthController::class, 'user']); // api dùng để login cho các trang của gosu
         Route::group(['prefix' => 'vulan-templates'], function () {
             Route::get('list', [VuLanController::class, 'templateList']);
             Route::get('detail/{id}', [VuLanController::class, 'templateDetail']);
