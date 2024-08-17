@@ -23,9 +23,9 @@ class VulanRepository extends BaseRepository implements VuLanRepositoryInterface
         $this->model = $modelData;
     }
 
-    public function getAll()
+    public function getAllHistory($params)
     {
-        $model = $this->model->query()->get();
+        $model = $this->model->query()->latest()->offset($params['offset'])->limit($params['limit'])->get();
 
         return $model->toArray();
     }

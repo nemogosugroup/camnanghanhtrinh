@@ -57,30 +57,45 @@ export default {
             },
             id: false,
             title: '',
+            listQuery: {
+                offset: 0,
+                limit: 12,
+            }
         }
     },
 
     filters: {},
 
-    async created() {
-        await this.fetch();
-        console.log(this.lists);
+    created() {
+        this.fetch();
+        this.scrollEndToLoadMore();
     },
     computed: {
         ...mapGetters(["user"]),
     },
     methods: {
+        scrollEndToLoadMore() {
+            window.addEventListener('scroll', () => {
+                const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+                if (scrollTop + clientHeight >= scrollHeight)
+                {
+                    this.listQuery.offset = this.lists.length;
+                    this.fetch();
+                }
+            });
+        },
         async fetch() {
             this.isLoading = true;
-            const { data } = await vulanRepository.list();
+            const { data } = await vulanRepository.list(this.listQuery);
             this.isLoading = false;
             if (data.success) {
-                const results = data.data;
+                const results = this.listQuery.offset === 0 ? data.data : this.lists.concat(data.data);
                 const templates = data.templates;
                 this.listTemplates = templates.map(item => {
                     item.edit = false;
                     return item
                 });
+                this.listQuery.offset = this.lists.length;
                 this.lists = results.map(item => {
                     item.edit = this.user.id == item.user_id ? true : false;
                     return item
