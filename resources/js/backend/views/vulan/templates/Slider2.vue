@@ -166,7 +166,13 @@ export default {
             allowTouchMove: true,
             colorBg: dataSliderTemplate.content.slider_2.background.color,
             colorBackground: null,
-            listImages: [],
+            listImages: [
+                {
+                    url: "/static/vulan/generals/tmp2_bg_default.jpg",
+                    type: "image",
+                    show_content: true
+                }
+            ],
             countImages: 0,
             isEdit: true,
             dialogImageUrl: '',
@@ -200,7 +206,6 @@ export default {
         ...mapGetters(["user"]),
     },
     created() {
-        this.listImages = listImageDefault;
         this.countImages = this.listImages.length;
         this.emitter.off("get-position-group-data");
         this.emitter.off("get-file-group-data");
