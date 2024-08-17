@@ -57,6 +57,7 @@ export const constantRoutes = [
         path: "/404",
         component: Page404,
         hidden: true,
+        name: "404",
     },
     {
         path: "/401",
