@@ -31,6 +31,11 @@
                     </el-col>
                 </el-row>
             </el-main>
+
+            <div class="back_to_top hide">
+                <el-button @click="backToTop"><i class="ri-arrow-up-double-fill"></i></el-button>
+            </div>
+
         </el-container>
     </div>
 </template>
@@ -69,11 +74,28 @@ export default {
     created() {
         this.fetch();
         this.scrollEndToLoadMore();
+        this.initBackToTopBtn();
     },
     computed: {
         ...mapGetters(["user"]),
     },
     methods: {
+        initBackToTopBtn() {
+            window.addEventListener('scroll', function() {
+                const backToTopButton = document.querySelector('.back_to_top');
+                if (window.scrollY > 100) {
+                    backToTopButton.classList.remove('hide');
+                } else {
+                    backToTopButton.classList.add('hide');
+                }
+            });
+        },
+        backToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        },
         scrollEndToLoadMore() {
             window.addEventListener('scroll', () => {
                 const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
@@ -171,6 +193,22 @@ export default {
         .button {
             margin-left: 5px;
         }
+    }
+}
+.back_to_top {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    opacity: .7;
+    z-index: 9999;
+    transition: all .4s ease-in-out;
+    &:hover {opacity: 1}
+    &.hide {opacity: 0}
+    :deep(.el-button) {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        font-size: 30px;
     }
 }
 </style>
