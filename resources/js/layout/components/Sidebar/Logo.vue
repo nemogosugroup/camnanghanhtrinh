@@ -1,12 +1,12 @@
 <template>
     <div class="sidebar-logo-container" :class="{ 'collapse': collapse }">
         <transition name="sidebarLogoFade">
-            <div v-if="collapse" key="collapse" class="sidebar-logo-link" @click="redirectRouter">
+            <router-link v-if="collapse" key="collapse" class="sidebar-logo-link" to="/">
                 <img v-if="icon" :src="icon" class="sidebar-logo">
-            </div>
-            <div v-else key="expand" class="sidebar-logo-link" @click="redirectRouter">
+            </router-link>
+            <router-link v-else key="expand" class="sidebar-logo-link" to="/">
                 <img v-if="logo" :src="logo" class="sidebar-logo">
-            </div>
+            </router-link>
         </transition>
     </div>
 </template>
@@ -29,9 +29,6 @@ export default {
         }
     },
     methods: {
-        redirectRouter() {
-            this.$router.push({ name: "HandBook" });
-        }
     }
 }
 </script>

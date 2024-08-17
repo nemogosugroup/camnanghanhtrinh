@@ -33,6 +33,7 @@ export const constantRoutes = [
     {
         path: "/login",
         component: Login,
+        name: "Login",
         hidden: true,
         beforeEnter(to, from, next) {
             const queryParams = to.query;
