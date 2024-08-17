@@ -231,7 +231,7 @@ export default {
 
         this.emitter.on("prepare-capture-screen", value => {
             this.isTakingCaptureScreen = value;
-            this.openFullscreen();
+            //this.openFullscreen();
             this.emitter.emit("ready-to-capture-screen", true);
         });
 
@@ -242,7 +242,7 @@ export default {
 
         this.emitter.on("re-prepare-capture-screen", value => {
             this.isTakingCaptureScreen = value;
-            this.exitFullscreen();
+            //this.exitFullscreen();
         });
 
     },
