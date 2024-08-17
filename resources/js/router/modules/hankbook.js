@@ -24,6 +24,7 @@ const handbookRoute = [
             icon: "ri-git-repository-fill",
             noCache: true,
         },
+        hidden: true,
         children: [
             {
                 path: "/so-tay-hanh-trinh",
