@@ -88,8 +88,7 @@
             </div>
             <div ref="slider" class="slider-1 bg" :style="`background-color:${colorBg}`">
                 <div class="slider-images BG">
-                    <el-image :key="index"
-                        :src="dataSlider.content.slider_2.items[dataSlider.content.slider_2.items.length - 1].url" />
+                    <div class="el-image" :style="`background-image: url(${dataSlider.content.slider_2.items[dataSlider.content.slider_2.items.length - 1].url})`"></div>
                     <div class="content-wish">
                         <Descriptions2 :style="dataSlider.content.slider_2.desc.style"
                             :content="dataSlider.content.slider_2.desc.content" :isEdit="isEdit"
@@ -444,5 +443,7 @@ export default {
 
 .el-image {
     background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
 }
 </style>
