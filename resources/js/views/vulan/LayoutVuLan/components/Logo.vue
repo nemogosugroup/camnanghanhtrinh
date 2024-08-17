@@ -1,9 +1,9 @@
 <template>
     <div class="sidebar-logo-container" :class="{ 'collapse': collapse }">
         <transition name="sidebarLogoFade">
-            <router-link class="sidebar-logo-link" to="/">
+            <div class="sidebar-logo-link" @click="redirectRouter">
                 <img v-if="logo" :src="logo" class="sidebar-logo">
-            </router-link>
+            </div>
         </transition>
     </div>
 </template>
@@ -34,6 +34,13 @@ export default {
         this.checkUser = Object.keys(this.user).length > 0 ? true : false;
     },
     methods: {
+        redirectRouter() {
+            if (this.checkUser) {
+                this.$router.push({ name: "HandBook" });
+            } else {
+                this.$router.push(`/vulan/index`);
+            }
+        }
     }
 }
 </script>
