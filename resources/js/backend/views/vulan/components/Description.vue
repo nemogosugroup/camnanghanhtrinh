@@ -129,24 +129,24 @@ export default {
             }
         },
         handleSelectAll(editor) {
-            if ($(this.$refs.draggable).length > 0) {
-                if (!this.check) {
-                    this.editorDesc.selectAll();
-                    this.check = true;
-                }
-            }
+            // if ($(this.$refs.draggable).length > 0) {
+            //     if (!this.check) {
+            //         this.editorDesc.selectAll();
+            //         this.check = true;
+            //     }
+            // }
         },
         handleClick(event) {
-            const targetElement = event.target;
-            const classList = targetElement.classList;
-            if ($(this.$refs.draggable).length > 0) {
-                if (classList.value != '') {
-                    if (this.check) {
-                        this.editorDesc.deselect();
-                        this.check = false;
-                    }
-                }
-            }
+            // const targetElement = event.target;
+            // const classList = targetElement.classList;
+            // if ($(this.$refs.draggable).length > 0) {
+            //     if (classList.value != '') {
+            //         if (this.check) {
+            //             this.editorDesc.deselect();
+            //             this.check = false;
+            //         }
+            //     }
+            // }
         },
     }
 }
