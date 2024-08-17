@@ -180,6 +180,8 @@ export default {
 }
 
 .vulan-container .content-desc>div {
+    max-width: 400px;
+    text-align: center;
     transform: rotate(1deg);
 }
 
