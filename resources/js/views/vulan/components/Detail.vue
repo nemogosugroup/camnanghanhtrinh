@@ -18,7 +18,7 @@
                     <div v-if="listItemImages.length > 0">
                         <div class="listImages">
                             <div class="itemImage" v-for="(item, index) in listItemImages" :key="index">
-                                <el-image style="width: 100px; height: 100px" :src="item.url" :fit="`cover`"/>
+                                <div class="el-image" :style="`background-image: url(${item.url})`"></div>
                                 <el-switch v-model="item.show_content" class="ml-2"
                                            style="--el-switch-on-color: #13ce66; --el-switch-off-color: #ff4949"
                                            active-text="Hiển thị" inactive-text="Ẩn"
@@ -46,7 +46,7 @@
                             }" class="mySwiper">
                         <swiper-slide v-for="(item, index) in listItemImages" :key="index">
                             <div :class="`itemImage ${isShow[index] ? 'hide' : ''}`">
-                                <el-image :src="item.url" :fit="`cover`"/>
+                                <div class="el-image" :style="`background-image: url(${item.url})`"></div>
                                 <span v-if="!item.show_content" class="show-content"
                                       @click="handleShowContent(index)"><i ref="icon"
                                                                            :class="`${isShow[index] ? 'ri-arrow-right-circle-line' : 'ri-arrow-left-circle-line'}`"></i></span>
@@ -61,7 +61,7 @@
                     </swiper>
                 </div>
                 <div v-else class="slider-images">
-                    <el-image :key="index" :src="listImages[0].url" :fit="`cover`"/>
+                    <div class="el-image" :style="`background-image: url(${listImages[0].url})`"></div>
                     <div class="content-wish">
                         <Descriptions v-if="dataSlider" :style="dataSlider.content.slider_1.desc.style"
                                       :content="dataSlider.content.slider_1.desc.content" :isEdit="isEdit"
@@ -434,5 +434,8 @@ export default {
             opacity: 1;
         }
     }
+}
+.el-image {
+    background-position: center;
 }
 </style>
