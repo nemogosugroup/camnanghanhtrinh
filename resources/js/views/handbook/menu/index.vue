@@ -1,7 +1,8 @@
 <template>
     <ul class="wrap-menu">
         <li v-for="item in menu" :key="item.path">
-            <router-link :to="item.path" :class="`menu ${ active == item.active ? 'active' : '' }`" :style="`background-color:${item.color}`">{{ item.title }}</router-link>
+            <router-link :to="item.path" :class="`menu ${active == item.active ? 'active' : ''}`"
+                :style="`background-color:${item.color}`">{{ item.title }}</router-link>
         </li>
     </ul>
 </template>
@@ -11,6 +12,7 @@ export default {
     name: 'HandBookMenu',
     data() {
         return {
+            menu: []
         }
     },
     computed: {
@@ -22,25 +24,32 @@ export default {
             const { meta } = route;
             return meta.active
         },
-        menu(){
+        menu() {
             let list = [];
-            if(handbookRoute.children){
-                for (const key in handbookRoute.children) {
-                    const item = handbookRoute.children[key];
-                    if(item.show){
-                        let _item = {
-                            title: item.meta.title,
-                            path: item.path,
-                            color: item.meta.color,
-                            active: item.meta.active
-                        };
-                        list.push(_item)
+            if (Array.isArray(handbookRoute)) {
+                const _handbookRoute = handbookRoute[0];
+                if (_handbookRoute.children) {
+                    for (const key in _handbookRoute.children) {
+                        const item = _handbookRoute.children[key];
+                        if (item.show) {
+                            let _item = {
+                                title: item.meta.title,
+                                path: item.path,
+                                color: item.meta.color,
+                                active: item.meta.active
+                            };
+                            list.push(_item)
+                        }
                     }
                 }
             }
             return list
         }
     },
+    mounted() { },
+    created() { },
+    methods: {
+    }
 };
 </script>
 <style lang="scss" scoped>
@@ -48,10 +57,17 @@ export default {
     list-style: none;
     margin: 0;
     padding: 0;
-    li{
-        &:last-child { .menu{ margin-bottom:  0; }}
+
+    li {
+        &:last-child {
+            .menu {
+                margin-bottom: 0;
+            }
+        }
     }
+
     min-width: 180px;
+
     .menu {
         display: flex;
         padding: 10px 15px;
@@ -62,10 +78,11 @@ export default {
         position: relative;
         margin-bottom: 10px;
         height: 40px;
-        line-height: 21px;    
+        line-height: 21px;
         text-transform: uppercase;
         font-weight: 700;
-        &::after{
+
+        &::after {
             content: '';
             border-bottom: 20px solid #fff;
             position: absolute;
@@ -75,18 +92,21 @@ export default {
             border-top: 20px solid #fff;
             border-right: 20px solid #fff;
         }
-        &:hover{
+
+        &:hover {
             width: 180px;
             transition: all ease-in-out .2s;
             padding-left: 20px;
         }
-        &.active{
+
+        &.active {
             padding: 15px;
             height: 50px;
-            width: 200px;    
-            line-height: 23px;        
+            width: 200px;
+            line-height: 23px;
             font-size: 20px;
-            &::after{
+
+            &::after {
                 content: '';
                 border-width: 25px
             }
