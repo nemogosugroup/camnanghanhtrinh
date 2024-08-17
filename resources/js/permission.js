@@ -30,6 +30,9 @@ router.beforeEach(async (to, from, next) => {
             accessRoutes.forEach((route) => {
                 router.addRoute(route);
             });
+            if (to.path === "/") {
+                next({ name: "HandBook" });
+            }
             next();
         } else {
             var roles = await store.dispatch("user/getRoles");
