@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 /* Layout */
 import Login from "@/views/login";
+import LoginGoogle from "@/views/login/login-google.vue";
 import Dashboard from "@/views/dashboard";
 import Redirect from "@/views/redirect";
 import Page404 from "@/views/error-page/404";
@@ -34,6 +35,29 @@ export const constantRoutes = [
         path: "/login",
         component: Login,
         name: "Login",
+        hidden: true,
+        beforeEnter(to, from, next) {
+            const queryParams = to.query;
+            if (getAccessToken()) {
+                if (queryParams.redirect_uri) {
+                    window.location.href =
+                        queryParams.redirect_uri +
+                        "?token=" +
+                        getAccessToken() +
+                        "&state=" +
+                        queryParams.state;
+                } else {
+                    next({ path: "/" });
+                }
+            } else {
+                next();
+            }
+        },
+    },
+    {
+        path: "/login-google",
+        component: LoginGoogle,
+        name: "LoginGoogle",
         hidden: true,
         beforeEnter(to, from, next) {
             const queryParams = to.query;
