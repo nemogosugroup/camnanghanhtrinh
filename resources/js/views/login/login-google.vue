@@ -28,8 +28,29 @@
                                     @keyup.enter="handleLogin" />
                             </el-form-item>
                         </el-tooltip>
-                        <el-button :loading="loading" type="primary" style="width: 100%; margin-bottom: 30px"
-                            @click.prevent="handleLogin">Login</el-button>
+                        <el-row :gutter="10">
+                            <el-col :span="12">
+                                <div id="g_id_onload"
+                                    data-client_id="319849910805-8l7v2l243pqso5j7lm27phg39rkca26k.apps.googleusercontent.com"
+                                    data-callback="handleCredentialResponse"
+                                    data-auto_prompt="false">
+                                </div>
+                                <!-- <div class="google-btn-wrapper">
+                                    <div class="g_id_signin"
+                                        data-type="standard"
+                                        data-size="large"
+                                        data-theme="outline"
+                                        data-text="sign_in_with"
+                                        data-shape="rectangular"
+                                        data-logo_alignment="left">
+                                    </div>
+                                </div> -->
+                                <div id="google-button-container" class="google-button-container"></div>
+                            </el-col>
+                            <el-col :span="12"> <el-button :loading="loading" type="primary" style="width: 100%;height: 41px"
+                            @click.prevent="handleLogin">Login</el-button></el-col>
+                        </el-row>
+                       
                     </el-form>
                 </div>
             </el-aside>
@@ -78,6 +99,11 @@ export default {
             otherQuery: {},
             bgLogin: bgLogin,
             logo: imagesLogo,
+            site: null,
+            formGoogle: {
+                site: null,
+                tokenGoogle: null
+            }
         };
     },
     watch: {
@@ -98,6 +124,33 @@ export default {
     created() {
     },
     mounted() {
+       // window.handleCredentialResponse = this.handleCredentialResponse;
+        const urlParams = new URLSearchParams(window.location.search);
+        var site = urlParams.get('site');
+        this.site = site ? atob(site) : null;
+        // const waitForGoogle = () => {
+        //     if (typeof google !== 'undefined') {
+        //         this.initGoogleSignIn();
+        //     } else {
+        //         setTimeout(waitForGoogle, 100); // chờ tiếp
+        //     }
+        // };
+        // waitForGoogle();
+        this.waitForGoogle(() => {
+            google.accounts.id.initialize({
+                client_id: '319849910805-8l7v2l243pqso5j7lm27phg39rkca26k.apps.googleusercontent.com',
+                callback: this.handleCredentialResponse,
+            });
+
+            // Render nút Google vào vùng chỉ định, với full width
+            google.accounts.id.renderButton(
+                document.getElementById("google-button-container"),
+                {
+                theme: "outline",
+                size: "large",
+                }
+            );
+        });
     },
     destroyed() {
     },
@@ -161,6 +214,76 @@ export default {
                 return acc;
             }, {});
         },
+
+        // login oauth google
+        initGoogleSignIn() {
+            google.accounts.id.initialize({
+                client_id: "319849910805-8l7v2l243pqso5j7lm27phg39rkca26k.apps.googleusercontent.com",
+                callback: this.handleCredentialResponse,
+                auto_select: false
+            });
+        },
+        handleLoginGoogle() {
+            this.loading = true;
+            // Hiển thị popup Google
+            google.accounts.id.prompt((notification) => {
+                if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+                    this.loading = false;
+                    console.warn("Prompt was not displayed or skipped.");
+                }
+            });
+        },
+        async handleCredentialResponse(response) {
+            const idToken = response.credential;
+            try {
+                this.formGoogle.tokenGoogle = idToken;
+                this.formGoogle.site = this.site;
+                this.$store
+                        .dispatch("user/loginOauth", this.formGoogle)
+                        .then((response) => {
+                            const { data } = response;
+                            if (data.success) {
+                                this.$message({
+                                    message: data.message,
+                                    type: 'success'
+                                })
+                                if(this.site && res.status == 200){
+                                    const url = new URL( this.site );
+                                    url.searchParams.set('token', res.data.token);
+                                    window.location.href = `${url.href}`;
+                                }
+                                if (this.redirectUri) {
+                                    window.location.href = this.redirectUri + '?token=' + getAccessToken() + '&state=' + this.oAuthState;
+                                } else {
+                                    this.$router.push({
+                                        path: this.redirect || "/vulan/",
+                                        query: this.otherQuery,
+                                    });
+                                }
+
+                            } else {
+                                this.$message({
+                                    message: data.message,
+                                    type: 'error'
+                                })
+                            }
+                            this.loading = false;
+                        })
+                        .catch(() => {
+                            this.loading = false;
+                        });                
+                // => Lưu token / chuyển route...
+            } catch (e) {
+                console.error('Login thất bại:', e.response?.data);
+            }
+        },
+        waitForGoogle(callback) {
+            if (typeof google !== "undefined") {
+                callback();
+            } else {
+                setTimeout(() => this.waitForGoogle(callback), 100);
+            }
+        },
     },
 };
 </script>
@@ -176,7 +299,6 @@ $cursor: #fff;
         color: $cursor;
     }
 }
-
 /* reset element-ui css */
 .login-container {
     .el-input {
@@ -253,7 +375,7 @@ $height_logo: 70px;
     overflow: hidden;
     display: flex;
     align-items: center;
-
+    
     .login-form {
         position: relative;
         width: 100%;
@@ -309,6 +431,14 @@ $height_logo: 70px;
         position: absolute;
         right: 0;
         bottom: 6px;
+    }
+    .login-google {
+        width: 100%;
+        display: block;
+    }
+    .google-button-container {
+        width: 100%;
+        max-width: 100%;
     }
 
     @media only screen and (max-width: 470px) {
