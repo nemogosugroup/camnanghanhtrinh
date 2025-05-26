@@ -2,6 +2,8 @@ import { createRouter, createWebHistory } from "vue-router";
 /* Layout */
 import Login from "@/views/login";
 import LoginGoogle from "@/views/login/login-google.vue";
+import Terms from "@/views/terms-privacy/terms.vue";
+import Privacy from "@/views/terms-privacy/privacy.vue";
 import Dashboard from "@/views/dashboard";
 import Redirect from "@/views/redirect";
 import Page404 from "@/views/error-page/404";
@@ -76,6 +78,18 @@ export const constantRoutes = [
                 next();
             }
         },
+    },
+    {
+        path: "/terms",
+        component: Terms,
+        name: "Terms",
+        hidden: true,
+    },
+    {
+        path: "/privacy",
+        component: Privacy,
+        name: "Privacy",
+        hidden: true,
     },
     {
         path: "/404",
