@@ -1,11 +1,7 @@
 <template>
     <div class="navbar">
-        <hamburger
-            id="hamburger-container"
-            :is-active="sidebar.opened"
-            class="hamburger-container"
-            @toggleClick="toggleSideBar"
-        />
+        <hamburger id="hamburger-container" :is-active="sidebar.opened" class="hamburger-container"
+            @toggleClick="toggleSideBar" />
 
         <breadcrumb id="breadcrumb-container" class="breadcrumb-container" />
 
@@ -34,16 +30,12 @@
                 </el-tooltip>
             </template> -->
 
-            <el-dropdown
-                class="avatar-container right-menu-item hover-effect"
-                trigger="click"
-            >
+            <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
                 <div class="avatar-wrapper">
-                    <img
-                        :src="avatar + '?imageView2/1/w/80/h/80'"
-                        class="user-avatar"
-                    />
-                    <el-icon><CaretBottom /></el-icon>
+                    <img :src="avatar + '?imageView2/1/w/80/h/80'" class="user-avatar" />
+                    <el-icon>
+                        <CaretBottom />
+                    </el-icon>
                 </div>
                 <template #dropdown>
                     <el-dropdown-menu>
@@ -77,17 +69,17 @@ export default {
         Breadcrumb,
         Hamburger,
     },
-    data(){
+    data() {
         return {
         }
     },
     computed: {
         ...mapGetters(["sidebar", "device", "user"]),
-		avatar() {
-            let avatar = this.user.avatar; 
-			return avatar ? avatar : avatarDefault;
-		},
-        variables() {           
+        avatar() {
+            let avatar = this.user.avatar;
+            return avatar ? avatar : avatarDefault;
+        },
+        variables() {
             return variables;
         },
     },

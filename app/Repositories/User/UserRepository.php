@@ -125,8 +125,11 @@ class UserRepository implements UserRepositoryInterface
 
     public function loginUser(array $data){
         $email = $data['email'];
-        $password = $data['password'];
-        if (last(explode("@", $email)) != 'gosu.vn') {
+        $password = !empty($data['password']) ? $data['password'] : null;
+        $listDomains = explode(',',env('DOMAINS'));
+        $emailParts = explode('@', $email);
+        $domain = $emailParts[1] ?? null;  
+        if (!in_array($domain, $listDomains)) {
             $results = array(
                 'message' => $this->msg->emaiError(),
                 'data' => false,
@@ -162,45 +165,38 @@ class UserRepository implements UserRepositoryInterface
                 );
             }
         }else{
-            //login ldap
-            $check_pass = $this->helpers->bindldap($email, $password);
-            if(!$check_pass){
-                $results = array(
-                    'message' => $this->msg->loginError(),
-                    'data' => false,
-                    'status' => Response::HTTP_OK
-                );
-                return $results;
-            }
-            if(!Auth::attempt(['email' => $email, 'password' => $password])){
-                $params = array('email' => $email);
-                $profile = $this->gosuEmployee->profile($params);
-                if (!$profile['success']) {
-                    $results = array(
-                        'message' => $this->msg->loginError(),
-                        'data' => false,
-                        'status' => Response::HTTP_OK
-                    );
-                    return $results;
-                }
+            $loginGoogle = !empty($data['loginGoogle']) ? true : false;
+            if(!empty($loginGoogle)){                
+                // Kiểm tra xem user đã tồn tại hay chưa
                 $user = User::where('email', $email)->first();
-                if($user){
-                    $user->password = Hash::make($password);
-                    $user->save();
-                }else{
+                
+                $params = ['email' => $email];
+                if (!$user) {                    
+                    // Nếu chưa có, gọi profile từ GOSU
+                    $profile = $this->gosuEmployee->profile($params);
+
+                    if (!$profile['success']) {
+                        return [
+                            'message' => $this->msg->loginError(),
+                            'data' => false,
+                            'status' => Response::HTTP_OK
+                        ];
+                    }
+
                     $user = $profile['data'];
                     $user['password'] = Hash::make($password);
                     $user['is_director'] = (int)(isset($user['level']) && $user['level'] <= 4);
                     unset($user['level']);
                     $user['flag'] = $this->helpers->getUserFlag($user['employee_id']);
-
                     $this->createUser($user);
+
+                    $user = User::where('email', $email)->first();
                 }
-            }
-            if(Auth::attempt(['email' => $email, 'password' => $password])){
+                // Đăng nhập thủ công không cần password
+                Auth::login($user);
                 $authUser = Auth::user();
 
-                // update flag if $authUser->flag = 0
+                // Nếu chưa có flag thì cập nhật
                 if ($authUser->flag === 0) {
                     $authUser->flag = $this->helpers->getUserFlag($authUser->employee_id);
                     $authUser->save();
@@ -208,23 +204,85 @@ class UserRepository implements UserRepositoryInterface
 
                 $roles = $authUser->roles->pluck('name');
                 $data = $authUser->toArray();
-                $data['access_token'] =  $authUser->createToken($authUser['email'])->plainTextToken; 
+                $data['access_token'] = $authUser->createToken($authUser->email)->plainTextToken;
                 $data['roles'] = $roles;
-                // $data['courses'] = $authUser->courses->toArray();
-                // $data['equipments'] = $authUser->equipments->toArray();
-                $profileId = $data['profile_id'];
-                //$profileId = 252;
-                $training = $this->gosuEmployee->training( $profileId );
-                $data['training'] = false;
-                if($training['success']){
-                    $data['training'] = $training['data'];
-                }
-                $results = array(
+
+                // Gọi training từ profile_id
+                $profileId = $authUser->profile_id;
+                $training = $this->gosuEmployee->training($profileId);
+                $data['training'] = $training['success'] ? $training['data'] : false;
+
+                $results = [
                     'message' => $this->msg->loginSuccess(),
                     'data' => $data,
                     'success' => true,
                     'status' => Response::HTTP_OK
-                );
+                ];
+            }else{
+                //login ldap
+                $check_pass = $this->helpers->bindldap($email, $password);
+                if(!$check_pass){
+                    $results = array(
+                        'message' => $this->msg->loginError(),
+                        'data' => false,
+                        'status' => Response::HTTP_OK
+                    );
+                    return $results;
+                }
+                if(!Auth::attempt(['email' => $email, 'password' => $password])){
+                    $params = array('email' => $email);
+                    $profile = $this->gosuEmployee->profile($params);
+                    if (!$profile['success']) {
+                        $results = array(
+                            'message' => $this->msg->loginError(),
+                            'data' => false,
+                            'status' => Response::HTTP_OK
+                        );
+                        return $results;
+                    }
+                    $user = User::where('email', $email)->first();
+                    if($user){
+                        $user->password = Hash::make($password);
+                        $user->save();
+                    }else{
+                        $user = $profile['data'];
+                        $user['password'] = Hash::make($password);
+                        $user['is_director'] = (int)(isset($user['level']) && $user['level'] <= 4);
+                        unset($user['level']);
+                        $user['flag'] = $this->helpers->getUserFlag($user['employee_id']);
+                        $this->createUser($user);
+                    }
+                }
+
+                if(Auth::attempt(['email' => $email, 'password' => $password])){
+                    $authUser = Auth::user();
+
+                    // update flag if $authUser->flag = 0
+                    if ($authUser->flag === 0) {
+                        $authUser->flag = $this->helpers->getUserFlag($authUser->employee_id);
+                        $authUser->save();
+                    }
+
+                    $roles = $authUser->roles->pluck('name');
+                    $data = $authUser->toArray();
+                    $data['access_token'] =  $authUser->createToken($authUser['email'])->plainTextToken; 
+                    $data['roles'] = $roles;
+                    // $data['courses'] = $authUser->courses->toArray();
+                    // $data['equipments'] = $authUser->equipments->toArray();
+                    $profileId = $data['profile_id'];
+                    //$profileId = 252;
+                    $training = $this->gosuEmployee->training( $profileId );
+                    $data['training'] = false;
+                    if($training['success']){
+                        $data['training'] = $training['data'];
+                    }
+                    $results = array(
+                        'message' => $this->msg->loginSuccess(),
+                        'data' => $data,
+                        'success' => true,
+                        'status' => Response::HTTP_OK
+                    );
+                }            
             }
             //Nhiệm vụ cập nhập đăng nhập
             $mission_id = 20;
