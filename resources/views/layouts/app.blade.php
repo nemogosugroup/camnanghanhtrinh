@@ -9,6 +9,7 @@
     <title>Gosu</title>
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet" type="text/css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <link href="{{ mix('css/app.css') }}" type="text/css" rel="stylesheet" />
     <link rel="icon" type="image/x-icon" href="{{ mix('/images/logo/GOSU_icon.png') }}">
 </head>
@@ -18,6 +19,7 @@
     </div>
     <script src="{{ mix('js/app.js') }}" type="text/javascript"></script>
     <script src="{{ asset('backend/js/ckfinder/ckfinder.js') }}"></script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
 </body>
 
 </html>

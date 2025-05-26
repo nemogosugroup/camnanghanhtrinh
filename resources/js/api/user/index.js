@@ -116,5 +116,14 @@ export default {
             method: 'get',
             params: query
         })
+    },
+
+    // login goodle
+    loginOauth(data){
+        return request({
+            url: `${resource}` + "/oauth",
+            method: 'post',
+            data
+        })
     }
 };

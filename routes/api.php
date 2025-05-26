@@ -19,6 +19,7 @@ use App\Http\Controllers\Api\Events\VuLanController;
 |
 */
 Route::post('user/login', [AuthController::class, 'login']);
+Route::post('user/oauth', [AuthController::class, 'oauth']);
 Route::get('list-employee', [AuthController::class, 'employee']);
 Route::middleware('auth:api')->group(function () {
     Route::get('/check-login', [AuthController::class, 'checkLogin']);

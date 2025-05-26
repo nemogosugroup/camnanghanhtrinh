@@ -21,6 +21,7 @@ use App\Repositories\User\UserRepository;
 use PhpParser\Node\Stmt\TryCatch;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
+use Google_Client;
 
 class AuthController extends Controller
 {
@@ -353,14 +354,69 @@ class AuthController extends Controller
         
         return response()->json($results);
     }
-
-    
-
     public function checkLogin(Request $request)
     {
         $state =$request->state;
         $redirectUrl =$request->redirect_uri;
         return redirect($redirectUrl. '?token=abcd&state='.$state);
-              
+    }
+
+    //login Oauth google
+    public function oauth(Request $request){
+        $token = $request->input('token');
+        $site = $request->input('site'); 
+
+        $client = new Google_Client(['client_id' => env('GOOGLE_CLIENT_ID')]);
+        $client->setHttpClient(new \GuzzleHttp\Client([
+            'verify' => 'D:/wamp64/bin/php/php7.4.33/extras/ssl/cacert.pem'// fix tạm ssl
+        ]));
+        $payload = $client->verifyIdToken($token);
+                
+        if ($payload) {
+            // kiểm tra domain
+            $emailParts = explode('@', $payload['email']);
+            $domain = $emailParts[1] ?? null;            
+            $listDomains = explode(',',env('DOMAINS'));
+            if (!in_array($domain, $listDomains)) {
+                return response()->json(['error' => 'Tài khoản email không hợp lệ'], 200);
+            }  
+
+            $data = [
+                'token' => Hash::make($payload['email']),
+                'email' => $payload['email']
+            ];
+            
+            // create token ERP
+            $results = $this->gosuApi->GosuPostData('v2/account/create-token',$data);
+            if(empty($results)) {
+                $_result['message'] = 'Token hết hạn!';
+                $_result['token'] = null;
+                return response()->json($_result, 200);
+            }
+            $_result = [];
+            if($results->Code != 1){
+                $_result['message'] = $results->Msg;
+                $_result['token'] = null;
+                return response()->json($_result, 200);
+            }
+            
+            // Login user và trả về token
+            if(!empty($site)){
+                $_result['token'] = $results->Data->Token;
+                $_result['message'] = $results->Msg;
+                $token = [
+                    'token' => $_result['token']
+                ];               
+            }else{
+                $_result = $this->userRepo->loginUser(['email'=>$payload['email'], 'loginGoogle'=>true]);
+            }
+            //$checkToken = $this->gosuApi->GosuGetData('v2/account/check-token',$token);
+            // dump($_result);
+            // dump($checkToken);
+            // die();
+            return response()->json($_result);
+        } else {
+            return response()->json(['error' => 'Token không hợp lệ'], 401);
+        }
     }
 }
