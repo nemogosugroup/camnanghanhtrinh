@@ -103,7 +103,9 @@ export default {
             formGoogle: {
                 site: null,
                 tokenGoogle: null
-            }
+            },
+            loadingFullScreen: false,
+            fullscreenLoadingInstance: null,
         };
     },
     watch: {
@@ -120,6 +122,9 @@ export default {
             },
             immediate: true,
         },
+        loadingFullScreen(val) {
+            this.openFullScreen(val);
+        }
     },
     created() {
     },
@@ -179,8 +184,6 @@ export default {
                                         query: this.otherQuery,
                                     });
                                 }
-
-
                             } else {
                                 this.$message({
                                     message: data.message,
@@ -234,17 +237,17 @@ export default {
                         .dispatch("user/loginOauth", this.formGoogle)
                         .then((response) => {
                             const { data, status } = response;
-                            if (data.success) {
-                                this.$message({
-                                    message: data.message,
-                                    type: 'success'
-                                })
-                                
+                            if (data.success) { 
                                 if(this.site !== null && status === 200){
+                                    this.loadingFullScreen = true;
                                     const url = new URL( this.site );
                                     url.searchParams.set('token', data.access_token);
                                     window.location.href = `${url.href}`;
                                 }
+                                this.$message({
+                                    message: data.message,
+                                    type: 'success'
+                                })
                                 if (this.redirectUri) {
                                     window.location.href = this.redirectUri + '?token=' + getAccessToken() + '&state=' + this.oAuthState;
                                 } else {
@@ -268,6 +271,19 @@ export default {
                 // => Lưu token / chuyển route...
             } catch (e) {
                 console.error('Login thất bại:', e.response?.data);
+            }
+        },
+        openFullScreen(isLoading) {
+            if (isLoading) {
+                this.fullscreenLoadingInstance = this.$loading({
+                    lock: true,
+                    text: 'Vui lòng đợi...!',
+                    spinner: 'el-icon-loading',
+                    background: 'rgba(0, 0, 0, 0.7)'
+                });
+            } else if (this.fullscreenLoadingInstance) {
+                this.fullscreenLoadingInstance.close();
+                this.fullscreenLoadingInstance = null;
             }
         },
         waitForGoogle(callback) {
