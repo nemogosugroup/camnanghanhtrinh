@@ -126,16 +126,8 @@ export default {
     mounted() {
        // window.handleCredentialResponse = this.handleCredentialResponse;
         const urlParams = new URLSearchParams(window.location.search);
-        var site = urlParams.get('site');
+        var site = urlParams.get('redirect');
         this.site = site ? atob(site) : null;
-        // const waitForGoogle = () => {
-        //     if (typeof google !== 'undefined') {
-        //         this.initGoogleSignIn();
-        //     } else {
-        //         setTimeout(waitForGoogle, 100); // chờ tiếp
-        //     }
-        // };
-        // waitForGoogle();
         this.waitForGoogle(() => {
             google.accounts.id.initialize({
                 client_id: '319849910805-8l7v2l243pqso5j7lm27phg39rkca26k.apps.googleusercontent.com',
@@ -241,15 +233,16 @@ export default {
                 this.$store
                         .dispatch("user/loginOauth", this.formGoogle)
                         .then((response) => {
-                            const { data } = response;
+                            const { data, status } = response;
                             if (data.success) {
                                 this.$message({
                                     message: data.message,
                                     type: 'success'
                                 })
-                                if(this.site && res.status == 200){
+                                
+                                if(this.site !== null && status === 200){
                                     const url = new URL( this.site );
-                                    url.searchParams.set('token', res.data.token);
+                                    url.searchParams.set('token', data.access_token);
                                     window.location.href = `${url.href}`;
                                 }
                                 if (this.redirectUri) {

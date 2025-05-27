@@ -24,6 +24,15 @@ router.beforeEach(async (to, from, next) => {
     // determine whether the user has logged in
     //removeToken();
     const hasToken = getAccessToken();
+
+    // kiểm tra login với các site vệ tinh
+    const currentUrl = window.location.href;
+    const urlParams = new URLSearchParams(window.location.search);
+    var site = urlParams.get('redirect');
+    var redirect = site ? atob(site) : null;
+    if(redirect && hasToken && hasToken != "undefined"){ 
+        removeToken();
+    }
     //const hasToken = null;
     if (hasToken && hasToken != "undefined") {
         const hasRoles = store.getters.roles && store.getters.roles.length > 0;
@@ -42,6 +51,9 @@ router.beforeEach(async (to, from, next) => {
             }
             next();
         } else {
+            if(redirect){
+                window.location.href = `${currentUrl}`;
+            }
             var roles = await store.dispatch("user/getRoles");
             if (store.getters.roles.length <= 0) {
                 store.dispatch("user/logout");
@@ -80,9 +92,11 @@ router.beforeEach(async (to, from, next) => {
         accessRoutes.forEach((route) => {
             router.addRoute(route);
         });
+
         if (whiteList.indexOf(to.path) !== -1) {
             // in the free login whitelist, go directly
             next();
+           
         } else {
             if (to.name == "VuLanDetail") {
                 next();
