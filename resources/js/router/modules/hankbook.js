@@ -17,7 +17,6 @@ const handbookRoute = [
     {
         path: "/",
         component: layoutBook,
-        name: "HandBook",
         redirect: "/so-tay-hanh-trinh",
         meta: {
             title: "Sổ tay hành trình",

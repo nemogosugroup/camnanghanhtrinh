@@ -368,7 +368,7 @@ class AuthController extends Controller
 
         $client = new Google_Client(['client_id' => env('GOOGLE_CLIENT_ID')]);
         $client->setHttpClient(new \GuzzleHttp\Client([
-            'verify' => 'D:/wamp64/bin/php/php7.4.33/extras/ssl/cacert.pem'// fix tạm ssl
+            //'verify' => 'D:/wamp64/bin/php/php7.4.33/extras/ssl/cacert.pem'// fix tạm ssl
         ]));
         $payload = $client->verifyIdToken($token);
                 
@@ -402,16 +402,19 @@ class AuthController extends Controller
             
             // Login user và trả về token
             if(!empty($site)){
-                $_result['token'] = $results->Data->Token;
+                $_result['access_token'] = $results->Data->Token;
                 $_result['message'] = $results->Msg;
+                $_result['success'] = true;
                 $token = [
-                    'token' => $_result['token']
+                    'token' => $_result['access_token']
                 ];               
             }else{
                 $_result = $this->userRepo->loginUser(['email'=>$payload['email'], 'loginGoogle'=>true]);
             }
-            //$checkToken = $this->gosuApi->GosuGetData('v2/account/check-token',$token);
-            // dump($_result);
+            // $tokenTest = [
+            //     'token' => $results->Data->Token
+            // ];
+            // $checkToken = $this->gosuApi->GosuGetData('v2/account/check-token',$tokenTest);
             // dump($checkToken);
             // die();
             return response()->json($_result);
