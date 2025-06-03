@@ -135,10 +135,9 @@ export default {
         this.site = site ? atob(site) : null;
         this.waitForGoogle(() => {
             google.accounts.id.initialize({
-                client_id: '319849910805-8l7v2l243pqso5j7lm27phg39rkca26k.apps.googleusercontent.com',
+                client_id: '952567207080-e5sf3k2jqrlqrqgjo0lmagqfhkb1oqql.apps.googleusercontent.com',
                 callback: this.handleCredentialResponse,
             });
-
             // Render nút Google vào vùng chỉ định, với full width
             google.accounts.id.renderButton(
                 document.getElementById("google-button-container"),
@@ -230,6 +229,7 @@ export default {
         },
         async handleCredentialResponse(response) {
             const idToken = response.credential;
+            
             try {
                 this.formGoogle.tokenGoogle = idToken;
                 this.formGoogle.site = this.site;

@@ -371,14 +371,13 @@ class AuthController extends Controller
             //'verify' => 'D:/wamp64/bin/php/php7.4.33/extras/ssl/cacert.pem'// fix tạm ssl
         ]));
         $payload = $client->verifyIdToken($token);
-                
         if ($payload) {
             // kiểm tra domain
             $emailParts = explode('@', $payload['email']);
             $domain = $emailParts[1] ?? null;            
             $listDomains = explode(',',env('DOMAINS'));
             if (!in_array($domain, $listDomains)) {
-                return response()->json(['error' => 'Tài khoản email không hợp lệ'], 200);
+                return response()->json(['error' => 'Chỉ tài khoản thuộc gosuverse.vn được phép đăng nhập.'], 200);
             }  
 
             $data = [
