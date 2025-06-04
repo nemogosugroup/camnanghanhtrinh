@@ -212,7 +212,7 @@ export default {
         // login oauth google
         initGoogleSignIn() {
             google.accounts.id.initialize({
-                client_id: "319849910805-8l7v2l243pqso5j7lm27phg39rkca26k.apps.googleusercontent.com",
+                client_id: "952567207080-e5sf3k2jqrlqrqgjo0lmagqfhkb1oqql.apps.googleusercontent.com",
                 callback: this.handleCredentialResponse,
                 auto_select: false
             });
