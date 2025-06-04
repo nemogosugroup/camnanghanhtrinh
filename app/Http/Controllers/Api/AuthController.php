@@ -378,7 +378,7 @@ class AuthController extends Controller
             $domain = $emailParts[1] ?? null;            
             $listDomains = explode(',',env('DOMAINS'));
             if (!in_array($domain, $listDomains)) {
-                return response()->json(['error' => 'Tài khoản email không hợp lệ', 'success' => false], 200);
+                return response()->json(['error' => 'Vui lòng sự dụng mail gosuverse.vn', 'success' => false], 200);
             }  
 
             $data = [
