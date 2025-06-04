@@ -371,13 +371,14 @@ class AuthController extends Controller
             //'verify' => 'D:/wamp64/bin/php/php7.4.33/extras/ssl/cacert.pem'// fix tạm ssl
         ]));
         $payload = $client->verifyIdToken($token);
+                
         if ($payload) {
             // kiểm tra domain
             $emailParts = explode('@', $payload['email']);
             $domain = $emailParts[1] ?? null;            
             $listDomains = explode(',',env('DOMAINS'));
             if (!in_array($domain, $listDomains)) {
-                return response()->json(['error' => 'Chỉ tài khoản thuộc gosuverse.vn được phép đăng nhập.'], 200);
+                return response()->json(['error' => 'Tài khoản email không hợp lệ', 'success' => false], 200);
             }  
 
             $data = [
@@ -396,6 +397,7 @@ class AuthController extends Controller
             if($results->Code != 1){
                 $_result['message'] = $results->Msg;
                 $_result['token'] = null;
+                $_result['success'] = false;
                 return response()->json($_result, 200);
             }
             
@@ -410,15 +412,9 @@ class AuthController extends Controller
             }else{
                 $_result = $this->userRepo->loginUser(['email'=>$payload['email'], 'loginGoogle'=>true]);
             }
-            // $tokenTest = [
-            //     'token' => $results->Data->Token
-            // ];
-            // $checkToken = $this->gosuApi->GosuGetData('v2/account/check-token',$tokenTest);
-            // dump($checkToken);
-            // die();
             return response()->json($_result);
         } else {
-            return response()->json(['error' => 'Token không hợp lệ'], 401);
+            return response()->json(['error' => 'Token không hợp lệ', 'success' => false], 401);
         }
     }
 }
