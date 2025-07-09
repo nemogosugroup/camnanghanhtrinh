@@ -165,9 +165,28 @@ class UserRepository implements UserRepositoryInterface
                 );
             }
         }else{
-            $loginGoogle = !empty($data['loginGoogle']) ? true : false;
-            if(!empty($loginGoogle)){                
-                // Kiểm tra xem user đã tồn tại hay chưa
+            //login ldap
+//            $check_pass = $this->helpers->bindldap($email, $password);
+//            if(!$check_pass){
+//                $results = array(
+//                    'message' => $this->msg->loginError(),
+//                    'data' => false,
+//                    'status' => Response::HTTP_OK
+//                );
+//                return $results;
+//            }
+
+            if(!Auth::attempt(['email' => $email, 'password' => $password])){
+                $params = array('email' => $email);
+                $profile = $this->gosuEmployee->profile($params);
+                if (!$profile['success']) {
+                    $results = array(
+                        'message' => $this->msg->loginError(),
+                        'data' => false,
+                        'status' => Response::HTTP_OK
+                    );
+                    return $results;
+                }
                 $user = User::where('email', $email)->first();
                 
                 $params = ['email' => $email];
@@ -187,7 +206,8 @@ class UserRepository implements UserRepositoryInterface
                     $user['password'] = Hash::make($password);
                     $user['is_director'] = (int)(isset($user['level']) && $user['level'] <= 4);
                     unset($user['level']);
-                    $user['flag'] = $this->helpers->getUserFlag($user['employee_id']);
+//                    $user['flag'] = $this->helpers->getUserFlag($user['employee_id']);
+                    $user['flag'] = 1;
                     $this->createUser($user);
 
                     $user = User::where('email', $email)->first();
