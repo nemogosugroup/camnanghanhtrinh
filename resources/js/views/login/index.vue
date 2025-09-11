@@ -1,51 +1,54 @@
 <template>
-    <div class="login-container" :style="backgroundLogin">
-        <div class="login-card">
-            <div class="top-accent"></div>
-            <div class="login-content">
-                <div class="gosu-logo">
-                    <div class="gosu-icon"><img :src="logo" alt="gosu">
-                    </div>
-                    <div class="gosu-text">LOGIN</div>
-                </div>
-
-                <h4 class="login-title">Sign In to your account</h4>
-
-                <form method="post" action="" id="loginForm">
-                    <input type="hidden" name="submit" value="1">
-                    <input type="hidden" name="_remember_me" value="1">
-
-                    <div class="form-group mb-3 input-row">
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="fa fa-envelope"></i></span>
-                            <input type="text" class="form-control" required name="_username" id="email" ref="email"
-                                   v-model="loginForm.email"
-                                   placeholder="Email">
+    <div>
+        <div class="celebration-overlay" aria-hidden="true"></div>
+        <div class="login-container" :style="backgroundLogin">
+            <div class="login-card">
+                <div class="top-accent"></div>
+                <div class="login-content">
+                    <div class="gosu-logo">
+                        <div class="gosu-icon"><img :src="logo" alt="gosu">
                         </div>
+                        <div class="gosu-text">LOGIN</div>
                     </div>
 
-                    <div class="form-group mb-3 input-row">
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="fa fa-lock"></i></span>
-                            <input type="password" class="form-control" required name="_password" id="password"
-                                   ref="password" v-model="loginForm.password"
-                                   placeholder="Mật khẩu">
-                            <button class="btn btn-outline-secondary password-toggle" type="button" id="togglePassword">
-                                <i class="fa fa-eye"></i></button>
+                    <h4 class="login-title">Sign In to your account</h4>
+
+                    <form method="post" action="" id="loginForm">
+                        <input type="hidden" name="submit" value="1">
+                        <input type="hidden" name="_remember_me" value="1">
+
+                        <div class="form-group mb-3 input-row">
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fa fa-envelope"></i></span>
+                                <input type="text" class="form-control" required name="_username" id="email" ref="email"
+                                       v-model="loginForm.email"
+                                       placeholder="Email">
+                            </div>
                         </div>
-                    </div>
 
-                    <button type="submit" class="btn btn-login" id="loginBtn" @click.prevent="handleLogin" style="height:54px;border-radius:12px;">
-                        <span class="btn-text"><i class="fa fa-arrow-right" style="margin-right:8px;"></i>Login</span>
-                        <span class="btn-loading" style="display:none;">
+                        <div class="form-group mb-3 input-row">
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fa fa-lock"></i></span>
+                                <input type="password" class="form-control" required name="_password" id="password"
+                                       ref="password" v-model="loginForm.password"
+                                       placeholder="Mật khẩu">
+                                <button class="btn btn-outline-secondary password-toggle" type="button" id="togglePassword">
+                                    <i class="fa fa-eye"></i></button>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-login" id="loginBtn" @click.prevent="handleLogin" style="height:54px;border-radius:12px;">
+                            <span class="btn-text"><i class="fa fa-arrow-right" style="margin-right:8px;"></i>Login</span>
+                            <span class="btn-loading" style="display:none;">
                             <i class="fa fa-spinner fa-spin" style="margin-right:8px;"></i>Đang xử lý...
                         </span>
-                    </button>
-                </form>
+                        </button>
+                    </form>
 
-                <div class="info-text">
-                    <i class="fa fa-info-circle" aria-hidden="true"></i>
-                    Hệ thống xác thực GOSU
+                    <div class="info-text">
+                        <i class="fa fa-info-circle" aria-hidden="true"></i>
+                        Hệ thống xác thực GOSU
+                    </div>
                 </div>
             </div>
         </div>
@@ -120,6 +123,8 @@ export default {
 
         // Thêm thẻ <link> vào <head>
         document.head.appendChild(this.fontLink);
+        
+        this.handleAnimLogin();
     },
     beforeUnmount() {
         // Xóa thẻ <link> khi component bị hủy
@@ -190,9 +195,92 @@ export default {
                 return acc;
             }, {});
         },
+
+        handleAnimLogin() {
+            (function(){
+                var toggle = document.getElementById('togglePassword');
+                if(toggle){
+                    toggle.addEventListener('click', function(){
+                        var input = document.getElementById('password');
+                        var icon = this.querySelector('i');
+                        if(input.type === 'password'){
+                            input.type = 'text';
+                            icon.classList.remove('fa-eye');
+                            icon.classList.add('fa-eye-slash');
+                        }else{
+                            input.type = 'password';
+                            icon.classList.remove('fa-eye-slash');
+                            icon.classList.add('fa-eye');
+                        }
+                    });
+                }
+
+                var form = document.getElementById('loginForm');
+                var loginBtn = document.getElementById('loginBtn');
+                if(form && loginBtn){
+                    form.addEventListener('submit', function(){
+                        loginBtn.classList.add('loading');
+                        loginBtn.querySelector('.btn-loading').style.display = 'inline-flex';
+                    });
+
+                    loginBtn.addEventListener('click', function(e){
+                        var rect = this.getBoundingClientRect();
+                        var size = Math.max(rect.width, rect.height);
+                        var circ = document.createElement('span');
+                        circ.className = 'ripple-circ';
+                        circ.style.width = size + 'px';
+                        circ.style.height = size + 'px';
+                        circ.style.left = (e.clientX - rect.left - size/2) + 'px';
+                        circ.style.top = (e.clientY - rect.top - size/2) + 'px';
+                        this.appendChild(circ);
+                        setTimeout(function(){ if(circ && circ.parentNode){ circ.parentNode.removeChild(circ); } }, 650);
+                    });
+                }
+
+                // Anniversary confetti
+                try {
+                    const overlay = document.querySelector('.celebration-overlay');
+                    if (overlay) {
+                        const colors = ['#ff8c42', '#ffd700', '#667eea', '#ffffff'];
+                        const confettiCount = 48;
+                        for (let i = 0; i < confettiCount; i++) {
+                            const piece = document.createElement('span');
+                            piece.className = 'confetti';
+                            piece.style.left = (Math.random() * 100) + '%';
+                            piece.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                            piece.style.animationDuration = (8 + Math.random() * 8) + 's';
+                            piece.style.animationDelay = (-Math.random() * 6) + 's';
+                            piece.style.opacity = (0.6 + Math.random() * 0.4).toString();
+                            overlay.appendChild(piece);
+                        }
+                        // Cleanup to avoid long-living DOM nodes
+                        setTimeout(() => { overlay.innerHTML = ''; }, 18000);
+                    }
+                } catch (e) {
+                    console.debug('Confetti init skipped:', e);
+                }
+            })();
+        }
     },
 };
 </script>
+
+<style>
+.celebration-overlay .confetti {
+    position: absolute;
+    top: -10%;
+    width: 6px;
+    height: 16px;
+    border-radius: 2px;
+    opacity: 0.9;
+    animation: confetti-fall linear infinite;
+}
+
+@keyframes confetti-fall {
+    0% { transform: translateY(-10%) rotate(0deg); }
+    100% { transform: translateY(120vh) rotate(360deg); }
+}
+</style>
 
 <style lang="css" scoped>
 html, body {
@@ -205,6 +293,110 @@ body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
     padding: 0;
+}
+
+.anniversary-banner {
+    position: fixed;
+    top: 20px;
+    left: 0;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 16px;
+    z-index: 1000;
+    pointer-events: none;
+}
+
+.anniversary-logo {
+    margin-bottom: 8px;
+    pointer-events: none;
+}
+
+.anniversary-logo img {
+    height: 56px;
+    width: auto;
+    display: block;
+    filter: drop-shadow(0 6px 12px rgba(0,0,0,0.35));
+    animation: badge-pop 0.9s ease;
+}
+
+.anniversary-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 140, 66, 0.95);
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: 999px;
+    box-shadow: 0 6px 18px rgba(255, 140, 66, 0.35);
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    transform: translateY(0);
+    animation: badge-pop 1s ease;
+}
+
+.anniversary-title {
+    text-transform: uppercase;
+}
+
+.anniversary-subtitle {
+    margin-top: 6px;
+    background: rgba(102, 126, 234, 0.95);
+    color: #fff;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    box-shadow: 0 6px 18px rgba(102, 126, 234, 0.35);
+}
+
+@keyframes badge-pop {
+    0% { transform: scale(0.8); opacity: 0; }
+    60% { transform: scale(1.05); opacity: 1; }
+    100% { transform: scale(1); }
+}
+
+.celebration-overlay {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 999;
+}
+
+.celebration-overlay::before,
+.celebration-overlay::after {
+    content: '';
+    position: absolute;
+    top: -10%;
+    left: 0;
+    right: 0;
+    height: 120%;
+    background-size: 300px 300px, 260px 260px, 220px 220px, 240px 240px;
+    filter: blur(1px);
+    opacity: 0.5;
+    animation: float-particles 14s linear infinite;
+}
+
+.celebration-overlay::after {
+    animation-duration: 18s;
+    opacity: 0.35;
+}
+
+@keyframes float-particles {
+    0% { transform: translateY(-5%); }
+    50% { transform: translateY(5%); }
+    100% { transform: translateY(-5%); }
+}
+.fa-lock{
+    content: "\f023";
+    font-size: 19px !important;
+    padding: 1px !important;
+}
+@media (max-width: 576px) {
+    .anniversary-badge { padding: 6px 12px; font-size: 14px; }
+    .anniversary-subtitle { font-size: 11px; }
 }
 
 .login-container {
