@@ -1,50 +1,62 @@
 <template>
-    <div class="app-wrapper">
-        <el-container>
-            <el-aside class="sidebar-container">
-                <div class="login-container">
-                    <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" autocomplete="on"
-                        label-position="left">
-                        <div class="title-container">
-                            <h3 class="title"><img v-if="logo" :src="logo" class="sidebar-logo"></h3>
-                        </div>
-
-                        <el-form-item prop="email">
-                            <span class="svg-container">
-                                <i class="ri-user-line"></i>
-                            </span>
-                            <el-input ref="email" v-model="loginForm.email" placeholder="Email" name="email"
-                                type="email" tabindex="1" autocomplete="on" />
-                        </el-form-item>
-
-                        <el-tooltip v-model="capsTooltip" content="Caps lock is On" placement="right" manual>
-                            <el-form-item prop="password">
-                                <span class="svg-container">
-                                    <i class="ri-lock-line"></i>
-                                </span>
-                                <el-input :key="passwordType" ref="password" v-model="loginForm.password"
-                                    :type="passwordType" placeholder="Password" name="password" tabindex="2"
-                                    autocomplete="on" @keyup="checkCapslock" @blur="capsTooltip = false"
-                                    @keyup.enter="handleLogin" />
-                            </el-form-item>
-                        </el-tooltip>
-                        <el-button :loading="loading" type="primary" style="width: 100%; margin-bottom: 30px"
-                            @click.prevent="handleLogin">Login</el-button>
-                    </el-form>
+    <div class="login-container" :style="backgroundLogin">
+        <div class="login-card">
+            <div class="top-accent"></div>
+            <div class="login-content">
+                <div class="gosu-logo">
+                    <div class="gosu-icon"><img :src="logo" alt="gosu">
+                    </div>
+                    <div class="gosu-text">LOGIN</div>
                 </div>
-            </el-aside>
-            <el-main class="main-login" :style="backgroundLogin"></el-main>
-        </el-container>
+
+                <h4 class="login-title">Sign In to your account</h4>
+
+                <form method="post" action="" id="loginForm">
+                    <input type="hidden" name="submit" value="1">
+                    <input type="hidden" name="_remember_me" value="1">
+
+                    <div class="form-group mb-3 input-row">
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fa fa-envelope"></i></span>
+                            <input type="text" class="form-control" required name="_username" id="email" ref="email"
+                                   v-model="loginForm.email"
+                                   placeholder="Email">
+                        </div>
+                    </div>
+
+                    <div class="form-group mb-3 input-row">
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fa fa-lock"></i></span>
+                            <input type="password" class="form-control" required name="_password" id="password"
+                                   ref="password" v-model="loginForm.password"
+                                   placeholder="Mật khẩu">
+                            <button class="btn btn-outline-secondary password-toggle" type="button" id="togglePassword">
+                                <i class="fa fa-eye"></i></button>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-login" id="loginBtn" @click.prevent="handleLogin" style="height:54px;border-radius:12px;">
+                        <span class="btn-text"><i class="fa fa-arrow-right" style="margin-right:8px;"></i>Login</span>
+                        <span class="btn-loading" style="display:none;">
+                            <i class="fa fa-spinner fa-spin" style="margin-right:8px;"></i>Đang xử lý...
+                        </span>
+                    </button>
+                </form>
+
+                <div class="info-text">
+                    <i class="fa fa-info-circle" aria-hidden="true"></i>
+                    Hệ thống xác thực GOSU
+                </div>
+            </div>
+        </div>
     </div>
-    <!--  -->
 </template>
 
 <script>
-import { validUsername } from "@/utils/validate";
-// import SocialSign from './components/SocialSignin'
-import bgLogin from "@/assets/images/bg/authentication-bg.jpg";
-import imagesLogo from "@/assets/images/logo/GOSU_full.png";
-import { getAccessToken } from "@/utils/auth";
+import bgLogin from "@/assets/images/bg/login-bg.jpg";
+import imagesLogo from "@/assets/images/logo/gosu-14.png";
+import {getAccessToken} from "@/utils/auth";
+
 export default {
     name: "Login",
     data() {
@@ -80,6 +92,7 @@ export default {
             otherQuery: {},
             bgLogin: bgLogin,
             logo: imagesLogo,
+            fontLink: null,
         };
     },
     watch: {
@@ -100,68 +113,74 @@ export default {
     created() {
     },
     mounted() {
+        // Tạo một thẻ <link> mới
+        this.fontLink = document.createElement('link');
+        this.fontLink.rel = 'stylesheet';
+        this.fontLink.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css';
+
+        // Thêm thẻ <link> vào <head>
+        document.head.appendChild(this.fontLink);
+    },
+    beforeUnmount() {
+        // Xóa thẻ <link> khi component bị hủy
+        if (this.fontLink) {
+            document.head.removeChild(this.fontLink);
+        }
     },
     destroyed() {
     },
     computed: {
         backgroundLogin() {
-            return `background-image: url(${this.bgLogin})`;
+            return `background: url(${this.bgLogin}) center center / cover no-repeat fixed;`;
         },
     },
     methods: {
         checkCapslock(e) {
-            const { key } = e;
+            const {key} = e;
             this.capsTooltip =
                 key && key.length === 1 && key >= "A" && key <= "Z";
         },
         handleLogin() {
-            this.$refs.loginForm.validate((valid) => {
-                if (valid) {
-                    this.loading = true;
-                    this.$store
-                        .dispatch("user/login", this.loginForm)
-                        .then((response) => {
-                            const { data } = response;
-                            if (data.success) {
-                                this.$message({
-                                    message: data.message,
-                                    type: 'success'
-                                })
-
-                                //console.log("check this.redirectUri",this.redirectUri);
-                                if (this.redirectUri) {
-
-                                    //console.log("check this.redirectUri 2",this.redirectUri);
-                                    window.location.href = this.redirectUri + '?token=' + getAccessToken() + '&state=' + this.oAuthState;
-                                } else {
-                                    //console.log("check this.redirect",this.redirect);
-                                    // this.$router.push({
-                                    //     path: this.redirect || "/",
-                                    //     query: this.otherQuery,
-                                    // });
-                                    this.$router.push({
-                                        path: this.redirect || "/vulan/",
-                                        query: this.otherQuery,
-                                    });
-                                }
-
-
-                            } else {
-                                this.$message({
-                                    message: data.message,
-                                    type: 'error'
-                                })
-                            }
-                            this.loading = false;
+            this.loading = true;
+            this.$store
+                .dispatch("user/login", this.loginForm)
+                .then((response) => {
+                    const {data} = response;
+                    if (data.success) {
+                        this.$message({
+                            message: data.message,
+                            type: 'success'
                         })
-                        .catch(() => {
-                            this.loading = false;
-                        });
-                } else {
-                    console.log("error submit!!");
-                    return false;
-                }
-            });
+
+                        //console.log("check this.redirectUri",this.redirectUri);
+                        if (this.redirectUri) {
+
+                            //console.log("check this.redirectUri 2",this.redirectUri);
+                            window.location.href = this.redirectUri + '?token=' + getAccessToken() + '&state=' + this.oAuthState;
+                        } else {
+                            //console.log("check this.redirect",this.redirect);
+                            // this.$router.push({
+                            //     path: this.redirect || "/",
+                            //     query: this.otherQuery,
+                            // });
+                            this.$router.push({
+                                path: this.redirect || "/vulan/",
+                                query: this.otherQuery,
+                            });
+                        }
+
+
+                    } else {
+                        this.$message({
+                            message: data.message,
+                            type: 'error'
+                        })
+                    }
+                    this.loading = false;
+                })
+                .catch(() => {
+                    this.loading = false;
+                });
         },
         getOtherQuery(query) {
             return Object.keys(query).reduce((acc, cur) => {
@@ -175,173 +194,433 @@ export default {
 };
 </script>
 
-<style lang="scss">
-$bg: hsl(213, 25%, 21%);
-// $bg: #432828;
-$light_gray: #fff;
-$cursor: #fff;
-
-@supports (-webkit-mask: none) and (not (cater-color: $cursor)) {
-    .login-container .el-input input {
-        color: $cursor;
-    }
+<style lang="css" scoped>
+html, body {
+    height: 100%;
 }
 
-/* reset element-ui css */
-.login-container {
-    .el-input {
-        display: inline-block;
-        height: 47px;
-        width: calc(100% - 50px);
-
-        input {
-            background: transparent;
-            border: 0px;
-            -webkit-appearance: none;
-            border-radius: 0px;
-            padding: 12px 5px 12px 0px;
-            color: $light_gray;
-            height: 47px;
-            caret-color: $cursor;
-
-            &:-webkit-autofill {
-                box-shadow: 0 0 0px 1000px $bg inset !important;
-                -webkit-text-fill-color: $cursor !important;
-            }
-        }
-    }
-
-    .el-form-item {
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        background: rgba(0, 0, 0, 0.1);
-        border-radius: 5px;
-        color: #454545;
-        margin-bottom: 20px;
-
-        &.is-error {
-            .el-input__wrapper {
-                box-shadow: none;
-            }
-        }
-
-        .el-input__wrapper {
-            width: 100%;
-            background: transparent;
-            box-shadow: none;
-            padding: 0;
-            border-radius: 0 5px 5px 0;
-            padding-right: 5px;
-        }
-    }
-}
-</style>
-
-<style lang="scss" scoped>
-$bg: #2d3a4b;
-$bgOverlay : #292626b3;
-$dark_gray: #889aa4;
-$light_gray: #eee;
-$width_main: calc(100% - 30%);
-$width_siderbar: calc(30%);
-$height_logo: 70px;
-
-#app {
-    .sidebar-container {
-        width: $width_siderbar !important;
-        padding: 0;
-
-        .sidebar-logo {
-            max-height: $height_logo;
-        }
-    }
+body {
+    background: linear-gradient(135deg, #667eea 0%, #ff8c42 100%);
+    min-height: 100vh;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
 }
 
 .login-container {
-    min-height: 100%;
+    min-height: 100vh;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.login-card {
+    background: rgba(255, 255, 255, 0.98);
+    border-radius: 25px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    -webkit-backdrop-filter: blur(15px);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    max-width: 450px;
     width: 100%;
-    background-color: $bg;
     overflow: hidden;
+    -webkit-animation: rise .48s ease both;
+    animation: rise .48s ease both;
+}
+
+.login-card .top-accent {
+    height: 4px;
+    background: linear-gradient(135deg, #667eea 0%, #ff8c42 100%);
+}
+
+.login-content {
+    padding: 2rem;
+}
+
+.gosu-logo {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    gap: 12px;
+    -ms-flex-pack: distribute;
+    justify-content: center;
+    margin-bottom: 18px;
+}
+
+.gosu-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    -webkit-animation: float 3s ease-in-out infinite;
+    animation: float 3s ease-in-out infinite;
+}
+
+.gosu-icon img {
+    height: 60px;
+    border-radius: 12px;
+}
+
+.login-title {
+    text-align: center;
+    margin: 12px 0 18px;
+    color: #2b3a67;
+    font-weight: 600;
+    font-size: 18px;
+}
+
+.input-row {
+    margin-bottom: 1rem;
+}
+
+.form-control {
+    border-radius: 15px;
+    border: 2px solid #e9ecef;
+    padding: 0 1.2rem;
+    font-size: 1.5rem;
+    transition: all .3s ease;
+    background: rgba(255, 255, 255, 0.9);
+    height: 52px;
+}
+
+.input-group .form-control {
+    border-left: none;
+    border-radius: 0 15px 15px 0;
+}
+
+#email {
+    border: 2px solid #e9ecef;
+}
+
+#password {
+    border: 2px solid #e9ecef;
+    border-radius: 0;
+}
+
+#email:focus,
+#password:focus {
+    border-color: #ff8c42;
+    outline: none;
+    box-shadow: 0 0 0 0.25rem rgba(255, 140, 66, 0.15);
+    background: #ffffff;
+}
+
+.input-group-text {
+    width: 53px;
+    height: 52px;
+    padding: 0 18px;
+    font-size: 21px;
+    line-height: initial;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    background: #ff8c42;
+    color: #ffffff;
+    border: 2px solid #ff8c42;
+    border-right: none;
+    border-radius: 15px 0 0 15px;
+    text-align: center;
+}
+.input-group-text > .fa-envelope {
+    font-size: 15px;
+}
+
+.password-toggle {
+    background: #ffffff;
+    color: #ff8c42;
+    border: 2px solid #e9ecef;
+    border-left: none;
+    border-radius: 0 15px 15px 0;
+    cursor: pointer;
+    text-align: center;
+    height: 52px;
+    display: inline-flex;
+    align-items: center;
+    padding: 0 18px;
+}
+
+.form-control:focus {
+    border-color: #ff8c42;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(255, 140, 66, 0.15);
+    background: #ffffff;
+}
+
+.btn-login {
+    width: 100%;
+    background: #667eea;
+    border: none;
+    color: #ffffff;
+    padding: 1rem;
+    font-weight: 600;
+    font-size: 1rem;
+    border-radius: 15px;
+    transition: all .3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-login::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left .5s;
+}
+
+.btn-login:hover::before {
+    left: 100%;
+}
+
+.btn-login:hover {
+    -webkit-transform: translateY(-3px);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(102, 126, 234, .4);
+    background: #5a6fd8;
+}
+
+.btn-login:active {
+    transform: translateY(1px) scale(.99);
+}
+
+.btn-login.loading .btn-text {
+    display: none;
+}
+
+.btn-login.loading .btn-loading {
+    display: inline-flex !important;
+    align-items: center;
+}
+
+.info-text {
+    text-align: center;
+    color: #888;
+    font-size: 15px;
+    margin-top: 1.2rem;
+}
+
+.checkbox input[type=checkbox] {
+    accent-color: #6d8efb;
+}
+
+.alert {
+    border-radius: 15px;
+    border: none;
+    padding: 1rem 1.2rem;
+    margin-bottom: 1.5rem;
+}
+
+.input-group {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+    width: 100%;
+}
+
+.input-group > .form-control, .input-group > .form-floating, .input-group > .form-select {
+    position: relative;
+    flex: 1 1 auto;
+    width: 1%;
+    min-width: 0;
+    font-size: 15px;
+}
+
+.form-control {
+    border-left: none;
+    border-radius: 0 15px 15px 0;
+}
+
+.form-control {
+    border-radius: 15px;
+    border: 2px solid #e9ecef;
+    padding: 1rem 1.2rem;
+    font-size: 1.5rem;
+    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.9);
+}
+
+.form-control {
+    display: block;
+    width: 100%;
+    padding: 7.5px;
+    font-weight: 400;
+    line-height: 1.5;
+    color: var(--bs-body-color);
+    background-color: var(--bs-body-bg);
+    background-clip: padding-box;
+    border: var(--bs-border-width) solid var(--bs-border-color);
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border-radius: var(--bs-border-radius);
+    transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+}
+
+.gosu-icon {
+    width: 50px;
+    height: 50px;
     display: flex;
     align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    font-weight: bold;
+    color: white;
+    border-radius: 12px;
+    animation: 3s ease-in-out 0s infinite normal none running float;
+}
 
-    .login-form {
-        position: relative;
-        width: 100%;
-        max-width: 500px;
-        padding: 0px 35px;
-        margin: 0 auto;
-        overflow: hidden;
+.gosu-text {
+    font-size: 32px;
+    font-weight: 700;
+    color: rgb(255, 140, 66);
+    margin-left: 20px;
+}
+
+.alert-danger {
+    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+    color: white;
+}
+
+.alert {
+    border-radius: 15px;
+    border: none;
+    padding: 1rem 1.2rem;
+    margin-bottom: 1.5rem;
+}
+
+.alert-danger {
+    --bs-alert-color: var(--bs-danger-text-emphasis);
+    --bs-alert-bg: var(--bs-danger-bg-subtle);
+    --bs-alert-border-color: var(--bs-danger-border-subtle);
+    --bs-alert-link-color: var(--bs-danger-text-emphasis);
+}
+
+.alert {
+    --bs-alert-bg: transparent;
+    --bs-alert-padding-x: 1rem;
+    --bs-alert-padding-y: 1rem;
+    --bs-alert-margin-bottom: 1rem;
+    --bs-alert-color: inherit;
+    --bs-alert-border-color: transparent;
+    --bs-alert-border: var(--bs-border-width) solid var(--bs-alert-border-color);
+    --bs-alert-border-radius: var(--bs-border-radius);
+    --bs-alert-link-color: inherit;
+    position: relative;
+    padding: var(--bs-alert-padding-y) var(--bs-alert-padding-x);
+    margin-bottom: var(--bs-alert-margin-bottom);
+    color: var(--bs-alert-color);
+    background-color: var(--bs-alert-bg);
+    border: var(--bs-alert-border);
+    border-radius: var(--bs-alert-border-radius);
+}
+
+@-webkit-keyframes rise {
+    from {
+        opacity: 0;
+        -webkit-transform: translate3d(0, 12px, 0) scale(.985);
+        transform: translate3d(0, 12px, 0) scale(.985);
     }
-
-    .tips {
-        font-size: 14px;
-        color: #fff;
-        margin-bottom: 10px;
-
-        span {
-            &:first-of-type {
-                margin-right: 16px;
-            }
-        }
-    }
-
-    .svg-container {
-        color: $dark_gray;
-        vertical-align: middle;
-        width: 50px;
-        display: inline-block;
-        text-align: center;
-    }
-
-    .title-container {
-        position: relative;
-
-        .title {
-            font-size: 26px;
-            color: $light_gray;
-            margin: 0px auto 40px auto;
-            text-align: center;
-            font-weight: bold;
-        }
-    }
-
-    .show-pwd {
-        position: absolute;
-        right: 10px;
-        top: 7px;
-        font-size: 16px;
-        color: $dark_gray;
-        cursor: pointer;
-        user-select: none;
-    }
-
-    .thirdparty-button {
-        position: absolute;
-        right: 0;
-        bottom: 6px;
-    }
-
-    @media only screen and (max-width: 470px) {
-        .thirdparty-button {
-            display: none;
-        }
+    to {
+        opacity: 1;
+        -webkit-transform: none;
+        transform: none;
     }
 }
 
-.main-login {
-    width: $width_main;
-    margin-left: $width_siderbar;
-    height: 100vh;
-    position: relative;
+@-webkit-keyframes rise {
+    from {
+        opacity: 0;
+        -webkit-transform: translate3d(0, 12px, 0) scale(.985);
+        transform: translate3d(0, 12px, 0) scale(.985);
+    }
+    to {
+        opacity: 1;
+        -webkit-transform: none;
+        transform: none;
+    }
+}
 
-    &:before {
-        width: 100%;
-        height: 100%;
-        position: absolute;
-        left: 0;
-        top: 0;
-        background: $bgOverlay;
-        content: ''
+@keyframes rise {
+    from {
+        opacity: 0;
+        -webkit-transform: translate3d(0, 12px, 0) scale(.985);
+        transform: translate3d(0, 12px, 0) scale(.985);
+    }
+    to {
+        opacity: 1;
+        -webkit-transform: none;
+        transform: none;
+    }
+}
+
+@-webkit-keyframes slide-accent {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+@keyframes slide-accent {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+@-webkit-keyframes float {
+    0%, 100% {
+        -webkit-transform: translateY(0);
+        transform: translateY(0);
+    }
+    50% {
+        -webkit-transform: translateY(-10px);
+        transform: translateY(-10px);
+    }
+}
+
+@keyframes float {
+    0%, 100% {
+        -webkit-transform: translateY(0);
+        transform: translateY(0);
+    }
+    50% {
+        -webkit-transform: translateY(-10px);
+        transform: translateY(-10px);
     }
 }
 </style>
