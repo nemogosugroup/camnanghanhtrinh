@@ -411,6 +411,7 @@ body {
     -ms-flex-pack: center;
     justify-content: center;
     padding: 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .login-card {
@@ -433,7 +434,7 @@ body {
 }
 
 .login-content {
-    padding: 2rem;
+    padding: 2.2rem;
 }
 
 .gosu-logo {
