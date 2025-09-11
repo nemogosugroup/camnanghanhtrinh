@@ -126,9 +126,10 @@ class UserRepository implements UserRepositoryInterface
     public function loginUser(array $data){
         $email = $data['email'];
         $password = !empty($data['password']) ? $data['password'] : null;
-        $listDomains = explode(',',env('DOMAINS'));
+//        $listDomains = explode(',',env('DOMAINS'));
+        $listDomains = explode(',', "gosu.vn,gosuverse.vn");
         $emailParts = explode('@', $email);
-        $domain = $emailParts[1] ?? null;  
+        $domain = $emailParts[1] ?? null;
         if (!in_array($domain, $listDomains)) {
             $results = array(
                 'message' => $this->msg->emaiError(),
@@ -175,7 +176,6 @@ class UserRepository implements UserRepositoryInterface
 //                );
 //                return $results;
 //            }
-
             if(!Auth::attempt(['email' => $email, 'password' => $password])){
                 $params = array('email' => $email);
                 $profile = $this->gosuEmployee->profile($params);
