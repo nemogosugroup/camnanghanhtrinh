@@ -269,7 +269,8 @@ class UserRepository implements UserRepositoryInterface
                         $user['password'] = Hash::make($password);
                         $user['is_director'] = (int)(isset($user['level']) && $user['level'] <= 4);
                         unset($user['level']);
-                        $user['flag'] = $this->helpers->getUserFlag($user['employee_id']);
+//                        $user['flag'] = $this->helpers->getUserFlag($user['employee_id']);
+                        $user['flag'] = 1;
                         $this->createUser($user);
                     }
                 }
