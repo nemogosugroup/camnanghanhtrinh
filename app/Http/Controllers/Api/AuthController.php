@@ -371,7 +371,7 @@ class AuthController extends Controller
             //'verify' => 'D:/wamp64/bin/php/php7.4.33/extras/ssl/cacert.pem'// fix tạm ssl
         ]));
         $payload = $client->verifyIdToken($token);
-                
+
         if ($payload) {
             // kiểm tra domain
             $emailParts = explode('@', $payload['email']);
@@ -416,5 +416,107 @@ class AuthController extends Controller
         } else {
             return response()->json(['message' => 'Token không hợp lệ', 'success' => false], 401);
         }
+    }
+
+    // get data login
+    public function getDataLogin(Request $request){
+        $domains = explode(',',env('DOMAINS'));
+        $tenantId = env('AZURE_TENANT_ID');
+        $clientId = env('AZURE_CLIENT_ID');
+        $url = env('AZURE_REDIRECT_URI');
+        $authority = env('AZURE_AUTHORITY_URI')."{$tenantId}";
+        $results = [];
+        $results['status'] = Response::HTTP_OK;
+        $results['data'] = [
+            'domains' => $domains,
+            'tenantId' => $tenantId,
+            'clientId' => $clientId,
+            'url' => $url,
+            'authority' => $authority,
+        ];
+        $results['success'] = true;
+        $results['message'] = 'Lấy domain thành công';
+            
+        return response()->json($results);
+    }
+
+    // callback login Oauth azure
+    public function oauthAzure(Request $request){
+
+        $domains = explode(',',env('DOMAINS'));
+        // code xử lý login azure
+        $token = $request->input('token'); // nhận accessToken từ frontend
+        $site = $request->input('site'); 
+
+        if (!$token) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Token không hợp lệ'
+            ], 400);
+        }
+
+        $client = new \GuzzleHttp\Client();
+        $response = $client->get("https://graph.microsoft.com/v1.0/me", [
+            "headers" => [
+                "Authorization" => "Bearer $token"
+            ]
+        ]);
+        $userInfo = json_decode($response->getBody(), true);
+
+        if(empty($userInfo)){
+            return response()->json([
+                'success' => false,
+                'message' => 'Đăng nhập không thành công!'
+            ], 200);
+        }
+
+        if(empty($userInfo['mail'])){
+            return response()->json([
+                'success' => false,
+                'message' => 'Đăng nhập không thành công!'
+            ], 200);
+        }
+
+        $emailDomain = explode('@',$userInfo['mail']); 
+
+        if(!in_array($emailDomain[1], $domains)){
+            return response()->json([
+                'success' => false,
+                'message' => 'Email phải thuộc tên miền @gosu.vn!'
+            ], 200);
+        }
+
+        $data = [
+            'token' => Hash::make($userInfo['mail']),
+            'email' => $userInfo['mail']
+        ];
+
+        // create token ERP
+        $results = $this->gosuApi->GosuPostData('v2/account/create-token',$data);
+        if(empty($results)) {
+            $_result['message'] = 'Token hết hạn!';
+            $_result['token'] = null;
+            return response()->json($_result, 200);
+        }
+        $_result = [];
+        if($results->Code != 1){
+            $_result['message'] = $results->Msg;
+            $_result['token'] = null;
+            $_result['success'] = false;
+            return response()->json($_result, 200);
+        }
+        
+        // Login user và trả về token
+        if(!empty($site)){
+            $_result['access_token'] = $results->Data->Token;
+            $_result['message'] = $results->Msg;
+            $_result['success'] = true;
+            $token = [
+                'token' => $_result['access_token']
+            ];               
+        }else{
+            $_result = $this->userRepo->loginUser(['email'=>$userInfo['mail'], 'loginOauth'=>true]);
+        }
+        return response()->json($_result);
     }
 }

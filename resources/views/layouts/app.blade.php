@@ -17,6 +17,7 @@
 <body>
     <div id="app">
     </div>
+    <script src="https://alcdn.msauth.net/browser/2.37.0/js/msal-browser.min.js"></script>
     <script src="{{ mix('js/app.js') }}" type="text/javascript"></script>
     <script src="{{ asset('backend/js/ckfinder/ckfinder.js') }}"></script>
     <script src="https://accounts.google.com/gsi/client" async defer></script>

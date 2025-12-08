@@ -126,8 +126,8 @@ class UserRepository implements UserRepositoryInterface
     public function loginUser(array $data){
         $email = $data['email'];
         $password = !empty($data['password']) ? $data['password'] : null;
-//        $listDomains = explode(',',env('DOMAINS'));
-        $listDomains = explode(',', "gosu.vn,gosuverse.vn");
+
+        $listDomains = explode(',', env('DOMAINS'));
         $emailParts = explode('@', $email);
         $domain = $emailParts[1] ?? null;
         if (!in_array($domain, $listDomains)) {
@@ -176,6 +176,10 @@ class UserRepository implements UserRepositoryInterface
 //                );
 //                return $results;
 //            }
+            // dump($data);
+            // die();
+            // $checkLoginOauth = $data['loginOauth'];
+            // dump($checkLoginOauth);
             if(!Auth::attempt(['email' => $email, 'password' => $password])){
                 $params = array('email' => $email);
                 $profile = $this->gosuEmployee->profile($params);
@@ -190,7 +194,7 @@ class UserRepository implements UserRepositoryInterface
                 $user = User::where('email', $email)->first();
                 
                 $params = ['email' => $email];
-                if (!$user) {                    
+                if (!$user) {   
                     // Nếu chưa có, gọi profile từ GOSU
                     $profile = $this->gosuEmployee->profile($params);
 
@@ -215,7 +219,7 @@ class UserRepository implements UserRepositoryInterface
                 // Đăng nhập thủ công không cần password
                 Auth::login($user);
                 $authUser = Auth::user();
-
+                
                 // Nếu chưa có flag thì cập nhật
                 if ($authUser->flag === 0) {
                     $authUser->flag = $this->helpers->getUserFlag($authUser->employee_id);
