@@ -24,6 +24,7 @@ use App\Http\Controllers\HomeController;
 // Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 Route::get('/check-login', [AuthController::class, 'checkLogin'])->name('check-login');
+Route::get('/callback', [AuthController::class, 'oauthAzure']);
 Route::get('{any}', function () {
     return view('layouts.app');
 })->where('any', '.*');

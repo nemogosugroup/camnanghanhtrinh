@@ -1,6 +1,7 @@
 import RepositoryFactory from "@/utils/RepositoryFactory";
 import {getAccessToken, setAccessToken, removeToken, setAuth, getAuth, removeAuth} from '@/utils/auth'
 import router, { resetRouter } from "@/router";
+import { get } from "jquery";
 const UserRepository = RepositoryFactory.get('user');
 const state = {
     token: getAccessToken(),
@@ -360,7 +361,7 @@ const actions = {
         }).catch(error => {
             reject(error)
         })
-    }
+    },
 
     // update gold/exp/level of user
     // updateDataUser({ commit, state }, data){
@@ -377,6 +378,70 @@ const actions = {
     //         }
     //     }
     // }
+    // get config data
+    getDatalogin({ commit }){
+        return new Promise((resolve, reject) => {
+            UserRepository.getDatalogin()
+                .then((response) => {
+                    resolve(response)
+                })
+                .catch((error) => {
+                    reject(error);
+                });
+        });
+    },
+    // get config data
+    loginOauthMicrosoft({ commit }, userInfo){
+        return new Promise((resolve, reject) => {
+            const { token, site } = userInfo;
+            UserRepository.loginOauthMicrosoft({token : token, site : site})
+                .then((response) => {
+                    const { data } = response;
+                    if(!site){
+                        if (data.success) {
+                            let token = data.data.access_token;
+                            let roles = data.data.roles;
+                            let training = data.data.training;
+                            let users = data.data;
+                            commit('SET_INFO', users);
+                            commit('SET_TOKEN', token);
+                            commit('SET_ROLES', roles);
+                            commit('SET_NAME', data.data.fullname);
+                            commit('SET_TRAINING', training);
+                            commit('SET_GOLD', data.data.gold);
+                            commit('SET_EXPERIENCE', data.data.experience);
+                            commit('SET_LEVEL', data.data.level);
+                            commit('SET_DATA_MEDAL', data.data_medal);
+                            if(data.data.equipments){
+                                let equipments = data.data.equipments.map(item => {
+                                    return item.id
+                                });
+                                commit('SET_EQUIPMENTS', equipments);
+                            }
+                            if(data.data.courses){
+                                let courses = data.data.courses.map(item => {
+                                    return item.id
+                                });
+                                commit('SET_COURSES', courses);
+                            }
+                            if(users.achievement_user){
+                                let achievements = {
+                                    'medal':users.achievement_user?.medal.title,
+                                    'achievement':users.achievement_user?.category.title,
+                                };
+                                commit('SET_DATA_ACHIEVEMENT', achievements);
+                            }                   
+                            setAccessToken(token)
+                            setAuth(JSON.stringify(data.data))
+                        }
+                    }
+                    resolve(response)
+                })
+                .catch((error) => {
+                    reject(error);
+                });
+        });
+    }
 };
 
 export default {

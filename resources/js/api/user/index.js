@@ -125,5 +125,31 @@ export default {
             method: 'post',
             data
         })
+    },
+
+    // pre login Microsoft
+    preLoginOauthMicrosoft(data){
+        return request({
+            url: `${resource}` + "/prelogin",
+            method: 'post',
+            data
+        })
+    },
+
+    // login Microsoft
+    loginOauthMicrosoft(data){
+        return request({
+            url: `${resource}` + "/oauth-azure",
+            method: 'post',
+            data
+        })
+    },
+
+    // get data login
+    getDatalogin(){
+        return request({
+            url: `${resource}` + "/get-data-login",
+            method: 'get'
+        })
     }
 };
