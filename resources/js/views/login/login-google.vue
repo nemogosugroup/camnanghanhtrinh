@@ -29,32 +29,21 @@
                             </el-form-item>
                         </el-tooltip>
                         <el-row :gutter="10">
-                            <el-col :span="12">
+                            <!-- <el-col :span="12">
                                 <div id="g_id_onload"
                                     data-client_id="319849910805-8l7v2l243pqso5j7lm27phg39rkca26k.apps.googleusercontent.com"
                                     data-callback="handleCredentialResponse"
                                     data-auto_prompt="false">
                                 </div>
-                                <!-- <div class="google-btn-wrapper">
-                                    <div class="g_id_signin"
-                                        data-type="standard"
-                                        data-size="large"
-                                        data-theme="outline"
-                                        data-text="sign_in_with"
-                                        data-shape="rectangular"
-                                        data-logo_alignment="left">
-                                    </div>
-                                </div> -->
                                 <div id="google-button-container" class="google-button-container"></div>
-                            </el-col>
+                            </el-col> -->
+                            <!-- Login Microsoft -->
+                            <el-col :span="12"> <el-button :loading="loading" type="primary" style="width: 100%;height: 41px"
+                            @click.prevent="handleLoginMicrosoft">Login Microsoft</el-button></el-col>
                             <el-col :span="12"> <el-button :loading="loading" type="primary" style="width: 100%;height: 41px"
                             @click.prevent="handleLogin">Login</el-button></el-col>
                         </el-row>
-                        <!-- Login Microsoft -->
-                       <el-tooltip v-model="capsTooltip" content="Caps lock is On" placement="right" manual>
-                            <el-col :span="12"> <el-button :loading="loading" type="primary" style="width: 100%;height: 41px"
-                            @click.prevent="handleLoginMicrosoft">Login Microsoft</el-button></el-col>
-                        </el-tooltip>
+                        
                     </el-form>
                 </div>
             </el-aside>

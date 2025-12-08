@@ -7,7 +7,7 @@ class GosuApi
     protected $url;
     public function __construct()
     {        
-        $this->url = env('APP_ENV') == 'local' ? 'http://localhost:27698/' : 'https://apis.gosu.vn/';       
+        $this->url = env('APP_ENV') == 'local' ?  env('API_LOCAL') : env('API_LIVE');  
     }
     public function GosuCURL($url, $method = 'GET', $data = null)
     {

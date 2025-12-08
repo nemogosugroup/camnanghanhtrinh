@@ -126,7 +126,6 @@ class UserRepository implements UserRepositoryInterface
     public function loginUser(array $data){
         $email = $data['email'];
         $password = !empty($data['password']) ? $data['password'] : null;
-
         $listDomains = explode(',', env('DOMAINS'));
         $emailParts = explode('@', $email);
         $domain = $emailParts[1] ?? null;
@@ -176,10 +175,6 @@ class UserRepository implements UserRepositoryInterface
 //                );
 //                return $results;
 //            }
-            // dump($data);
-            // die();
-            // $checkLoginOauth = $data['loginOauth'];
-            // dump($checkLoginOauth);
             if(!Auth::attempt(['email' => $email, 'password' => $password])){
                 $params = array('email' => $email);
                 $profile = $this->gosuEmployee->profile($params);
@@ -210,7 +205,6 @@ class UserRepository implements UserRepositoryInterface
                     $user['password'] = Hash::make($password);
                     $user['is_director'] = (int)(isset($user['level']) && $user['level'] <= 4);
                     unset($user['level']);
-//                    $user['flag'] = $this->helpers->getUserFlag($user['employee_id']);
                     $user['flag'] = 1;
                     $this->createUser($user);
 
