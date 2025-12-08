@@ -20,9 +20,6 @@ use App\Http\Controllers\Api\Events\VuLanController;
 */
 Route::post('user/login', [AuthController::class, 'login']);
 Route::post('user/oauth', [AuthController::class, 'oauth']);
-Route::post('user/prelogin', [AuthController::class, 'preLoginOauthAzure']);
-Route::get('user/get-data-login', [AuthController::class, 'getDataLogin']);
-Route::post('user/oauth-azure', [AuthController::class, 'oauthAzure']);
 Route::get('list-employee', [AuthController::class, 'employee']);
 Route::middleware('auth:api')->group(function () {
     Route::get('/check-login', [AuthController::class, 'checkLogin']);

@@ -50,11 +50,7 @@
                             <el-col :span="12"> <el-button :loading="loading" type="primary" style="width: 100%;height: 41px"
                             @click.prevent="handleLogin">Login</el-button></el-col>
                         </el-row>
-                        <!-- Login Microsoft -->
-                       <el-tooltip v-model="capsTooltip" content="Caps lock is On" placement="right" manual>
-                            <el-col :span="12"> <el-button :loading="loading" type="primary" style="width: 100%;height: 41px"
-                            @click.prevent="handleLoginMicrosoft">Login Microsoft</el-button></el-col>
-                        </el-tooltip>
+                       
                     </el-form>
                 </div>
             </el-aside>
@@ -63,35 +59,15 @@
     </div>
     <!--  -->
 </template>
+
 <script>
 import bgLogin from "@/assets/images/bg/authentication-bg.jpg";
 import imagesLogo from "@/assets/images/logo/GOSU_full.png";
 import { getAccessToken } from "@/utils/auth";
-import { handleError } from "vue";
-
-// const msalConfig = {
-//     auth: {
-//         clientId: "89e9ea23-40e3-4ad2-aeff-3c7fe410c1cd",
-//         authority: "https://login.microsoftonline.com/6746f92c-91cd-4625-9e9f-ffeafb3d26bb",
-//         redirectUri: "http://localhost/login-google"
-//     }
-// };
-
-//const msalInstance = new window.msal.PublicClientApplication(msalConfig);
 export default {
     name: "LoginGoogle",
     data() {
         return {
-            msalConfig: {
-                auth: {
-                    clientId: null,
-                    authority: null,
-                    redirectUri: null
-                }
-            },
-            domains: [],
-            msalInstance: null,
-            msPopup : null,
             loginForm: {
                 email: "",
                 password: "",
@@ -157,7 +133,6 @@ export default {
         const urlParams = new URLSearchParams(window.location.search);
         var site = urlParams.get('redirect');
         this.site = site ? atob(site) : null;
-        console.log('this.site', this.site);
         this.waitForGoogle(() => {
             google.accounts.id.initialize({
                 client_id: '952567207080-e5sf3k2jqrlqrqgjo0lmagqfhkb1oqql.apps.googleusercontent.com',
@@ -172,7 +147,6 @@ export default {
                 }
             );
         });
-        this.handleGetDataLogin();
     },
     destroyed() {
     },
@@ -182,30 +156,6 @@ export default {
         },
     },
     methods: {
-        handleGetDataLogin() {
-            this.$store
-                .dispatch("user/getDatalogin")
-                .then((response) => {
-                    console.log('response', response);
-                    const { data } = response;
-                    if (data.success) {
-                        this.msalConfig.auth.clientId = data.data.clientId;
-                        this.msalConfig.auth.authority = data.data.authority;
-                        this.msalConfig.auth.redirectUri = data.data.url;    
-                        this.domains = data.data.domains ? data.data.domains : [];
-                        console.log('this.msalConfig', this.msalConfig);
-                    } else {
-                        this.$message({
-                            message: data.message,
-                            type: 'error'
-                        })
-                    }
-                    this.loading = false;
-                })
-                .catch(() => {
-                    this.loading = false;
-                });
-        },
         checkCapslock(e) {
             const { key } = e;
             this.capsTooltip =
@@ -288,27 +238,24 @@ export default {
                         .then((response) => {
                             const { data, status } = response;
                             if (data.success) { 
-                                // if(this.site !== null && status === 200){
-                                //     this.loadingFullScreen = true;
-                                //     const url = new URL( this.site );
-                                //     url.searchParams.set('token', data.access_token);
-                                //     window.location.href = `${url.href}`;
-                                // }
+                                if(this.site !== null && status === 200){
+                                    this.loadingFullScreen = true;
+                                    const url = new URL( this.site );
+                                    url.searchParams.set('token', data.access_token);
+                                    window.location.href = `${url.href}`;
+                                }
                                 this.$message({
                                     message: data.message,
                                     type: 'success'
                                 })
-                                console.log('data login google', data);
-                                console.log('getAccessToken()', getAccessToken());
-                                console.log('this.oAuthState()', this.oAuthState);
-                                // if (this.redirectUri) {
-                                //     window.location.href = this.redirectUri + '?token=' + getAccessToken() + '&state=' + this.oAuthState;
-                                // } else {
-                                //     this.$router.push({
-                                //         path: this.redirect || "/vulan/",
-                                //         query: this.otherQuery,
-                                //     });
-                                // }
+                                if (this.redirectUri) {
+                                    window.location.href = this.redirectUri + '?token=' + getAccessToken() + '&state=' + this.oAuthState;
+                                } else {
+                                    this.$router.push({
+                                        path: this.redirect || "/vulan/",
+                                        query: this.otherQuery,
+                                    });
+                                }
 
                             } else {
                                 this.$message({
@@ -346,95 +293,6 @@ export default {
                 setTimeout(() => this.waitForGoogle(callback), 100);
             }
         },
-        // login microsoft
-        async handleLoginMicrosoft() {
-            
-            try {
-                // check mail domain
-                const parts = this.loginForm.email.split("@");
-                if (parts.length !== 2) {
-                    this.$message({
-                        message: "Email không hợp lệ.",
-                        type: 'error'
-                    });
-                    return;
-                }
-
-                const domain = parts[1]; // lấy domain
-
-                if (!this.domains.includes(domain)) {
-                    this.$message({
-                        message: "Email phải thuộc tên miền @gosu.vn",
-                        type: 'error'
-                    });
-                    return;
-                }
-
-                const loginRequest = {
-                    scopes: ["user.read"],
-                    loginHint: this.loginForm.email,
-                    domainHint: domain
-                };
-                const msalInstance = new window.msal.PublicClientApplication(this.msalConfig)
-
-                const loginResult = await msalInstance.loginPopup(loginRequest);
-
-                if(loginResult.account && loginResult) {
-                    const account = loginResult.account;
-                    // Lấy thông tin user
-                    const user = {
-                        username: account.username,
-                        name: account.name,
-                        localAccountId: account.localAccountId,
-                        homeAccountId: account.homeAccountId,
-                        accessToken: loginResult.accessToken
-                    };
-                    this.$store
-                        .dispatch("user/loginOauthMicrosoft", { token: user.accessToken, site: this.site })
-                        .then((response) => {
-                            const { data } = response;
-                            if (data.success) {
-                                this.$message({
-                                    message: data.message,
-                                    type: 'success'
-                                })
-                                // console.log('this.site', this.site);
-                                // console.log('this.oAuthState', this.oAuthState);
-                                // console.log('data', data);
-                                // return;
-                                if (this.site) {
-                                    window.location.href = this.site + '?token=' + data.access_token + '&state=' + this.oAuthState;
-                                } else {
-                                    this.$router.push({
-                                        path: this.redirect || "/vulan/",
-                                        query: this.otherQuery,
-                                    });
-                                }
-                            } else {
-                                this.$message({
-                                    message: data.message,
-                                    type: 'error'
-                                })
-                            }
-                            this.loading = false;
-                        })
-                        .catch(() => {
-                            this.loading = false;
-                        });
-                }else{
-                    this.$message({
-                        message: "Đăng nhập không thành công!",
-                        type: 'error'
-                    })
-                }
-            } catch (err) {
-                console.error("MSAL Popup Error:", err);
-                this.$message({
-                    message: "Login Microsoft failed.",
-                    type: 'error'
-                })
-            }
-        }
     },
 };
 </script>
